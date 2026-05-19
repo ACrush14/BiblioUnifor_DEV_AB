@@ -199,7 +199,8 @@
                 android:lineSpacingExtra="2dp"
                 android:text="• A senha deve conter pelo menos 8 caracteres\n• Um número\n• Uma letra maiúscula"
                 android:textColor="@color/biblio_red"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/textErroSenhaIgual"

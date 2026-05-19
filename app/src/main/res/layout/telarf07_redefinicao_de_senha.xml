@@ -78,6 +78,7 @@
             android:text="Campo obrigatório"
             android:textColor="@color/biblio_red"
             android:textSize="14sp"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/textDescricaoNovaSenha"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -130,6 +131,7 @@
             android:text="Campo obrigatório"
             android:textColor="@color/biblio_red"
             android:textSize="14sp"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/layoutSenhaNova"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -182,6 +184,7 @@
             android:text="• A senha deve conter pelo menos 8 caracteres&#10;• Um número&#10;• Uma letra maiúscula"
             android:textColor="@color/biblio_red"
             android:textSize="14sp"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/layoutConfirmarSenha"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -196,6 +199,7 @@
             android:text="A senha é a mesma da antiga"
             android:textColor="@color/biblio_red"
             android:textSize="14sp"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/textRegrasSenha"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -210,6 +214,7 @@
             android:text="As senhas estão diferentes, verifique!"
             android:textColor="@color/biblio_red"
             android:textSize="14sp"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/textErroSenhaIgual"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

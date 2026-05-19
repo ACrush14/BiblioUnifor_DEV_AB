@@ -24,32 +24,35 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
         setContentView(R.layout.telarf12_teladolivro)
 
         val context: Context = this@TelaRF12TelaDoLivro
-        val livroId = intent.getIntExtra("LIVRO_ID", -1)
-        
-        if (livroId != -1) {
+        // CORREÇÃO: Pegando o ID como String em vez de Int
+        val livroId = intent.getStringExtra("LIVRO_ID")
+
+        // CORREÇÃO: Verificando se a String não é nula
+        if (livroId != null) {
             carregarDadosDoLivro(livroId)
         }
 
         findViewById<Button>(R.id.buttonVerMais).setOnClickListener {
             val intentVerMais = Intent(context, TelaRF13VerMaisLivro::class.java)
-            intentVerMais.putExtra("LIVRO_ID", livroId)
+            intentVerMais.putExtra("LIVRO_ID", livroId) // Passando a String
             startActivity(intentVerMais)
         }
 
         findViewById<Button>(R.id.buttonSolicitar).setOnClickListener {
             val intentSolicitar = Intent(context, TelaRF19Solicitacoes::class.java)
-            intentSolicitar.putExtra("LIVRO_ID", livroId)
+            intentSolicitar.putExtra("LIVRO_ID", livroId) // Passando a String
             startActivity(intentSolicitar)
         }
 
         findViewById<Button>(R.id.buttonLer).setOnClickListener {
             val intentLer = Intent(context, TelaRF14LeituraActivity::class.java)
-            intentLer.putExtra("LIVRO_ID", livroId)
+            intentLer.putExtra("LIVRO_ID", livroId) // Passando a String
             startActivity(intentLer)
         }
     }
 
-    private fun carregarDadosDoLivro(id: Int) {
+    // CORREÇÃO: O parâmetro id agora é uma String
+    private fun carregarDadosDoLivro(id: String) {
         lifecycleScope.launch {
             val livro = libroDao.buscarLivroPorId(id)
             livro?.let {
@@ -58,8 +61,8 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
                 findViewById<TextView>(R.id.textSobreLivro).text = it.content
 
                 val imgCapa = findViewById<ImageView>(R.id.imageLivroDetalhes)
-                if (it.coverResourceId != 0) {
-                    imgCapa.setImageResource(it.coverResourceId)
+                if (it.coverUrl.isNotEmpty()) {
+                    imgCapa.setImageResource(R.drawable.osda)
                 } else {
                     imgCapa.setImageResource(R.drawable.osda)
                 }

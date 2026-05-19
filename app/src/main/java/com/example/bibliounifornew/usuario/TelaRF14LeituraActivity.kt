@@ -11,7 +11,6 @@ class TelaRF14LeituraActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.telarf14_leitura)
 
-        val livroId = intent.getIntExtra("LIVRO_ID", 1)
-
+        val livroId = intent.getStringExtra("LIVRO_ID")
     }
 }

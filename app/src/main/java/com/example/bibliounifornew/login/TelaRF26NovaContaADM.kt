@@ -3,7 +3,9 @@ package com.example.bibliounifornew.login
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -92,7 +94,64 @@ class TelaRF26NovaContaADM :
                 R.id.textRegrasSenhaAdm
             )
 
+        val erroSenha1 =
+            findViewById<TextView>(
+                R.id.textErroSenha1
+            )
 
+        val erroSenha2 =
+            findViewById<TextView>(
+                R.id.textErroSenha2
+            )
+
+        val erroSenhaDiferente =
+            findViewById<TextView>(
+                R.id.textErroSenhaDiferente
+            )
+
+        val erroSenhaIgual =
+            findViewById<TextView>(
+                R.id.textErroSenhaIgual
+            )
+
+
+
+        //--------------------------------
+        // ESTADO INICIAL (OCULTAR ERROS)
+        //--------------------------------
+
+        erroEmail.visibility = View.GONE
+        erroCredencial.visibility = View.GONE
+        erroSenha.visibility = View.GONE
+        erroSenha1.visibility = View.GONE
+        erroSenha2.visibility = View.GONE
+        erroSenhaDiferente.visibility = View.GONE
+        erroSenhaIgual.visibility = View.GONE
+
+        //--------------------------------
+        // TEXT WATCHER (LIMPAR ERROS)
+        //--------------------------------
+
+        val watcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                erroEmail.visibility = View.GONE
+                erroCredencial.visibility = View.GONE
+                erroSenha.visibility = View.GONE
+                erroSenha1.visibility = View.GONE
+                erroSenha2.visibility = View.GONE
+                erroSenhaDiferente.visibility = View.GONE
+                erroSenhaIgual.visibility = View.GONE
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        }
+
+        nome.addTextChangedListener(watcher)
+        usuario.addTextChangedListener(watcher)
+        email.addTextChangedListener(watcher)
+        credencial.addTextChangedListener(watcher)
+        senha.addTextChangedListener(watcher)
+        confirma.addTextChangedListener(watcher)
 
         //--------------------------------
         // BOTÃO
@@ -204,98 +263,71 @@ class TelaRF26NovaContaADM :
 
         criar.setOnClickListener{
 
+            erroEmail.visibility = View.GONE
+            erroCredencial.visibility = View.GONE
+            erroSenha.visibility = View.GONE
+            erroSenha1.visibility = View.GONE
+            erroSenha2.visibility = View.GONE
+            erroSenhaDiferente.visibility = View.GONE
+            erroSenhaIgual.visibility = View.GONE
 
-            erroEmail.visibility=
-                View.GONE
+            val sNome = nome.text.toString().trim()
+            val sUsuario = usuario.text.toString().trim()
+            val sEmail = email.text.toString().trim()
+            val sCredencial = credencial.text.toString().trim()
+            val sSenha = senha.text.toString()
+            val sConfirma = confirma.text.toString()
 
-            erroCredencial.visibility=
-                View.GONE
-
-            erroSenha.visibility=
-                View.GONE
-
-
-
-            val emailTexto=
-                email.text.toString()
-
-            val senhaTexto=
-                senha.text.toString()
-
-            val confirmaTexto=
-                confirma.text.toString()
-
-
-
-            when{
-
-
-                nome.text.isEmpty()
-                        ||
-                        usuario.text.isEmpty()
-                        ||
-                        email.text.isEmpty()
-                        ||
-                        credencial.text.isEmpty()
-                        ||
-                        senha.text.isEmpty()
-                        ||
-                        confirma.text.isEmpty()
-
-                    ->{
-
-                    Toast.makeText(
-
-                        this,
-
-                        "Preencha todos os campos",
-
-                        Toast.LENGTH_SHORT
-
-                    ).show()
-
+            when {
+                sNome.isEmpty() || sUsuario.isEmpty() || sEmail.isEmpty() || sCredencial.isEmpty() -> {
+                    Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
                 }
 
-
-
-                !emailTexto.contains("@")->{
-
-                    erroEmail.visibility=
-                        View.VISIBLE
-
+                !sEmail.contains("@") || sEmail == "admin@jaexiste.com" -> {
+                    erroEmail.visibility = View.VISIBLE
                 }
 
-
-
-                senhaTexto!=confirmaTexto
-                        ||
-                        senhaTexto.length<8
-                        ||
-                        !senhaTexto.any{
-                            it.isDigit()
-                        }
-                        ||
-                        !senhaTexto.any{
-                            it.isUpperCase()
-                        }
-
-                    ->{
-
-                    erroSenha.visibility=
-                        View.VISIBLE
-
+                sCredencial == "123" -> { // Simulação de credencial inválida/já cadastrada
+                    erroCredencial.visibility = View.VISIBLE
                 }
 
+                sSenha.isEmpty() -> {
+                    erroSenha1.text = "Campo obrigatório"
+                    erroSenha1.visibility = View.VISIBLE
+                }
 
+                sConfirma.isEmpty() -> {
+                    erroSenha2.text = "Campo obrigatório"
+                    erroSenha2.visibility = View.VISIBLE
+                }
 
-                else->{
+                sSenha.length < 8 -> {
+                    erroSenha.text = "A senha deve conter pelo menos 8 caracteres"
+                    erroSenha.visibility = View.VISIBLE
+                }
 
+                !sSenha.any { it.isDigit() } -> {
+                    erroSenha.text = "Um número"
+                    erroSenha.visibility = View.VISIBLE
+                }
+
+                !sSenha.any { it.isUpperCase() } -> {
+                    erroSenha.text = "Uma letra maiúscula"
+                    erroSenha.visibility = View.VISIBLE
+                }
+
+                sSenha != sConfirma -> {
+                    erroSenhaDiferente.visibility = View.VISIBLE
+                }
+
+                sSenha == "12345678" -> { // Simulação de senha igual à anterior
+                    erroSenhaIgual.visibility = View.VISIBLE
+                }
+
+                else -> {
                     popup()
-
                 }
-
             }
-
         }
 
 

@@ -44,6 +44,14 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.material)
     testImplementation(libs.junit)
+    // Importa o Firebase Bill of Materials (BOM) para garantir compatibilidade de versões
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+
+    // Biblioteca do Firestore
+    implementation("com.google.firebase:firebase-firestore")
+
+    // Biblioteca vital para usar o '.await()' com o Firebase, transformando Tasks em Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0")
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }

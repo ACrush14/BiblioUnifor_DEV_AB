@@ -31,10 +31,11 @@ class LivroAdapter(
         holder.textTitulo.text = livro.title
         holder.textAutor.text = livro.author
 
-        // Se houver uma imagem real, usaríamos uma lib como Glide ou Coil.
-        // Por enquanto, usamos o placeholder ou o coverResourceId se disponível
-        if (livro.coverResourceId != 0) {
-            holder.imgLivro.setImageResource(livro.coverResourceId)
+        // CORREÇÃO: Usando coverUrl em vez de coverResourceId.
+        // O carregamento real da URL da internet será feito via Glide ou Coil futuramente.
+        if (livro.coverUrl.isNotEmpty()) {
+            // TODO: Glide.with(holder.itemView.context).load(livro.coverUrl).into(holder.imgLivro)
+            holder.imgLivro.setImageResource(R.drawable.osda)
         } else {
             holder.imgLivro.setImageResource(R.drawable.osda) // Default
         }

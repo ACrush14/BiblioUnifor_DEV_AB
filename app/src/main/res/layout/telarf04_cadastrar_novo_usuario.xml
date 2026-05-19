@@ -113,6 +113,17 @@
                 android:textColor="@color/black"
                 android:textColorHint="#9E9E9E" />
 
+            <!-- Erro Senha 1 -->
+            <TextView
+                android:id="@+id/tvErroSenha1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="Campo obrigatório"
+                android:textColor="@color/biblio_red"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
             <!-- Senha -->
             <RelativeLayout
                 android:id="@+id/layoutSenhaCadastro"
@@ -148,6 +159,17 @@
                     app:tint="@color/biblio_blue" />
             </RelativeLayout>
 
+            <!-- Erro Senha 2 -->
+            <TextView
+                android:id="@+id/tvErroSenha2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="Campo obrigatório"
+                android:textColor="@color/biblio_red"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
             <!-- Confirmar Senha -->
             <RelativeLayout
                 android:id="@+id/layoutConfirmarSenha"
@@ -182,6 +204,29 @@
                     android:src="@drawable/ic_eye_open"
                     app:tint="@color/biblio_blue" />
             </RelativeLayout>
+
+            <!-- Erro Senha Diferente -->
+            <TextView
+                android:id="@+id/tvErroSenhaDiferente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="As senhas estão diferentes"
+                android:textColor="@color/biblio_red"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <!-- Erro Senha Igual Antiga -->
+            <view
+                android:id="@+id/tvErroSenhaIgual"
+                class="android.widget.TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="A senha é igual à anterior"
+                android:textColor="@color/biblio_red"
+                android:textSize="14sp"
+                android:visibility="gone" />
 
             <!-- Erro Senha -->
             <TextView

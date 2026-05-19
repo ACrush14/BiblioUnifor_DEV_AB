@@ -12,8 +12,9 @@ interface LivroDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun inserirLivro(livro: EntidadeLivro)
 
+    // Dentro de LivroDao.kt
     @Query("SELECT * FROM books WHERE id = :id")
-    suspend fun buscarLivroPorId(id: Int): EntidadeLivro?
+    suspend fun buscarLivroPorId(id: String): EntidadeLivro? // Mudou para String
 
     @Query("SELECT * FROM books")
     fun buscarTodosLivros(): Flow<List<EntidadeLivro>>
