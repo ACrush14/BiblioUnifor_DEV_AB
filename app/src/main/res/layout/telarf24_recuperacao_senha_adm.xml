@@ -31,7 +31,6 @@
             android:layout_marginTop="40dp"
             android:layout_marginHorizontal="40dp"
             android:contentDescription="Logo"
-            android:src="@drawable/unifor_marca"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

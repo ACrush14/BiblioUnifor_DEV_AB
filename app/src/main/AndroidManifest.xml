@@ -26,7 +26,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BiblioUnifor">
+        android:theme="@style/Theme.BiblioUnifor"
+        android:largeHeap="true">
         <activity
             android:name=".login.TelaRF25RedefinirSenhaADM"
             android:exported="false" />
@@ -34,7 +35,7 @@
             android:name=".Appnavigation00Activity"
             android:exported="false" /> <!-- TELAS DE RECUPERAÇÃO DE SENHA -->
         <activity
-            android:name=".login.TelaRF06ValidacaoDeCodigo"
+            android:name=".login.TelaRF06ValidacaoCodigo"
             android:exported="false" />
         <activity
             android:name=".login.TelaRF07RedefinirSenha"

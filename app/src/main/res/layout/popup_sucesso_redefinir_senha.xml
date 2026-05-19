@@ -15,8 +15,7 @@
         android:layout_width="140dp"
         android:layout_height="90dp"
         android:layout_marginBottom="20dp"
-        android:contentDescription="Logo Unifor"
-        android:src="@drawable/unifor_marca" />
+        android:contentDescription="Logo Unifor" />
 
     <!-- Título -->
     <TextView

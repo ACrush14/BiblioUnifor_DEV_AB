@@ -16,11 +16,11 @@
         <!-- Logo -->
         <ImageView
             android:id="@+id/imageLogoNovaSenha"
-            android:layout_width="450dp"
-            android:layout_height="210dp"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
             android:layout_marginTop="45dp"
+            android:adjustViewBounds="true"
             android:contentDescription="logo"
-            android:src="@drawable/unifor_marca"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
