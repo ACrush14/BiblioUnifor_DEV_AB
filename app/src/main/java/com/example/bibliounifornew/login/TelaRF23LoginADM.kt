@@ -1,0 +1,128 @@
+package com.example.bibliounifornew.login
+
+import android.content.Intent
+import android.os.Bundle
+import android.text.InputType
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.bibliounifornew.R
+import com.example.bibliounifornew.adm.TelaRF28DashboardADM
+
+class TelaRF23LoginADM : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.telarf23_login_adm)
+
+        // CAMPOS
+        val email = findViewById<EditText>(R.id.editEmailAdm)
+        val senha = findViewById<EditText>(R.id.editSenhaAdm)
+        val credential = findViewById<EditText>(R.id.editCredencialAdm)
+
+
+        // BOTÃO
+        val botaoEntrar = findViewById<Button>(R.id.buttonEntrarAdm)
+        val bntMostraSenha = findViewById<ImageView>(R.id.iconOlhoSenhaAdm)
+
+        // TEXTOS
+        val erro = findViewById<TextView>(R.id.textErroAdm)
+        val criarConta = findViewById<TextView>(R.id.textCriarContaAdm)
+        val esqueceuSenha = findViewById<TextView>(R.id.textEsqueceuSenhaAdm)
+
+        // LOGIN
+        botaoEntrar.setOnClickListener {
+
+            val textoEmail = email.text.toString().trim()
+            val textoSenha = senha.text.toString().trim()
+            val textoCredencial = credential.text.toString().trim()
+
+            erro.visibility = View.GONE
+
+            when {
+
+                textoEmail.isEmpty() || textoSenha.isEmpty() || textoCredencial.isEmpty() -> {
+                    erro.text = "Preencha todos os campos"
+                    erro.visibility = View.VISIBLE
+                }
+
+                textoEmail != "a" ||
+                        textoSenha != "b" ||
+                        textoCredencial != "c" -> {
+
+                    erro.text = "E-mail, senha ou credencial incorretos"
+                    erro.visibility = View.VISIBLE
+                }
+
+                else -> {
+                    Toast.makeText(
+                        this@TelaRF23LoginADM,
+                        "Login realizado com sucesso!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    val intent = Intent(this@TelaRF23LoginADM, TelaRF28DashboardADM::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+            }
+        }
+
+        // CRIAR CONTA -> TelaRF27
+        criarConta.setOnClickListener {
+            val intent = Intent(this@TelaRF23LoginADM, TelaRF26NovaContaADM::class.java)
+            startActivity(intent)
+        }
+
+        // ESQUECEU SENHA -> TelaRF24
+        esqueceuSenha.setOnClickListener {
+            val intent = Intent(this@TelaRF23LoginADM, TelaRF24RecuperacaoSenhaADM::class.java)
+            startActivity(intent)
+        }
+
+
+        // UX MELHORADA (remove erro ao focar)
+        email.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) erro.visibility = View.GONE
+        }
+
+        senha.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) erro.visibility = View.GONE
+        }
+
+        var senhaVisivel = false
+
+        bntMostraSenha.setOnClickListener {
+            if (senhaVisivel) {
+
+                // ESCONDER SENHA
+                senha.inputType =
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+                bntMostraSenha.setImageResource(R.drawable.ic_eye_closed)
+
+                senhaVisivel = false
+
+            } else {
+
+                // MOSTRAR SENHA
+                senha.inputType =
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+
+                bntMostraSenha.setImageResource(R.drawable.ic_eye_open)
+
+                senhaVisivel = true
+            }
+
+            // Mantém cursor no final
+            senha.setSelection(senha.text.length)
+        }
+    }
+
+}

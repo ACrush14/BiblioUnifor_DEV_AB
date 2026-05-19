@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/biblio_bg">
+
+    <!-- Fundo decorativo -->
+    <View
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="-100dp"
+        android:layout_marginTop="-100dp"
+        android:alpha="0.3"
+        android:background="@drawable/bg_circle"
+        android:backgroundTint="@color/biblio_detalhes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="32dp">
+
+            <!-- Logo -->
+            <ImageView
+                android:id="@+id/imageLogoCadastro"
+                android:layout_width="450dp"
+                android:layout_height="210dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:contentDescription="Logo Unifor"
+                android:src="@drawable/unifor_marca" />
+
+            <!-- Título -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Seja bem vindo ao\nBiblioUnifor!"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- Subtítulo -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="Vamos fazer sua conta"
+                android:textColor="#5F6368"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="36dp" />
+
+            <!-- Nome -->
+            <EditText
+                android:id="@+id/editTextNome"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/bg_input"
+                android:hint="Digite seu nome completo"
+                android:inputType="textPersonName"
+                android:paddingHorizontal="20dp"
+                android:textColor="@color/black"
+                android:textColorHint="#9E9E9E" />
+
+            <!-- Usuário -->
+            <EditText
+                android:id="@+id/editTextUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/bg_input"
+                android:hint="Digite seu nome de usuário"
+                android:paddingHorizontal="20dp"
+                android:textColor="@color/black"
+                android:textColorHint="#9E9E9E" />
+
+            <!-- Erro Email -->
+            <TextView
+                android:id="@+id/tvErroEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="E-mail já cadastrado ou inválido"
+                android:textColor="@color/biblio_red"
+                android:textSize="14sp"
+                tools:visibility="visible"
+                android:visibility="gone" />
+
+            <!-- Email -->
+            <EditText
+                android:id="@+id/editTextEmail"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/bg_input"
+                android:hint="Digite seu e-mail"
+                android:inputType="textEmailAddress"
+                android:paddingHorizontal="20dp"
+                android:textColor="@color/black"
+                android:textColorHint="#9E9E9E" />
+
+            <!-- Senha -->
+            <RelativeLayout
+                android:id="@+id/layoutSenhaCadastro"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginBottom="14dp">
+
+                <EditText
+                    android:id="@+id/editTextSenha"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_input"
+                    android:hint="Digite sua senha"
+                    android:inputType="textPassword"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="48dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#9E9E9E"
+                    android:importantForAutofill="no" />
+
+                <ImageView
+                    android:id="@+id/iconOlhoSenha"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/desc_mostrar_ocultar_senha"
+                    android:focusable="true"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_eye_open"
+                    app:tint="@color/biblio_blue" />
+            </RelativeLayout>
+
+            <!-- Confirmar Senha -->
+            <RelativeLayout
+                android:id="@+id/layoutConfirmarSenha"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginBottom="10dp">
+
+                <EditText
+                    android:id="@+id/editTextConfirmaSenha"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_input"
+                    android:hint="Confirme sua senha"
+                    android:inputType="textPassword"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="48dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#9E9E9E"
+                    android:importantForAutofill="no" />
+
+                <ImageView
+                    android:id="@+id/iconOlhoConfirmarSenha"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/desc_mostrar_ocultar_senha"
+                    android:focusable="true"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_eye_open"
+                    app:tint="@color/biblio_blue" />
+            </RelativeLayout>
+
+            <!-- Erro Senha -->
+            <TextView
+                android:id="@+id/tvErroSenha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="• A senha deve conter pelo menos 8 caracteres\n• Um número\n• Uma letra maiúscula"
+                android:textColor="@color/biblio_red"
+                android:textSize="12sp"
+                tools:visibility="visible"
+                android:visibility="gone" />
+
+            <!-- Botão Criar -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCriar"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:text="Criar"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/biblio_blue"
+                app:cornerRadius="12dp"
+                app:elevation="4dp" />
+
+            <!-- Login -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Já tem uma conta? "
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/textEntreAqui"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Entre aqui"
+                    android:textColor="@color/biblio_blue"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

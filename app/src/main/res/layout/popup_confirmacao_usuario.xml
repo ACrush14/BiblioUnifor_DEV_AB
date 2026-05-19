@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    app:cardBackgroundColor="@color/biblio_bg"
+    app:cardCornerRadius="28dp"
+    app:cardElevation="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="32dp"
+        android:paddingTop="40dp"
+        android:paddingBottom="32dp">
+
+        <!-- TÍTULO / AVISO -->
+        <TextView
+            android:id="@+id/textAvisoCadastro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:text="Esse usuário ainda não confirmou\no email. Confirmar mesmo assim?"
+            android:textAlignment="center"
+            android:textColor="@color/biblio_blue"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- BOTÃO CONFIRMAR (Pill-shaped) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirmarCadastro"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:text="Confirmar Cadastro"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/biblio_blue"
+            app:cornerRadius="28dp"
+            app:elevation="4dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
+
+        <!-- VOLTAR (Minimalista) -->
+        <TextView
+            android:id="@+id/textVoltar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Voltar"
+            android:textColor="@color/biblio_blue"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="8dp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,238 @@
+[33mcommit 6bc4f1821abca18e6c4496d09e062683ef95d037[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Anderson (Crush) de Lima <Anderson.link.crush@hotmail.com>
+Date:   Sun May 3 22:46:21 2026 -0300
+
+    Limpeza geral: removendo duplicatas e padronizando nomes de telas
+
+[33mcommit b750cd4b80dab857286ec930cab34cf5d60c91e9[m[33m ([m[1;31morigin/dev-isaV03[m[33m)[m
+Author: Anderson (Crush) de Lima <Anderson.link.crush@hotmail.com>
+Date:   Sun May 3 21:13:16 2026 -0300
+
+    Limpeza geral: removendo duplicatas e padronizando nomes de telas
+
+[33mcommit d87b721b0de0e714177efdd005d34de6fe211da8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdev-carlosV03[m[33m, [m[1;31morigin/dev-carlosV03[m[33m)[m
+Merge: c778b76 e8b1512
+Author: Loïe Fermanian <loiefermanian@gmail.com>
+Date:   Sat May 2 12:35:06 2026 -0300
+
+    Merge pull request #78 from ACrush14/dev-loieV02
+    
+    Dev loie v02
+
+[33mcommit e8b15127c8d244b38693cc109f7e7c345e972e97[m[33m ([m[1;31morigin/dev-loieV02[m[33m)[m
+Merge: aa19026 c778b76
+Author: Loïe Fermanian <loiefermanian@gmail.com>
+Date:   Sat May 2 12:31:20 2026 -0300
+
+    resolve e merge
+
+[33mcommit aa19026367e413a309a5c2107d03a8bf46d23dea[m
+Author: Loïe Fermanian <loiefermanian@gmail.com>
+Date:   Sat May 2 12:19:15 2026 -0300
+
+    conexoes das minhas telas
+
+[33mcommit c778b764951654614a73752d2b2a1996f34ea01b[m
+Merge: 539d567 b7b5da3
+Author: Anderson (Crush) de Lima <96736515+ACrush14@users.noreply.github.com>
+Date:   Sat May 2 11:22:16 2026 -0300
+
+    Merge pull request #77 from ACrush14/dev-andersonV02
+    
+    Limpeza geral: removendo duplicatas e padronizando nomes de telas
+
+[33mcommit b7b5da3b8547e4cf647b413fc70ab4c47d5ea358[m[33m ([m[1;31morigin/dev-andersonV02[m[33m)[m
+Author: Anderson (Crush) de Lima <Anderson.link.crush@hotmail.com>
+Date:   Sat May 2 11:20:21 2026 -0300
+
+    Limpeza geral: removendo duplicatas e padronizando nomes de telas
+
+[33mcommit 539d567dedff2b353844120fa1ff2c27c9d8a842[m
+Merge: b14c4dc 808b1b7
+Author: Anderson (Crush) de Lima <Anderson.link.crush@hotmail.com>
+Date:   Fri May 1 19:30:04 2026 -0300
+
+    Salvando edições locais e rotas para destravar o merge
+
+[33mcommit b14c4dc5c8c71fe1dd8617eade23d118601f1da2[m
+Author: Anderson (Crush) de Lima <Anderson.link.crush@hotmail.com>
+Date:   Fri May 1 19:21:34 2026 -0300
+
+    Salvando edições locais e rotas para destravar o merge
+
+[33mcommit 808b1b7e1f121b0cee4eb0747ba651f7f2b6db71[m
+Merge: c17dc1e 91b220d
+Author: Anderson (Crush) de Lima <96736515+ACrush14@users.noreply.github.com>
+Date:   Fri May 1 18:55:48 2026 -0300
+
+    Merge pull request #75 from ACrush14/dev-loieV02
+    
+    Dev loie v02
+
+[33mcommit 91b220d3a0e303c87b0abed1837e7a432d34e714[m
+Author: Loïe Fermanian <loiefermanian@gmail.com>
+Date:   Fri May 1 16:31:23 2026 -0300
+
+    main activity com logica
+
+[33mcommit a98b4b96f243d026ea8665a0d427baa7a2491fcd[m
+Author: Loïe Fermanian <loiefermanian@gmail.com>
+Date:   Fri May 1 12:43:14 2026 -0300
+
+    rf30
+
+[33mcommit c36488c3d1960268c4e5623f0520c6f2580e6989[m
+Merge: 75cbc99 c17dc1e
+Author: Loïe Fermanian <loiefermanian@gmail.com>
+Date:   Fri May 1 11:30:14 2026 -0300
+
+    Merge branch 'main' into dev-loieV02
+
+[33mcommit c17dc1ed66d74058d984e202948617d12253ae85[m
+Merge: 29c8d10 cb174cb
+Author: Anderson (Crush) de Lima <96736515+ACrush14@users.noreply.github.com>
+Date:   Fri May 1 10:43:19 2026 -0300
+
+    Merge pull request #74 from ACrush14/dev-carlosV02
+    
+    Dev carlos v02
+
+[33mcommit 29c8d107ff1a809a81115dcfc89d4fcd70439e20[m
+Merge: da1fd9c 740164b
+Author: Anderson (Crush) de Lima <96736515+ACrush14@users.noreply.github.com>
+Date:   Fri May 1 10:43:00 2026 -0300
+
+    Merge pull request #73 from ACrush14/dev-isaV02
+    
+    Dev isa v02
+
+[33mcommit cb174cbec6eea8b01262a91eec82ff1fb6e40593[m[33m ([m[1;31morigin/dev-carlosV02[m[33m)[m
+Author: Carlos Eduardo <carloseduardofernandes446@gmail.com>
+Date:   Thu Apr 30 21:15:32 2026 -0300
+
+    Add files via upload
+
+[33mcommit 2191cda5278547d75018fe85740a6730ed8cdcf2[m
+Author: Carlos Eduardo <carloseduardofernandes446@gmail.com>
+Date:   Thu Apr 30 21:14:57 2026 -0300
+
+    Add files via upload
+    
+    Tela 36, 37, 38, 39 e 40 feitas
+
+[33mcommit 75cbc99406f5dbc899127490bca4e3b973eb5fe7[m
+Author: Loïe Fermanian <loiefermanian@gmail.com>
+Date:   Thu Apr 30 19:31:29 2026 -0300
+
+    rf07, rf08, rf20, rf21, rf22, rf23
+
+[33mcommit 740164b4703de964a382b646aef22f18f10121db[m[33m ([m[1;31morigin/dev-isaV02[m[33m)[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 18:33:46 2026 -0300
+
+    Add files via upload
+
+[33mcommit 005122e3ea6f67e7486d49990e1a05432aaf1e21[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 18:32:20 2026 -0300
+
+    Create button_cyan.xml
+
+[33mcommit a1a80f38fc2d1d2ed688fef1a65af896076d337b[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 18:31:50 2026 -0300
+
+    Create button_bg.xml
+
+[33mcommit 4ff2c7a76d65575702001c413984135beaf2c649[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 18:31:24 2026 -0300
+
+    Create bd_seach.xml
+
+[33mcommit 3716cc76c1810eb5938e4b4519fc8d8c1bb81e53[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 18:29:48 2026 -0300
+
+    Create telarf14_telavermaislivro.xml
+
+[33mcommit 30f3a2f9905e0309dcd72c78c97f39062ff07000[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 18:28:58 2026 -0300
+
+    Create RF14TelaVerMaisLivro.kt
+
+[33mcommit 106e1105e16b0392fc4b33c94c936b39f7bf9f98[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 18:16:37 2026 -0300
+
+    Create telarf13_teladolivro.xml
+
+[33mcommit 26720fedf636d6a7a51dad434c3de43f2eef1542[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 18:15:21 2026 -0300
+
+    Create RF13TelaDoLivro.kt
+
+[33mcommit bb2937a279673f6b8b91655b50cdc1c3c84063ce[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 18:14:51 2026 -0300
+
+    Create telarf12_teladepesquisa.xml
+
+[33mcommit 6fa47237461394f6471b4c59eb300114fe30e5ee[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 18:13:59 2026 -0300
+
+    Create RF12TelaDePesquisa.kt
+
+[33mcommit c1573e8e68c091b84e590e93ca068da4aa92a76c[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 17:39:29 2026 -0300
+
+    Update telarf9_dashboardusuario.xml
+
+[33mcommit 76c2a4e26fed48f5a389d8aaefcb3c3c6ad2b790[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 17:22:17 2026 -0300
+
+    Create RF09Dashboardusuario.kt
+
+[33mcommit d5ca8dd757159fe787daee960cb201d77683e558[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 17:21:31 2026 -0300
+
+    Create telarf9_dashboardusuario.xml
+
+[33mcommit 84d4961df6f95c525c273d25e292da9e05962769[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 16:15:35 2026 -0300
+
+    Update RF04UsuarioGoogle.kt
+
+[33mcommit 5d6c39513da0f3c99596f1e0a47b84b721310a65[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 16:12:32 2026 -0300
+
+    Update and rename 04UsuarioGoogle.kt to RF04UsuarioGoogle.kt
+
+[33mcommit 323db6f40d9b6f814c7c362659d41705e4a9619a[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 16:01:25 2026 -0300
+
+    Rename telarf4_usuariogoogle to telarf4_usuariogoogle.xml
+
+[33mcommit 2fca97162b054e41ebb33a28c2f2083501ed6312[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 16:01:11 2026 -0300
+
+    Create 04UsuarioGoogle.kt
+
+[33mcommit 77a5c9f5d88f41d1340d7dadcebb468c2cd0fdf4[m
+Author: Isabele (Inko) Aragão Guerra <isabelearagao102@gmail.com>
+Date:   Thu Apr 30 15:54:21 2026 -0300
+
+    Create telarf4_usuariogoogle
+
+[33mcommit da1fd9c967715fe1ff1657fd7d4059e37aade616[m
+Author: Anderson (Crush) de Lima <Anderson.link.crush@h

@@ -1,0 +1,238 @@
+<resources>
+    <string name="app_name">BiblioUnifor</string>
+    <string name="acesse_sua_conta">Acesse sua Conta</string>
+
+    <string name="titulo_redefinir">Redefinir Senha</string>
+    <string name="descricao_redefinir">
+        Preencha os campos abaixo com a sua nova senha.
+    </string>
+
+    <string name="descricao_confirmacao_codigo">
+        Por favor, insira abaixo o código de
+        \n verificação enviado ao seu e-mail.
+        \n O código será expirado em 2:00.
+    </string>
+
+    <string name="nova_senha">Nova senha</string>
+    <string name="confirmar_senha">Confirme a senha</string>
+    <string name="digite_codigo">Digite aqui seu código</string>
+
+    <string name="btn_redefinir">Redefinir Senha</string>
+    <string name="btn_enviar">Enviar</string>
+    <string name="voltar">Voltar</string>
+    <string name="reenviar">Reenviar Código</string>
+
+    <string name="erro_campo">Campo Obrigatório</string>
+    <string name="erro_codigo">Codigo Incorreto</string>
+
+    <string name="requisitos_senha">
+    A senha deve conter:
+    \n• Pelo menos 8 caracteres
+    \n• Uma letra maiúscula
+    \n• Um número
+    </string>
+
+    <string name="erro_senha_igual">A senha é a mesma da antiga</string>
+    <string name="erro_senha_diferente">As senhas estão diferentes, verifique!</string>
+
+    <string name="titulo_renovacao_aluguel">Renovação de Aluguel</string>
+
+    <string name="descricao_renovacao_aluguel">
+        Por quantos dias a mais você deseja
+        \n estender o aluguel desse livro?
+    </string>
+    <string name="btn_confirmar">Confirmar</string>
+
+    <string name="btn_solicitar_pdf">PDF</string>
+    <string name="btn_solicitar_braile">Braile</string>
+    <string name="btn_solicitar_audiobook">Audiobook</string>
+    <string name="btn_reservar">Reservar</string>
+    <string name="btn_comprar_amazon">Comprar (Amazon)</string>
+    <string name="btn_setor_localizado">Setor Localizado</string>
+
+    <string name="titulo_livro">O Alienista</string>
+    <string name="autor_livro">por Machado de Assis</string>
+    <string name="genero_livro">Novela</string>
+
+    <string name="btn_remover_historico">Remover do Histórico</string>
+    <string name="nome_usuario">João Bobo</string>
+
+    <!-- Navigation Descriptions -->
+    <string name="nav_home_desc">Início</string>
+    <string name="nav_carrinho_desc">Carrinho</string>
+    <string name="nav_busca_desc">Busca</string>
+    <string name="nav_favoritos_desc">Favoritos</string>
+    <string name="nav_lista_desc">Lista</string>
+    <string name="nav_perfil_desc">Perfil</string>
+
+    <!-- Apagar Conta -->
+    <string name="apagar_conta_titulo">Apagar Conta</string>
+    <string name="apagar_conta_subtitulo">Você tem certeza que deseja apagar sua conta?</string>
+    <string name="apagar_conta_erro">Senha incorreta</string>
+    <string name="hint_sua_senha">Sua senha</string>
+    <string name="desc_mostrar_ocultar_senha">Mostrar/Ocultar senha</string>
+
+    <!-- Configuração -->
+    <string name="desc_perfil">Foto de perfil</string>
+    <string name="email_usuario_exemplo">joao.bobo@email.com</string>
+    <string name="desc_editar_usuario">Editar usuário</string>
+    <string name="desc_pesquisa">Pesquisar</string>
+    <string name="label_pesquisa">Pesquisar</string>
+    <string name="label_nome">Nome</string>
+    <string name="hint_nome">Digite seu nome</string>
+    <string name="desc_editar_campo">Editar campo</string>
+    <string name="label_usuario">Usuário</string>
+    <string name="hint_usuario">Digite seu usuário</string>
+    <string name="usuario_exemplo">@joaobobo</string>
+    <string name="label_bio">Bio</string>
+    <string name="hint_bio">Escreva algo sobre você</string>
+    <string name="bio_exemplo">Leitor ávido e fã de Machado de Assis.</string>
+    <string name="label_senha_atual">Senha Atual</string>
+    <string name="placeholder_senha">********</string>
+    <string name="btn_redefinir_senha_config">Redefinir Senha</string>
+    <string name="btn_voltar_inicial">Voltar para Tela Inicial</string>
+    <string name="btn_apagar_conta_config">Apagar Conta</string>
+
+    <!-- Redefinir Senha (RF11) -->
+    <string name="fechar_x">X</string>
+    <string name="hint_nova_senha">Nova Senha</string>
+    <string name="erro_senha_invalida">Senha inválida (mínimo 8 caracteres, maiúscula e número)</string>
+    <string name="hint_confirmar_senha">Confirme a Senha</string>
+    <string name="erro_senhas_nao_coincidem">As senhas não coincidem</string>
+    <string name="btn_salvar_alteracoes">Salvar Alterações</string>
+
+    <!-- Navigation Short Labels/Descriptions -->
+    <string name="label_meus_livros">Meus Livros</string>
+    <string name="label_lido">Status: Lido</string>
+    <string name="label_nao_lido">Status: Não Lido</string>
+    <string name="label_lendo">Status: Lendo</string>
+    <string name="btn_remover">Remover</string>
+    <string name="label_alugado">Alugado</string>
+    <string name="titulo_minha_lista_desejo">Minha Lista de Desejo</string>
+    <string name="btn_sua_livraria">Sua Livraria</string>
+    <string name="btn_alugar_livro">Alugar Livro</string>
+    <string name="label_fora_estoque">Fora de Estoque</string>
+    <string name="label_sociedade_anel">A Sociedade do Anel</string>
+    <string name="label_vidas_secas">Vidas Secas</string>
+    <string name="autor_graciliano">Graciliano Ramos</string>
+    <string name="data_exemplo_1">18 dez. 2019</string>
+    <string name="data_exemplo_2">16 set. 2021</string>
+    <string name="data_exemplo_3">23 mar. 2018</string>
+
+    <string name="nav_home">Home</string>
+    <string name="nav_carrinho">Carrinho</string>
+    <string name="nav_busca">Busca</string>
+    <string name="nav_favoritos">Favoritos</string>
+    <string name="nav_lista">Lista</string>
+    <string name="nav_usuario">Usuário</string>
+
+    <!-- RF18 Amigos -->
+    <string name="titulo_amigos">Amigos</string>
+    <string name="label_notificacoes">Notificações</string>
+    <string name="notif_lida">Lida</string>
+    <string name="tempo_hoje">16:50</string>
+    <string name="tempo_ontem">há 1 dia</string>
+
+    <!-- Notificações Exemplos -->
+    <string name="titulo_ceifador">O Ceifador</string>
+    <string name="autor_ceifador">Neal Shusterman</string>
+    <string name="msg_ceifador">Seu livro da lista de desejos está de volta ao estoque!</string>
+
+    <string name="titulo_senhor_aneis_notif">O Senhor dos Anéis</string>
+    <string name="autor_tolkien">J. R. R. Tolkien</string>
+    <string name="msg_vencimento">Atenção! O vencimento do seu aluguel está próximo.</string>
+
+    <string name="label_procurar">Procurar</string>
+    <string name="hint_procure_amigo">Procure um amigo</string>
+    <string name="amigo_ronaldo">Ronaldo Alves</string>
+    <string name="amigo_robson">Robson Gonçalves</string>
+    <string name="amigo_vitoria">Vitoria Ferreira</string>
+    <string name="amigo_marta">Marta Viana</string>
+    <string name="amigo_adriano">Adriano de Souza</string>
+    <string name="menu_opcoes_simbolo">•••</string>
+
+    <!-- RF19 Status Aluguel -->
+    <string name="titulo_livros_alugados">Livros Alugados</string>
+    <string name="label_validade_aluguel">Validade do Aluguel:</string>
+    <string name="data_exemplo_aluguel">10 de agosto de 2026.</string>
+    <string name="label_dias_vencimento">Dias para o Vencimento:</string>
+    <string name="dias_exemplo_vencimento">5 dias.</string>
+    <string name="btn_renovar_aluguel">Renovar Aluguel</string>
+
+    <!-- RF20 Solicitações -->
+    <string name="autor_machado">Machado de Assis</string>
+    <string name="genero_ficcao">Ficção Psicológica</string>
+
+    <!-- RF20 Confirmação Solicitação -->
+    <string name="titulo_confirmacao_biblioteca">Solicitação Concluída!</string>
+    <string name="desc_confirmacao_biblioteca">Sua solicitação foi enviada para a biblioteca.\nVocê será notificado quando o material estiver pronto para retirada.</string>
+    <string name="label_aguarde_dias">Tempo estimado: %1$d dias</string>
+    <string name="btn_voltar_biblioteca">Voltar para a Biblioteca</string>
+    <string name="desc_icone_sucesso">Ícone de solicitação concluída com sucesso</string>
+
+    <!-- RF20 Termos e Condições -->
+    <string name="titulo_termos">Termos e Condições</string>
+    <string name="label_aceitar_termos">Eu aceito os termos e condições</string>
+    <string name="btn_continuar">Continuar</string>
+
+    <!-- RF22 Histórico -->
+    <string name="hint_pesquisa">Pesquisa</string>
+    <string name="status_vidas_secas">Solicitado aluguel de Vidas Secas (14 de mar.)</string>
+    <string name="status_ceifador">Solicitado aluguel de O Ceifador (5 de mar.)</string>
+
+    <!-- Misc -->
+    <string name="lorem_ipsum_long">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+
+    <string name="titulo_alugados">Alugados</string>
+    <string name="email_ronaldo">r.alves.profissional@email.com</string>
+
+    <!-- Accessibility Descriptions -->
+    <string name="desc_aumentar_exemplares">Aumentar quantidade de exemplares</string>
+    <string name="desc_diminuir_exemplares">Diminuir quantidade de exemplares</string>
+
+    <!-- Popups -->
+    <string name="titulo_filtrar_midia">Filtrar Mídia</string>
+    <string name="hint_nome_titulo">Nome do título</string>
+    <string name="hint_nome_autor">Nome do autor...</string>
+    <string name="hint_isbn">ISBN...</string>
+    <string name="btn_salvar_filtro">Salvar Filtro</string>
+    <string name="btn_limpar_filtragem">Limpar Filtragem</string>
+
+    <string name="titulo_escolha_data">Escolha a data de publicação</string>
+    <string name="label_selecionar_data">Selecionar data</string>
+    <string name="label_data_exemplo">Seg, 17 Ago</string>
+    <string name="label_mes_ano_exemplo">Agosto 2026</string>
+    <string name="desc_editar_data">Editar data</string>
+    <string name="desc_mes_anterior">Mês anterior</string>
+    <string name="desc_proximo_mes">Próximo mês</string>
+
+    <!-- RF35 Cadastro de Livro -->
+    <string name="titulo_adicionar_midia">Adicionar Mídia</string>
+    <string name="label_titulo">Título:</string>
+    <string name="label_autor">Autor:</string>
+    <string name="label_isbn">Código ISBN:</string>
+    <string name="label_data_publicacao_livro">Data de publicação do Livro:</string>
+    <string name="label_quantidade_exemplares">Quantidade de Exemplares</string>
+    <string name="hint_quantidade_exemplares">Quantidade de Exemplares...</string>
+    <string name="btn_editar_mais_infos">Editar mais informações</string>
+    <string name="erro_preencha_campos">Preencha todos os campos\n   para continuar</string>
+
+    <string name="titulo_adicionar_midia_extras">Adicionar Mídia - Extras</string>
+    <string name="label_quantidade_paginas">Quantidade de Páginas:</string>
+    <string name="hint_quantidade_paginas">Quantidade de Páginas...</string>
+    <string name="label_categoria">Categoria:</string>
+    <string name="hint_categoria">Categoria...</string>
+    <string name="label_editora">Editora:</string>
+    <string name="hint_editora">Editora...</string>
+    <string name="label_link_capa">Link da Imagem de Capa:</string>
+    <string name="hint_link">link...</string>
+    <string name="label_sinopse">Sinopse:</string>
+    <string name="hint_sinopse">Sinopse...</string>
+
+    <string name="label_arquivo_pdf">Arquivo PDF:</string>
+    <string name="hint_pdf">PDF...</string>
+    <string name="label_arquivo_audiobook">Arquivo Audiobook:</string>
+    <string name="hint_audiobook">Audiobook...</string>
+    <string name="label_disponivel_braille">Disponível em Braille</string>
+    <string name="btn_salvar_novo_livro">Salvar novo livro</string>
+</resources>

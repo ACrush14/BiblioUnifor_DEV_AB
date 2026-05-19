@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="biblio_bg">#E4F2FE</color> <!-- cor do fundo -->
+    <color name="biblio_blue">#004AF7</color> <!-- a cor de geral(tudo) botao btn -->
+    <color name="biblio_dark">#132190</color> <!-- botoes especificos -->
+    <color name="biblio_detalhes">#87B7FE</color> <!-- detalhe de fundo, cor dos icones, barra de tarefas -->
+    <color name="biblio_red">#FF0000</color> <!-- cor dos btns de vermelho erro -->
+    <color name="biblio_cyan">#87DEDE</color>
+</resources>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/biblio_bg">
+
+    <!-- HEADER -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerRedefinirSenha"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="@color/biblio_detalhes"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- FUNDO DECORATIVO -->
+        <View
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="-100dp"
+            android:layout_marginTop="-100dp"
+            android:alpha="0.25"
+            android:background="@drawable/bg_circle"
+            android:backgroundTint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- FOTO -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imagePerfilRedefinir"
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:layout_marginTop="36dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/user_placeholder"
+            app:strokeWidth="3dp"
+            app:strokeColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
+
+        <!-- EMAIL -->
+        <TextView
+            android:id="@+id/textEmailUsuario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Joãobobo@gmail.com"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:fontFamily="sans-serif-black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imagePerfilRedefinir" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- SCROLL -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/headerRedefinirSenha"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- TÍTULO -->
+            <TextView
+                android:id="@+id/textTituloRedefinir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Redefinir Senha"
+                android:textColor="@color/black"
+                android:textSize="26sp"
+                android:fontFamily="sans-serif-black" />
+
+            <!-- NOVA SENHA LABEL -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="Nova senha"
+                android:textColor="@color/biblio_blue"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+
+            <!-- ERRO -->
+            <TextView
+                android:id="@+id/textErroNovaSenha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Campo obrigatório"
+                android:textColor="@color/biblio_red"
+                android:textSize="12sp" />
+
+            <!-- INPUT NOVA SENHA -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input">
+
+                <EditText
+                    android:id="@+id/editNovaSenha"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="Nova senha"
+                    android:inputType="textPassword"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="52dp"
+                    android:textColor="#333333"
+                    android:textColorHint="#9E9E9E"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/iconOlhoNovaSenha"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="4dp"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_eye_open"
+                    app:tint="@color/biblio_blue"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/desc_mostrar_ocultar_senha" />
+
+            </RelativeLayout>
+
+            <!-- ERRO SENHA ANTIGA -->
+            <TextView
+                android:id="@+id/textErroSenhaAntiga"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="A senha é a mesma da antiga"
+                android:textColor="@color/biblio_red"
+                android:textSize="12sp" />
+
+            <!-- CONFIRMAR LABEL -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Confirmação de senha"
+                android:textColor="@color/biblio_blue"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+
+            <!-- ERRO -->
+            <TextView
+                android:id="@+id/textErroConfirmacao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Campo obrigatório"
+                android:textColor="@color/biblio_red"
+                android:textSize="12sp" />
+
+            <!-- INPUT CONFIRMAR -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input">
+
+                <EditText
+                    android:id="@+id/editConfirmarSenha"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="Confirme a senha"
+                    android:inputType="textPassword"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="52dp"
+                    android:textColor="#333333"
+                    android:textColorHint="#9E9E9E"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/iconOlhoConfirmar"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="4dp"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_eye_open"
+                    app:tint="@color/biblio_blue"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/desc_mostrar_ocultar_senha" />
+
+            </RelativeLayout>
+
+            <!-- REGRAS -->
+            <TextView
+                android:id="@+id/textRegrasSenha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="• A senha deve conter pelo menos 8 caracteres&#10;• Um número&#10;• Uma letra maiúscula"
+                android:textColor="@color/biblio_red"
+                android:textSize="13sp"
+                android:alpha="0.8" />
+
+            <!-- ERRO -->
+            <TextView
+                android:id="@+id/textErroSenhas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="As senhas estão diferentes, verifique!"
+                android:textColor="@color/biblio_red"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <!-- BOTÃO -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonSalvarAlteracoes"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="40dp"
+                android:text="Salvar Alterações"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-black"
+                app:backgroundTint="@color/biblio_blue"
+                app:cornerRadius="28dp"
+                app:elevation="6dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

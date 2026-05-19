@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_popup_rounded"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="32dp">
+
+    <!-- TÍTULO (VERMELHO PARA ALERTA) -->
+    <TextView
+        android:id="@+id/textAtrasoLivro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Atraso na Devolução"
+        android:textColor="@color/biblio_red"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <!-- MENSAGEM -->
+    <TextView
+        android:id="@+id/textNomeLivroAtrasado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp"
+        android:text="O livro “O Ceifador” está com o prazo de devolução expirado."
+        android:textColor="#415E5E"
+        android:textSize="17sp" />
+
+    <!-- VALOR EM DESTAQUE -->
+    <TextView
+        android:id="@+id/textValorMulta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Multa: R$ 5,00"
+        android:textColor="@color/biblio_blue"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- BOTÃO PADRÃO -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonFecharAtraso"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="32dp"
+        android:text="Entendido"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/biblio_blue"
+        app:cornerRadius="28dp"
+        app:elevation="0dp" />
+
+</LinearLayout>

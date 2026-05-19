@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="240dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="28dp"
+    app:cardElevation="12dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selecionar Tipo"
+            android:textColor="@color/biblio_blue"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="12dp" />
+
+        <!-- PDF -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonPDF"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:text="PDF"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:backgroundTint="@color/biblio_blue"
+            app:cornerRadius="24dp"
+            app:elevation="2dp" />
+
+        <!-- AUDIOBOOK -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonAudioBook"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:text="Audiobook"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:backgroundTint="@color/biblio_blue"
+            app:cornerRadius="24dp"
+            app:elevation="2dp" />
+
+        <!-- BRAILLE -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonBraille"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:text="Braille"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:backgroundTint="@color/biblio_blue"
+            app:cornerRadius="24dp"
+            app:elevation="2dp" />
+
+        <!-- ALUGUEL -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonAluguel"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Aluguel"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:backgroundTint="@color/biblio_blue"
+            app:cornerRadius="24dp"
+            app:elevation="2dp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

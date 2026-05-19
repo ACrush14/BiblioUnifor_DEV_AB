@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="@android:color/white">
+
+    <!-- Logo -->
+    <ImageView
+        android:id="@+id/imageLogoPopup"
+        android:layout_width="140dp"
+        android:layout_height="90dp"
+        android:layout_marginBottom="20dp"
+        android:contentDescription="Logo Unifor"
+        android:src="@drawable/unifor_marca" />
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/textTituloPopup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Acesse sua conta!"
+        android:textColor="@color/biblio_blue"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <!-- Descrição -->
+    <TextView
+        android:id="@+id/textDescricaoPopup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="Sua senha foi redefinida com sucesso."
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:lineSpacingExtra="4dp" />
+
+    <!-- Botão -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonRetornarLogin"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="36dp"
+        android:text="Retorne ao Login"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/biblio_blue"
+        app:cornerRadius="12dp"
+        app:elevation="4dp" />
+
+</LinearLayout>

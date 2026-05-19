@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="28dp"
+    android:background="@android:color/white">
+
+    <!-- TÍTULO -->
+    <TextView
+        android:id="@+id/textTituloLivroAdicionado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Livro adicionado\ncom sucesso!"
+        android:textColor="@color/biblio_detalhes"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:lineSpacingExtra="6dp" />
+
+    <!-- BOTÃO -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonVerMeusLivros"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:layout_marginTop="34dp"
+        android:text="Ver meus livros"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/biblio_blue"
+        app:cornerRadius="32dp"
+        app:elevation="2dp" />
+
+</LinearLayout>
