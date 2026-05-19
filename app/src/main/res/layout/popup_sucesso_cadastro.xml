@@ -1,47 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_popup_rounded"
-    android:gravity="center_horizontal"
+
     android:orientation="vertical"
-    android:padding="32dp">
+    android:gravity="center"
+
+    android:padding="32dp"
+
+    android:background="@drawable/bg_popup_rounded">
+
 
     <!-- TÍTULO -->
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="CONTA CRIADA!"
-        android:textColor="@color/biblio_blue"
-        android:textSize="22sp"
-        android:textStyle="bold" />
 
-    <!-- SUBTÍTULO -->
+        android:text="Conta criada com sucesso!"
+        android:textStyle="bold"
+        android:textSize="24sp"
+
+        android:textColor="@color/biblio_blue"
+
+        android:gravity="center"/>
+
+
+
+    <!-- SUBTEXTO -->
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:lineSpacingExtra="4dp"
-        android:text="Verifique seu e-mail para ativar sua conta e realizar o login."
-        android:textColor="#415E5E"
-        android:textSize="17sp" />
+
+        android:layout_marginTop="20dp"
+
+        android:text="Verifique sua conta em seu e-mail e faça login."
+        android:textSize="18sp"
+
+        android:textColor="#333333"
+
+        android:gravity="center"/>
+
+
+
 
     <!-- BOTÃO -->
+
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRetorneLogin"
+
+        android:id="@+id/btnRetornarLogin"
+
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_marginTop="32dp"
-        android:text="Retornar ao Login"
+
+        android:layout_marginTop="40dp"
+
+        android:text="Retorne ao Login"
+
         android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="16sp"
         android:textStyle="bold"
+        android:textSize="18sp"
+
+        android:textColor="@android:color/white"
+
         app:backgroundTint="@color/biblio_blue"
-        app:cornerRadius="28dp"
-        app:elevation="0dp" />
+
+        app:cornerRadius="30dp"/>
+
+
 
 </LinearLayout>

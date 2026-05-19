@@ -1,172 +1,395 @@
 package com.example.bibliounifornew.login
 
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
 
-class TelaRF25RedefinirSenhaADM : AppCompatActivity() {
+class TelaRF25RedefinirSenhaADM :
+    AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
+
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.telarf25_redefinir_senha_adm)
 
-        // CAMPOS
-        val senhaNova = findViewById<EditText>(R.id.editSenhaNova)
-        val confirmarSenha = findViewById<EditText>(R.id.editConfirmarSenha)
+        setContentView(
+            R.layout.telarf25_redefinir_senha_adm
+        )
 
+
+
+        //--------------------------------
+        // LOGO
+        //--------------------------------
+
+        val logo =
+
+            findViewById<ImageView>(
+                R.id.imageLogoNovaSenha
+            )
+
+        carregarLogoSegura(logo)
+
+
+
+        //--------------------------------
+        // COMPONENTES
+        //--------------------------------
+
+        val senhaNova =
+
+            findViewById<EditText>(
+                R.id.editSenhaNova
+            )
+
+
+        val confirmar =
+
+            findViewById<EditText>(
+                R.id.editConfirmarSenha
+            )
+
+
+
+        val erro1 =
+
+            findViewById<TextView>(
+                R.id.textErroSenha1
+            )
+
+
+        val erro2 =
+
+            findViewById<TextView>(
+                R.id.textErroSenha2
+            )
+
+
+        val erroDif =
+
+            findViewById<TextView>(
+                R.id.textErroSenhaDiferente
+            )
+
+
+        val erroIgual =
+
+            findViewById<TextView>(
+                R.id.textErroSenhaIgual
+            )
+
+
+
+        val btn =
+
+            findViewById<MaterialButton>(
+                R.id.buttonRedefinirSenha
+            )
+
+
+
+        val olho1 =
+
+            findViewById<ImageView>(
+                R.id.iconOlhoSenhaNova
+            )
+
+
+        val olho2 =
+
+            findViewById<ImageView>(
+                R.id.iconOlhoConfirmarSenha
+            )
+
+
+
+        erro1.visibility =
+            View.GONE
+
+        erro2.visibility =
+            View.GONE
+
+        erroDif.visibility =
+            View.GONE
+
+        erroIgual.visibility =
+            View.GONE
+
+
+
+        //--------------------------------
         // BOTÃO
-        val botaoRedefinir = findViewById<MaterialButton>(R.id.buttonRedefinirSenha)
+        //--------------------------------
 
-        // ÍCONES
-        val olhoSenha = findViewById<ImageView>(R.id.iconOlhoSenhaNova)
-        val olhoConfirmar = findViewById<ImageView>(R.id.iconOlhoConfirmarSenha)
+        btn.setOnClickListener {
 
-        // ERROS
-        val erroSenha1 = findViewById<TextView>(R.id.textErroSenha1)
-        val erroSenha2 = findViewById<TextView>(R.id.textErroSenha2)
-        val erroSenhaIgual = findViewById<TextView>(R.id.textErroSenhaIgual)
-        val erroSenhaDiferente = findViewById<TextView>(R.id.textErroSenhaDiferente)
 
-        // SENHA ANTIGA MOCKADA
-        val senhaAntiga = "12345678"
+            val senha =
 
-        // CONTROLE VISIBILIDADE SENHA
-        var senhaVisivel = false
-        var confirmarVisivel = false
+                senhaNova.text
+                    .toString()
 
-        // OLHO SENHA
-        olhoSenha.setOnClickListener {
-            if (senhaVisivel) {
-                // ESCONDER
-                senhaNova.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                olhoSenha.setImageResource(R.drawable.ic_eye_closed)
-                senhaVisivel = false
-            } else {
-                // MOSTRAR
-                senhaNova.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                olhoSenha.setImageResource(R.drawable.ic_eye_open)
-                senhaVisivel = true
+
+            val confirma =
+
+                confirmar.text
+                    .toString()
+
+
+
+            when{
+
+
+                senha.isEmpty()->{
+
+                    erro1.text=
+                        "Digite uma senha"
+
+                    erro1.visibility=
+                        View.VISIBLE
+
+                }
+
+
+
+                confirma.isEmpty()->{
+
+                    erro2.visibility=
+                        View.VISIBLE
+
+                }
+
+
+
+                senha=="12345678"->{
+
+                    erroIgual.visibility=
+                        View.VISIBLE
+
+                }
+
+
+
+                senha!=confirma->{
+
+                    erroDif.visibility=
+                        View.VISIBLE
+
+                }
+
+
+
+                senha.length<8 ||
+
+                        !senha.any{
+                            it.isDigit()
+                        }
+
+                        ||
+
+                        !senha.any{
+                            it.isUpperCase()
+                        }
+
+                    ->{
+
+                    erro1.text=
+                        "Senha inválida"
+
+                    erro1.visibility=
+                        View.VISIBLE
+
+                }
+
+
+
+                else->{
+
+                    popup()
+
+                }
+
             }
-            senhaNova.setSelection(senhaNova.text.length)
+
         }
 
-        // OLHO CONFIRMAR
-        olhoConfirmar.setOnClickListener {
-            if (confirmarVisivel) {
-                // ESCONDER
-                confirmarSenha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                olhoConfirmar.setImageResource(R.drawable.ic_eye_closed)
-                confirmarVisivel = false
-            } else {
-                // MOSTRAR
-                confirmarSenha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                olhoConfirmar.setImageResource(R.drawable.ic_eye_open)
-                confirmarVisivel = true
+
+
+        //--------------------------------
+        // OLHO 1
+        //--------------------------------
+
+        var v1=false
+
+        olho1.setOnClickListener {
+
+            v1=!v1
+
+            if(v1){
+
+                senhaNova.inputType=
+
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+
             }
-            confirmarSenha.setSelection(confirmarSenha.text.length)
+
+            else{
+
+                senhaNova.inputType=
+
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+            }
+
+            senhaNova.setSelection(
+                senhaNova.text.length
+            )
+
         }
 
-        // BOTÃO REDEFINIR
-        botaoRedefinir.setOnClickListener {
 
-            val textoSenha = senhaNova.text.toString().trim()
-            val textoConfirmar = confirmarSenha.text.toString().trim()
 
-            // RESET ERROS
-            erroSenha1.visibility = View.GONE
-            erroSenha2.visibility = View.GONE
-            erroSenhaIgual.visibility = View.GONE
-            erroSenhaDiferente.visibility = View.GONE
+        //--------------------------------
+        // OLHO 2
+        //--------------------------------
 
-            when {
+        var v2=false
 
-                textoSenha.isEmpty() -> {
-                    erroSenha1.text = "Digite uma senha"
-                    erroSenha1.visibility = View.VISIBLE
-                }
+        olho2.setOnClickListener {
 
-                textoConfirmar.isEmpty() -> {
-                    erroSenha2.text = "Confirme a senha"
-                    erroSenha2.visibility = View.VISIBLE
-                }
+            v2=!v2
 
-                textoSenha == senhaAntiga -> {
-                    erroSenhaIgual.visibility = View.VISIBLE
-                }
+            if(v2){
 
-                textoSenha != textoConfirmar -> {
-                    erroSenhaDiferente.visibility = View.VISIBLE
-                }
+                confirmar.inputType=
 
-                textoSenha.length < 8 -> {
-                    erroSenha1.text = "A senha deve ter pelo menos 8 caracteres"
-                    erroSenha1.visibility = View.VISIBLE
-                }
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
 
-                !textoSenha.any { it.isDigit() } -> {
-                    erroSenha1.text = "A senha deve conter um número"
-                    erroSenha1.visibility = View.VISIBLE
-                }
-
-                !textoSenha.any { it.isUpperCase() } -> {
-                    erroSenha1.text = "A senha deve conter letra maiúscula"
-                    erroSenha1.visibility = View.VISIBLE
-                }
-
-                else -> {
-                    mostrarPopupSucesso()
-                }
             }
-        }
 
-        // UX
-        senhaNova.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                erroSenha1.visibility = View.GONE
-                erroSenhaIgual.visibility = View.GONE
-                erroSenhaDiferente.visibility = View.GONE
-            }
-        }
+            else{
 
-        confirmarSenha.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                erroSenha2.visibility = View.GONE
-                erroSenhaDiferente.visibility = View.GONE
+                confirmar.inputType=
+
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_PASSWORD
+
             }
+
+            confirmar.setSelection(
+                confirmar.text.length
+            )
+
         }
 
     }
-    private fun mostrarPopupSucesso() {
 
-        val dialog = android.app.Dialog(this@TelaRF25RedefinirSenhaADM)
 
-        dialog.setContentView(R.layout.popup_confirmar_redefinir_senha)
 
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        // BOTÃO DO POPUP
-        val botaoRetornar =
-            dialog.findViewById<Button>(R.id.btnRetornarLogin)
+    //--------------------------------
+    // POPUP
+    //--------------------------------
 
-        botaoRetornar.setOnClickListener {
+    private fun popup(){
 
-            val intent = Intent(this@TelaRF25RedefinirSenhaADM, TelaRF23LoginADM::class.java)
+        val dialog=
+            Dialog(this)
 
-            startActivity(intent)
+        dialog.setContentView(
+
+            R.layout.popup_confirmar_redefinir_senha
+
+        )
+
+        dialog.window
+            ?.setBackgroundDrawableResource(
+                android.R.color.transparent
+            )
+
+
+
+        val voltar=
+
+            dialog.findViewById<Button>(
+                R.id.btnRetornarLogin
+            )
+
+
+
+        voltar.setOnClickListener {
+
+            startActivity(
+
+                Intent(
+
+                    this,
+
+                    TelaRF23LoginADM::class.java
+
+                )
+
+            )
 
             dialog.dismiss()
 
             finish()
+
         }
 
+
+
         dialog.show()
+
     }
+
+
+
+
+    //--------------------------------
+    // LOGO
+    //--------------------------------
+
+    private fun carregarLogoSegura(
+        imageView: ImageView
+    ){
+
+        try{
+
+            val options = BitmapFactory.Options().apply {
+                inSampleSize = 4
+                inJustDecodeBounds = false
+            }
+
+            val bitmap =
+                BitmapFactory.decodeResource(
+                    resources,
+                    R.drawable.unifor_marca,
+                    options
+                )
+
+            imageView.setImageBitmap(
+                bitmap
+            )
+
+        }
+
+        catch(e:Exception){
+
+            e.printStackTrace()
+        }
+
+    }
+
 }

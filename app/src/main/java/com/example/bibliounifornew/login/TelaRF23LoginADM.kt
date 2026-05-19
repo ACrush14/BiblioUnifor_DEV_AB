@@ -1,6 +1,7 @@
 package com.example.bibliounifornew.login
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
@@ -18,6 +19,9 @@ class TelaRF23LoginADM : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf23_login_adm)
+
+        val imageLogo = findViewById<ImageView>(R.id.imageLogoAdm)
+        carregarLogoSegura(imageLogo)
 
         // CAMPOS
         val email = findViewById<EditText>(R.id.editEmailAdm)
@@ -125,4 +129,16 @@ class TelaRF23LoginADM : AppCompatActivity() {
         }
     }
 
+    private fun carregarLogoSegura(imageView: ImageView) {
+        try {
+            val options = BitmapFactory.Options().apply {
+                inSampleSize = 4
+                inJustDecodeBounds = false
+            }
+            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.unifor_marca, options)
+            imageView.setImageBitmap(bitmap)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

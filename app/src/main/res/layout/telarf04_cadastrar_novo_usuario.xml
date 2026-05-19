@@ -30,15 +30,14 @@
             android:orientation="vertical"
             android:padding="32dp">
 
-            <!-- Logo -->
             <ImageView
                 android:id="@+id/imageLogoCadastro"
-                android:layout_width="450dp"
-                android:layout_height="210dp"
+                android:layout_width="300dp"
+                android:layout_height="150dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:contentDescription="Logo Unifor"
-                android:src="@drawable/unifor_marca" />
+                android:adjustViewBounds="true"
+                android:contentDescription="Logo Unifor" />
 
             <!-- Título -->
             <TextView

@@ -22,11 +22,11 @@
     <!-- Logo -->
     <ImageView
         android:id="@+id/imageLogoCodigo"
-        android:layout_width="450dp"
-        android:layout_height="210dp"
-        android:layout_marginTop="45dp"
+        android:layout_width="300dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="40dp"
+        android:adjustViewBounds="true"
         android:contentDescription="Logo"
-        android:src="@drawable/unifor_marca"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -50,7 +50,7 @@
         android:id="@+id/textSubtituloCodigo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="32dp"
         android:text="Redefinir Senha"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -65,7 +65,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="48dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="Por favor, insira abaixo o código de verificação enviado ao seu e-mail."
         android:textColor="#5F6368"
@@ -74,14 +74,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textSubtituloCodigo" />
 
-    <!-- Tempo -->
+    <!-- Texto de Expiração -->
     <TextView
         android:id="@+id/textTempoCodigo"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="48dp"
-        android:layout_marginTop="24dp"
-        android:gravity="center"
+        android:layout_marginTop="36dp"
         android:text="O código será expirado em"
         android:textColor="#5F6368"
         android:textSize="15sp"
@@ -89,32 +87,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textDescricaoCodigo" />
 
+    <!-- Timer (Número) - Centralizado e Sem Sobreposição -->
     <TextView
         android:id="@+id/textTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="02:00"
         android:textColor="@color/biblio_blue"
-        android:textSize="16sp"
+        android:textSize="28sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textErroCodigo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textTempoCodigo" />
+        app:layout_constraintTop_toBottomOf="@id/textTempoCodigo" />
 
-    <!-- Erro -->
+    <!-- Erro - Posicionado abaixo do Timer -->
     <TextView
         android:id="@+id/textErroCodigo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="12dp"
         android:text="Código incorreto. Verifique seu e-mail."
         android:textColor="@color/biblio_red"
         android:textSize="14sp"
-        android:visibility="visible"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textTempoCodigo" />
+        app:layout_constraintTop_toBottomOf="@id/textTimer"
+        tools:visibility="visible" />
 
     <!-- Campo Código -->
     <EditText
@@ -131,15 +131,16 @@
         android:textColorHint="#9E9E9E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textErroCodigo" />
+        app:layout_constraintTop_toBottomOf="@id/textErroCodigo"
+        app:layout_goneMarginTop="24dp" />
 
-    <!-- Botão -->
+    <!-- Botão Enviar -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonEnviarCodigo"
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="32dp"
         android:text="Enviar"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -157,7 +158,7 @@
         android:id="@+id/textReenviarCodigo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="20dp"
         android:text="Reenviar código"
         android:textColor="@color/biblio_detalhes"
         android:textSize="14sp"
