@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/o_alienista_capa" />
+                android:src="@android:drawable/ic_menu_book" />
         </com.google.android.material.card.MaterialCardView>
 
         <!-- INFOS -->
