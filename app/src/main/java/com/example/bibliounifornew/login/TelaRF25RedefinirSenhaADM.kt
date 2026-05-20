@@ -4,7 +4,9 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -86,6 +88,11 @@ class TelaRF25RedefinirSenhaADM :
                 R.id.textErroSenhaIgual
             )
 
+        val regras =
+            findViewById<TextView>(
+                R.id.textRegrasSenha
+            )
+
 
 
         val btn =
@@ -123,6 +130,28 @@ class TelaRF25RedefinirSenhaADM :
         erroIgual.visibility =
             View.GONE
 
+        regras.visibility =
+            View.GONE
+
+        //---------------------------------
+        // TEXT WATCHER (LIMPAR ERROS)
+        //---------------------------------
+
+        val watcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                erro1.visibility = View.GONE
+                erro2.visibility = View.GONE
+                erroDif.visibility = View.GONE
+                erroIgual.visibility = View.GONE
+                regras.visibility = View.GONE
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        }
+
+        senhaNova.addTextChangedListener(watcher)
+        confirmar.addTextChangedListener(watcher)
+
 
 
         //--------------------------------
@@ -143,80 +172,52 @@ class TelaRF25RedefinirSenhaADM :
                 confirmar.text
                     .toString()
 
+            erro1.visibility = View.GONE
+            erro2.visibility = View.GONE
+            erroDif.visibility = View.GONE
+            erroIgual.visibility = View.GONE
+            regras.visibility = View.GONE
 
 
-            when{
-
-
-                senha.isEmpty()->{
-
-                    erro1.text=
-                        "Digite uma senha"
-
-                    erro1.visibility=
-                        View.VISIBLE
-
+            when {
+                senha.isEmpty() -> {
+                    erro1.text = "Campo obrigatório"
+                    erro1.visibility = View.VISIBLE
                 }
 
-
-
-                confirma.isEmpty()->{
-
-                    erro2.visibility=
-                        View.VISIBLE
-
+                confirma.isEmpty() -> {
+                    erro2.text = "Campo obrigatório"
+                    erro2.visibility = View.VISIBLE
                 }
 
-
-
-                senha=="12345678"->{
-
-                    erroIgual.visibility=
-                        View.VISIBLE
-
+                senha.length < 8 -> {
+                    erro1.text = "A senha deve conter pelo menos 8 caracteres"
+                    erro1.visibility = View.VISIBLE
                 }
 
-
-
-                senha!=confirma->{
-
-                    erroDif.visibility=
-                        View.VISIBLE
-
+                !senha.any { it.isDigit() } -> {
+                    erro1.text = "A senha deve conter um número"
+                    erro1.visibility = View.VISIBLE
                 }
 
-
-
-                senha.length<8 ||
-
-                        !senha.any{
-                            it.isDigit()
-                        }
-
-                        ||
-
-                        !senha.any{
-                            it.isUpperCase()
-                        }
-
-                    ->{
-
-                    erro1.text=
-                        "Senha inválida"
-
-                    erro1.visibility=
-                        View.VISIBLE
-
+                !senha.any { it.isUpperCase() } -> {
+                    erro1.text = "A senha deve conter uma letra maiúscula"
+                    erro1.visibility = View.VISIBLE
                 }
 
+                senha == "12345678" -> {
+                    erroIgual.text = "A senha é a mesma da antiga"
+                    erroIgual.visibility = View.VISIBLE
+                }
 
+                senha != confirma -> {
+                    erroDif.text = "As senhas estão diferentes"
+                    erroDif.visibility = View.VISIBLE
+                }
 
-                else->{
-
+                else -> {
                     popup()
-
                 }
-
             }
 
         }
