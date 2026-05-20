@@ -143,6 +143,12 @@
             android:name=".usuario.TelaRF11TelaDePesquisa"
             android:exported="false" />
         <activity
+            android:name=".usuario.TelaRF11ResultadoPesquisa"
+            android:exported="false" />
+        <activity
+            android:name=".usuario.TelaCalendario"
+            android:exported="false" />
+        <activity
             android:name=".usuario.TelaRF12TelaDoLivro"
             android:exported="false" />
         <activity

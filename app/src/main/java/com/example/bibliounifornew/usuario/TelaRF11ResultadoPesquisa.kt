@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
@@ -19,25 +20,54 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class TelaRF11TelaDePesquisa : AppCompatActivity() {
+class TelaRF11ResultadoPesquisa : AppCompatActivity() {
 
     private var editDataPublicacaoReferencia: EditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.telarf11_teladepesquisa)
+        setContentView(R.layout.telarf11_1_resultado_pesquisa)
 
-        val iconFiltro = findViewById<ImageView>(R.id.iconFiltro)
-        val btnProcurar = findViewById<MaterialButton>(R.id.buttonProcurar)
-        val editPesquisar = findViewById<EditText>(R.id.editPesquisarLivro)
+        // Configuração da Barra de Pesquisa e Filtro
+        val editPesquisar = findViewById<EditText>(R.id.editPesquisarLivroResultado)
+        val iconFiltro = findViewById<ImageView>(R.id.iconFiltroResultado)
+        val btnProcurar = findViewById<MaterialButton>(R.id.buttonProcurarResultado)
+
+        // Recupera termo de pesquisa se houver
+        val queryAnterior = intent.getStringExtra("QUERY")
+        if (!queryAnterior.isNullOrEmpty()) {
+            editPesquisar.setText(queryAnterior)
+        }
 
         iconFiltro.setOnClickListener { exibirPopupFiltro() }
-        
+
         btnProcurar.setOnClickListener {
-            val intent = Intent(this, TelaRF11ResultadoPesquisa::class.java)
-            // Opcional: passar o termo de pesquisa
-            intent.putExtra("QUERY", editPesquisar.text.toString())
-            startActivity(intent)
+            val query = editPesquisar.text.toString()
+            Toast.makeText(this, "Pesquisando por: $query", Toast.LENGTH_SHORT).show()
+        }
+
+        // Configuração dos Cards de Livros
+        configurarCardsLivros()
+    }
+
+    private fun configurarCardsLivros() {
+        val btnAdd1 = findViewById<MaterialButton>(R.id.buttonAdicionarLista1)
+        val btnAdd2 = findViewById<MaterialButton>(R.id.buttonAdicionarLista2)
+        val btnOpcoes1 = findViewById<ImageView>(R.id.btnOpcoesLivro1)
+        val btnOpcoes2 = findViewById<ImageView>(R.id.btnOpcoesLivro2)
+
+        btnAdd1.setOnClickListener {
+            Toast.makeText(this, "Livro adicionado à lista de desejos", Toast.LENGTH_SHORT).show()
+        }
+        btnAdd2.setOnClickListener {
+            Toast.makeText(this, "Livro adicionado à lista de desejos", Toast.LENGTH_SHORT).show()
+        }
+
+        btnOpcoes1.setOnClickListener {
+            startActivity(Intent(this, TelaRF12TelaDoLivro::class.java))
+        }
+        btnOpcoes2.setOnClickListener {
+            startActivity(Intent(this, TelaRF12TelaDoLivro::class.java))
         }
     }
 
@@ -54,9 +84,7 @@ class TelaRF11TelaDePesquisa : AppCompatActivity() {
         val btnSalvar = dialog.findViewById<MaterialButton>(R.id.buttonSalvarFiltro)
         val btnLimpar = dialog.findViewById<MaterialButton>(R.id.buttonLimparFiltro)
 
-        // Configura o campo de data para abrir o calendário e não o teclado
         editDataPublicacao.isFocusable = false
-        editDataPublicacao.isClickable = true
         editDataPublicacao.setOnClickListener { 
             editDataPublicacaoReferencia = editDataPublicacao
             val intent = Intent(this, TelaCalendario::class.java)
