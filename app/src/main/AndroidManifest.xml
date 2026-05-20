@@ -143,6 +143,9 @@
             android:name=".usuario.TelaRF11TelaDePesquisa"
             android:exported="false" />
         <activity
+            android:name=".usuario.TelaRF11_1_ResultadoPesquisa"
+            android:exported="false" />
+        <activity
             android:name=".usuario.TelaRF12TelaDoLivro"
             android:exported="false" />
         <activity

@@ -21,6 +21,7 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
         val textNomeUsuario = findViewById<TextView>(R.id.textNomeUsuario)
 
         // Botões de Ações Rápidas (Cards/Buttons no ScrollView)
+        val btnPesquisarLivros = findViewById<MaterialButton>(R.id.btnPesquisarLivros) // NOVO BOTÃO
         val btnMinhaLivraria = findViewById<MaterialButton>(R.id.btnMinhaLivraria)
         val btnListaDesejo = findViewById<MaterialButton>(R.id.btnListaDesejos)
         val btnAmigos = findViewById<MaterialButton>(R.id.btnAmigos)
@@ -40,6 +41,13 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
         }
 
         // Ações Rápidas
+
+        // NOVO INTENT PARA A PESQUISA
+        btnPesquisarLivros.setOnClickListener {
+            val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF11TelaDePesquisa::class.java)
+            startActivity(intent)
+        }
+
         btnMinhaLivraria.setOnClickListener {
             val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF15MinhaLivrariaActivity::class.java)
             startActivity(intent)

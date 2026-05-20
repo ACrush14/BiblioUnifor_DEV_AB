@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/biblio_bg">
 
-    <!-- HEADER -->
     <LinearLayout
         android:id="@+id/headerUsuario"
         android:layout_width="match_parent"
@@ -16,7 +15,6 @@
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- FUNDO DECORATIVO -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -30,7 +28,6 @@
                 android:background="@drawable/bg_circle"
                 android:backgroundTint="@color/white" />
 
-            <!-- ÍCONES -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,7 +58,6 @@
 
         </FrameLayout>
 
-        <!-- FOTO PERFIL -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imagePerfilUsuario"
             android:layout_width="85dp"
@@ -71,7 +67,6 @@
             android:src="@drawable/user_placeholder"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
 
-        <!-- NOME -->
         <TextView
             android:id="@+id/textNomeUsuario"
             android:layout_width="wrap_content"
@@ -82,7 +77,6 @@
             android:textSize="26sp"
             android:fontFamily="sans-serif-black" />
 
-        <!-- BEM VINDO -->
         <TextView
             android:id="@+id/textBemVindoUsuario"
             android:layout_width="wrap_content"
@@ -95,7 +89,6 @@
 
     </LinearLayout>
 
-    <!-- CONTEÚDO -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -109,7 +102,6 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- CARD PROCURAR -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -117,7 +109,18 @@
                 app:cardCornerRadius="24dp"
                 app:cardElevation="4dp"/>
 
-            <!-- BOTÕES -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPesquisarLivros"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="14dp"
+                android:text="Pesquisar livros"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-black"
+                app:backgroundTint="@color/biblio_dark"
+                app:cornerRadius="28dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMinhaLivraria"
@@ -197,7 +200,6 @@
                 app:backgroundTint="@color/biblio_dark"
                 app:cornerRadius="28dp" />
 
-            <!-- BOTÃO SAIR -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSairConta"
                 android:layout_width="match_parent"
@@ -211,7 +213,6 @@
                 app:backgroundTint="@color/biblio_red"
                 app:cornerRadius="28dp" />
 
-            <!-- DESCOBRIR -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -236,7 +237,6 @@
 
             </LinearLayout>
 
-            <!-- LIVROS -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -247,7 +247,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!-- CARD LIVRO -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="160dp"
                         android:layout_height="wrap_content"

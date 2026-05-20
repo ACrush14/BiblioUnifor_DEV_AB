@@ -16,8 +16,8 @@ class LivroAdapter(
 
     class LivroViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imgLivro: ImageView = view.findViewById(R.id.imgCapaLivro)
-        val textTitulo: TextView = view.findViewById(R.id.textTituloLivro)
-        val textAutor: TextView = view.findViewById(R.id.textAutorLivro)
+        val textTitulo: TextView = view.findViewById(R.id.txtTituloLivro)
+        val textAutor: TextView = view.findViewById(R.id.txtAutorLivro)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LivroViewHolder {
@@ -31,7 +31,6 @@ class LivroAdapter(
         holder.textTitulo.text = livro.title
         holder.textAutor.text = livro.author
 
-        // CORREÇÃO: Usando coverUrl em vez de coverResourceId.
         // O carregamento real da URL da internet será feito via Glide ou Coil futuramente.
         if (livro.coverUrl.isNotEmpty()) {
             // TODO: Glide.with(holder.itemView.context).load(livro.coverUrl).into(holder.imgLivro)

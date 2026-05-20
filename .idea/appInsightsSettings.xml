@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.bibliounifornew" />
+                  <option name="mobileSdkAppId" value="1:221306164957:android:5e9a886f954f9eb21bed34" />
+                  <option name="projectId" value="bibliounifor-dev-ab" />
+                  <option name="projectNumber" value="221306164957" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
