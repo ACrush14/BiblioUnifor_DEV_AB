@@ -68,8 +68,22 @@
     <string name="btn_status_aluguel">Status aluguel</string>
     <string name="btn_sair_conta">Sair da conta</string>
     <string name="label_descobrir">Descobrir</string>
-    <string name="desc_livro">Livro</string>
+    <string name="desc_livro">Capa do Livro</string>
     <string name="btn_alugar">Alugar</string>
+    <string name="btn_solicitar">Solicitar</string>
+    <string name="btn_ler_agora">LER AGORA</string>
+    <string name="label_status_leitura">Status da Leitura</string>
+    <string name="label_btn_nao_lido">Não lido</string>
+    <string name="label_btn_lendo">Lendo</string>
+    <string name="label_btn_lido">Lido</string>
+    <string name="label_sua_nota">Sua nota</string>
+    <string name="label_disponivel_aluguel">Disponível para aluguel</string>
+    <string name="label_unidades_estoque">5 unidades</string>
+    <string name="label_sinopse_title">Sinopse</string>
+    <string name="sinopse_alienista">Uma das obras-primas de Machado de Assis, o livro narra a história de Simão Bacamarte, um médico que decide fundar a Casa Verde, um asilo para cuidar de loucos em Itaguaí...</string>
+    <string name="genero_ficcao_psicologica">Ficção Psicológica</string>
+    <string name="btn_ver_mais_detalhes">Ver mais detalhes</string>
+    <string name="label_avaliacoes_count">Avaliações (24)</string>
 
     <!-- Navigation Descriptions -->
     <string name="nav_home_desc">Início</string>

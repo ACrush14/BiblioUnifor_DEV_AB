@@ -70,15 +70,20 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
+                <EditText
                     android:id="@+id/textDataSelecionada"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:hint="00/00/0000"
                     android:text="@string/label_data_exemplo"
                     android:textColor="@color/black"
                     android:textSize="26sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:importantForAutofill="no" />
 
                 <ImageButton
                     android:id="@+id/btnEditarData"
