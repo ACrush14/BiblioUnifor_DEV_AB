@@ -56,6 +56,20 @@
 
     <string name="btn_remover_historico">Remover do Histórico</string>
     <string name="nome_usuario">João Bobo</string>
+    <string name="label_notificacao">Notificação</string>
+    <string name="label_configuracao">Configuração</string>
+    <string name="label_perfil">Perfil</string>
+    <string name="label_bem_vindo">Bem-vindo</string>
+    <string name="label_bem_vindo_caps">BEM-VINDO</string>
+    <string name="btn_procurar_livros">Procurar Livros</string>
+    <string name="btn_minha_livraria">Minha livraria</string>
+    <string name="btn_lista_desejos">Lista de desejos</string>
+    <string name="btn_historico">Histórico</string>
+    <string name="btn_status_aluguel">Status aluguel</string>
+    <string name="btn_sair_conta">Sair da conta</string>
+    <string name="label_descobrir">Descobrir</string>
+    <string name="desc_livro">Livro</string>
+    <string name="btn_alugar">Alugar</string>
 
     <!-- Navigation Descriptions -->
     <string name="nav_home_desc">Início</string>

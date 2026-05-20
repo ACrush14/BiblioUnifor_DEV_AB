@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
+import com.example.bibliounifornew.login.TelaRF01BemVindo
 import com.google.android.material.button.MaterialButton
 
 class TelaRF09Configuracao : AppCompatActivity() {
@@ -79,9 +80,51 @@ class TelaRF09Configuracao : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // 5. APAGAR CONTA (EXEMPLO)
+        // 5. APAGAR CONTA
         btnApagar.setOnClickListener {
-            // Lógica futura
+            exibirPopupApagarConta()
         }
+    }
+
+    private fun exibirPopupApagarConta() {
+        val dialogView = layoutInflater.inflate(R.layout.popup_apagar_conta, null)
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogView)
+
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val btnConfirmar = dialogView.findViewById<MaterialButton>(R.id.buttonConfirmarApagarConta)
+        val btnCancelar = dialogView.findViewById<TextView>(R.id.textCancelarApagarConta)
+        val editSenha = dialogView.findViewById<EditText>(R.id.editSenhaPopup)
+        val iconOlho = dialogView.findViewById<ImageView>(R.id.iconOlhoSenhaPopup)
+
+        // Lógica do olho no popup
+        var senhaVisivelPopup = false
+        iconOlho.setOnClickListener {
+            senhaVisivelPopup = !senhaVisivelPopup
+            if (senhaVisivelPopup) {
+                editSenha.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                iconOlho.setImageResource(R.drawable.ic_eye_open)
+            } else {
+                editSenha.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+                iconOlho.setImageResource(R.drawable.ic_eye_closed)
+            }
+            editSenha.setSelection(editSenha.text.length)
+        }
+
+        btnConfirmar.setOnClickListener {
+            // Navegar para a tela de Bem-Vindo (RF01) e limpar a pilha de atividades
+            val intent = Intent(this, TelaRF01BemVindo::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
+
+        btnCancelar.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }
