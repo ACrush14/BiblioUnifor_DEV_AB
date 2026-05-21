@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.bibliounifornew.data.EntidadeLivro
 import kotlin.collections.get
 
@@ -31,12 +32,15 @@ class LivroAdapter(
         holder.textTitulo.text = livro.title
         holder.textAutor.text = livro.author
 
-        // O carregamento real da URL da internet será feito via Glide ou Coil futuramente.
+        // Carregamento real da URL usando Coil
         if (livro.coverUrl.isNotEmpty()) {
-            // TODO: Glide.with(holder.itemView.context).load(livro.coverUrl).into(holder.imgLivro)
-            holder.imgLivro.setImageResource(R.drawable.osda)
+            holder.imgLivro.load(livro.coverUrl) {
+                crossfade(true)
+                placeholder(R.drawable.osda)
+                error(R.drawable.osda)
+            }
         } else {
-            holder.imgLivro.setImageResource(R.drawable.osda) // Default
+            holder.imgLivro.setImageResource(R.drawable.osda)
         }
 
         holder.itemView.setOnClickListener { onItemClick(livro) }

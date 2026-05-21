@@ -1,24 +1,25 @@
-import android.content.Context
+package com.example.bibliounifornew.usuario
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.activity.viewModels // Importante para o "by viewModels"
-import kotlinx.coroutines.launch
+import coil.load
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.AppDatabase
 import com.example.bibliounifornew.data.LivroRepository
-// Ajuste o import abaixo se colocou a ViewModel noutra pasta
 import com.example.bibliounifornew.viewmodel.LivroViewModel
 import com.example.bibliounifornew.viewmodel.LivroViewModelFactory
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
+
 class TelaRF12TelaDoLivro : AppCompatActivity() {
 
-    // A mágica da arquitetura limpa: instanciamos a ViewModel via Factory
     private val viewModel: LivroViewModel by viewModels {
         val database = AppDatabase.getDatabase(applicationContext)
         val repository = LivroRepository(database.livroDao(), FirebaseFirestore.getInstance())
@@ -36,24 +37,29 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
             carregarDadosDoLivro(livroId)
         }
 
-        // ... (Mantenha o código dos seus botões de clique aqui embaixo) ...
+        // Botão para voltar ou ir para Minha Livraria
+        findViewById<Button>(R.id.buttonSuaLivraria).setOnClickListener {
+            val intent = Intent(this, TelaRF15MinhaLivrariaActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun carregarDadosDoLivro(id: String) {
         lifecycleScope.launch {
-            // Chamamos a ViewModel! A tela não sabe o que é DAO.
             val livro = viewModel.buscarLivroPorId(id)
 
             livro?.let {
                 findViewById<TextView>(R.id.textTituloLivro).text = it.title
                 findViewById<TextView>(R.id.textAutorLivro).text = it.author
-                findViewById<TextView>(R.id.textSobreLivro).text = it.description // Atualizado
-
-                // Mapeie o resto dos TextViews novos do Figma aqui (Língua, Setor, etc)
+                findViewById<TextView>(R.id.textSobreLivro).text = it.description
 
                 val imgCapa = findViewById<ImageView>(R.id.imageLivroDetalhes)
                 if (it.coverUrl.isNotEmpty()) {
-                    imgCapa.setImageResource(R.drawable.osda)
+                    imgCapa.load(it.coverUrl) {
+                        crossfade(true)
+                        placeholder(R.drawable.osda)
+                        error(R.drawable.osda)
+                    }
                 } else {
                     imgCapa.setImageResource(R.drawable.osda)
                 }

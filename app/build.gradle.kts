@@ -58,6 +58,13 @@ dependencies {
     // Coroutines para Firebase (.await)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0")
 
+    // Coil para carregamento de imagens por URL
+    implementation("io.coil-kt:coil:2.7.0")
+
+    // Retrofit para chamadas de internet
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Converte o resultado para objetos Kotlin
+
     // Testes
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
