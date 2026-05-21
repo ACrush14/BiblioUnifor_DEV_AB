@@ -82,7 +82,7 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/headerVerificarMidia"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -253,13 +253,6 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- BARRA ADM PADRONIZADA -->
-    <FrameLayout
-        android:id="@+id/bottomNavContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent">
-        />
-    </FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

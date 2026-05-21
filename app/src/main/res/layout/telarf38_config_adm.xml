@@ -65,7 +65,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerConfigAdm">
 
         <LinearLayout
@@ -228,13 +228,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- BARRA ADM -->
-    <FrameLayout
-        android:id="@+id/bottomNavContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent">
-        />
-    </FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,40 +40,11 @@ class TelaRF23LoginADM : AppCompatActivity() {
 
         // LOGIN
         botaoEntrar.setOnClickListener {
-
-            val textoEmail = email.text.toString().trim()
-            val textoSenha = senha.text.toString().trim()
-            val textoCredencial = credential.text.toString().trim()
-
-            erro.visibility = View.GONE
-
-            when {
-
-                textoEmail.isEmpty() || textoSenha.isEmpty() || textoCredencial.isEmpty() -> {
-                    erro.text = "Preencha todos os campos"
-                    erro.visibility = View.VISIBLE
-                }
-
-                textoEmail != "a" ||
-                        textoSenha != "b" ||
-                        textoCredencial != "c" -> {
-
-                    erro.text = "E-mail, senha ou credencial incorretos"
-                    erro.visibility = View.VISIBLE
-                }
-
-                else -> {
-                    Toast.makeText(
-                        this@TelaRF23LoginADM,
-                        "Login realizado com sucesso!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    val intent = Intent(this@TelaRF23LoginADM, TelaRF28DashboardADM::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-            }
+            // TODO: Integrar com autenticação futuramente
+            // Por enquanto, apenas navegação direta conforme solicitado
+            val intent = Intent(this@TelaRF23LoginADM, TelaRF28DashboardADM::class.java)
+            startActivity(intent)
+            finish()
         }
 
         // CRIAR CONTA -> TelaRF27
