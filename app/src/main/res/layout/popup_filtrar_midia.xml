@@ -2,164 +2,119 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="330dp"
+    android:layout_width="340dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_margin="20dp"
-    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="28dp"
-    app:cardElevation="12dp"
-    app:strokeWidth="0dp">
-
-    <!-- ===================================================== -->
-    <!-- CONTEÚDO -->
-    <!-- ===================================================== -->
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="32dp">
 
+        <TextView
+            android:id="@+id/textTituloPopup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/titulo_filtrar_solicitacoes"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- SEÇÃO SPINNER -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/titulo_filtrar_midia"
-            android:textColor="@color/biblio_blue"
-            android:textSize="20sp"
+            android:text="@string/label_tipo_solicitacao"
+            android:textSize="11sp"
+            android:letterSpacing="0.05"
             android:textStyle="bold"
-            android:layout_gravity="center"
-            android:layout_marginBottom="24dp" />
+            android:textColor="@color/biblio_blue"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="4dp"/>
 
-        <!-- ================================================= -->
-        <!-- INPUT TÍTULO -->
-        <!-- ================================================= -->
-
-        <com.google.android.material.card.MaterialCardView
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="14dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="26dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="#EEEEEE">
-
-            <EditText
-                android:id="@+id/editFiltroTitulo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:gravity="center_vertical"
-                android:hint="@string/hint_nome_titulo"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:textColor="@color/black"
-                android:textColorHint="#8A8A8A"
-                android:textSize="15sp" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- ================================================= -->
-        <!-- INPUT AUTOR -->
-        <!-- ================================================= -->
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="14dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="26dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="#EEEEEE">
-
-            <EditText
-                android:id="@+id/editFiltroAutor"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:gravity="center_vertical"
-                android:hint="@string/hint_nome_autor"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:textColor="@color/black"
-                android:textColorHint="#8A8A8A"
-                android:textSize="15sp" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- ================================================= -->
-        <!-- INPUT ISBN -->
-        <!-- ================================================= -->
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="54dp"
             android:layout_marginBottom="24dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="26dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="#EEEEEE">
+            android:background="@drawable/bg_input_delicate">
 
-            <EditText
-                android:id="@+id/editFiltroIsbn"
+            <Spinner
+                android:id="@+id/spinnerSolicitacao"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:gravity="center_vertical"
-                android:hint="@string/hint_isbn"
-                android:inputType="number"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:textColor="@color/black"
-                android:textColorHint="#8A8A8A"
-                android:textSize="15sp" />
+                android:paddingStart="12dp"
+                android:paddingEnd="44dp"
+                android:spinnerMode="dropdown"
+                android:background="@android:color/transparent" />
 
-        </com.google.android.material.card.MaterialCardView>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="16dp"
+                android:src="@android:drawable/arrow_down_float"
+                android:contentDescription="@null"
+                app:tint="@color/biblio_blue" />
+        </FrameLayout>
 
-        <!-- ================================================= -->
-        <!-- BOTÃO SALVAR (Primary Pill) -->
-        <!-- ================================================= -->
+        <!-- SEÇÃO USUÁRIO -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_pesquisar_usuario"
+            android:textSize="11sp"
+            android:letterSpacing="0.05"
+            android:textStyle="bold"
+            android:textColor="@color/biblio_blue"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="4dp"/>
 
+        <EditText
+            android:id="@+id/editNomeUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginBottom="36dp"
+            android:background="@drawable/bg_input_delicate"
+            android:hint="@string/hint_nome_usuario"
+            android:inputType="textPersonName"
+            android:paddingHorizontal="16dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray_hint"
+            android:textSize="15sp"
+            android:importantForAutofill="no" />
+
+        <!-- BOTÕES -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSalvarFiltro"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginBottom="12dp"
+            android:layout_height="58dp"
             android:text="@string/btn_salvar_filtro"
             android:textAllCaps="false"
-            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
+            android:textColor="@color/white"
             app:backgroundTint="@color/biblio_blue"
-            app:cornerRadius="28dp"
-            app:elevation="4dp" />
-
-        <!-- ================================================= -->
-        <!-- BOTÃO LIMPAR (Secondary Outlined/Light) -->
-        <!-- ================================================= -->
+            app:cornerRadius="29dp"
+            android:layout_marginBottom="12dp"
+            app:elevation="4dp"
+            app:rippleColor="#40FFFFFF"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLimparFiltro"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="54dp"
             android:text="@string/btn_limpar_filtragem"
             android:textAllCaps="false"
-            android:textColor="@color/biblio_blue"
+            android:textColor="@color/gray_medium"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            app:backgroundTint="@color/white"
-            app:strokeColor="@color/biblio_blue"
-            app:strokeWidth="2dp"
-            app:cornerRadius="24dp"
-            app:elevation="0dp" />
+            app:cornerRadius="27dp"/>
 
     </LinearLayout>
-
 </com.google.android.material.card.MaterialCardView>

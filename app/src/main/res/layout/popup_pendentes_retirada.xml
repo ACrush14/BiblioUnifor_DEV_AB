@@ -20,6 +20,25 @@
         android:orientation="vertical"
         android:padding="22dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detalhes da Pendência"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/textInfoPendencia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Livro: O Alienista\nUsuário: Ronaldo Alves\nPrazo: 18/12/2019\nStatus: Retirada Pendente"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:layout_marginBottom="20dp"/>
+
         <!-- NOTIFICAR ATRASO -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnNotificarAtraso"

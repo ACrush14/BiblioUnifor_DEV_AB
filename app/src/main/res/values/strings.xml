@@ -223,6 +223,10 @@
 
     <!-- Popups -->
     <string name="titulo_filtrar_midia">Filtrar Mídia</string>
+    <string name="titulo_filtrar_solicitacoes">Filtrar Solicitações</string>
+    <string name="label_tipo_solicitacao">TIPO DE SOLICITAÇÃO</string>
+    <string name="label_pesquisar_usuario">PESQUISAR POR USUÁRIO</string>
+    <string name="hint_nome_usuario">Nome do usuário...</string>
     <string name="hint_nome_titulo">Nome do título</string>
     <string name="hint_nome_autor">Nome do autor...</string>
     <string name="hint_isbn">ISBN...</string>

@@ -59,6 +59,9 @@
             android:name=".adm.TelaRF34FinanceiroADM"
             android:exported="false" />
         <activity
+            android:name=".adm.TelaRF18_2CalendarioRenovacao"
+            android:exported="false" />
+        <activity
             android:name=".adm.TelaRF29GerenciamentoDeUsuarios"
             android:exported="false" />
         <activity

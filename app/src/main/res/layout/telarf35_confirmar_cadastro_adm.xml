@@ -145,8 +145,12 @@
 
             <!-- ITEM 1 -->
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemUsuario1"
                 android:layout_width="match_parent"
-                android:layout_height="80dp">
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardFotoUser1"
@@ -190,8 +194,12 @@
 
             <!-- ITEM 2 -->
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemUsuario2"
                 android:layout_width="match_parent"
-                android:layout_height="80dp">
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardFotoUser2"
@@ -235,8 +243,12 @@
 
             <!-- ITEM 3 -->
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemUsuario3"
                 android:layout_width="match_parent"
-                android:layout_height="80dp">
+                android:layout_height="80dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardFotoUser3"

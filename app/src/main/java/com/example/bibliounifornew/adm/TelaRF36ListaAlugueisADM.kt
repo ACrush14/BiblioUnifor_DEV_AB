@@ -16,9 +16,25 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
         val botaoVerLivro1 = findViewById<Button>(R.id.btnVerLivro1)
 
         // 2. Criar a ação de clique
-        botaoVerLivro1.setOnClickListener {
-            // 3. Fazer a ponte (Intent) para a Tela 39
+        botaoVerLivro1?.setOnClickListener {
+            // 3. Fazer a ponte (Intent) para a Tela 37
             val intent = Intent(this@TelaRF36ListaAlugueisADM, TelaRF37InfoLivroADM::class.java)
+            startActivity(intent)
+        }
+
+        findViewById<Button>(R.id.btnVerLivro2)?.setOnClickListener {
+            val intent = Intent(this@TelaRF36ListaAlugueisADM, TelaRF37InfoLivroADM::class.java)
+            startActivity(intent)
+        }
+
+        // Botão "Ver Usuário"
+        findViewById<Button>(R.id.btnVerUsuario1)?.setOnClickListener {
+            val intent = Intent(this@TelaRF36ListaAlugueisADM, TelaRF29GerenciamentoDeUsuarios::class.java)
+            startActivity(intent)
+        }
+
+        findViewById<Button>(R.id.btnVerUsuario2)?.setOnClickListener {
+            val intent = Intent(this@TelaRF36ListaAlugueisADM, TelaRF29GerenciamentoDeUsuarios::class.java)
             startActivity(intent)
         }
     }

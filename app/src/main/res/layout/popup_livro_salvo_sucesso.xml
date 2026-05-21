@@ -5,13 +5,9 @@
     android:layout_width="340dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    app:cardBackgroundColor="@color/biblio_bg"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="30dp"
     app:cardElevation="10dp">
-
-    <!-- ====================================================== -->
-    <!-- CONTEÚDO -->
-    <!-- ====================================================== -->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,10 +15,6 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="32dp">
-
-        <!-- ================================================== -->
-        <!-- TÍTULO -->
-        <!-- ================================================== -->
 
         <TextView
             android:id="@+id/textTituloSucesso"
@@ -33,10 +25,6 @@
             android:textSize="26sp"
             android:textStyle="bold" />
 
-        <!-- ================================================== -->
-        <!-- MENSAGEM -->
-        <!-- ================================================== -->
-
         <TextView
             android:id="@+id/textMensagemSucesso"
             android:layout_width="wrap_content"
@@ -44,18 +32,13 @@
             android:layout_marginTop="24dp"
             android:gravity="center"
             android:lineSpacingExtra="4dp"
-            android:text="Livro salvo com sucesso.\nVoltando para mídias"
+            android:text="Renovação realizada com sucesso"
             android:textAlignment="center"
             android:textColor="@color/biblio_blue"
-            android:textSize="18sp"
-            android:textStyle="normal" />
-
-        <!-- ================================================== -->
-        <!-- BOTÃO -->
-        <!-- ================================================== -->
+            android:textSize="18sp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnVoltarMidias"
+            android:id="@+id/btnVoltar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="40dp"
@@ -69,5 +52,4 @@
             app:elevation="4dp" />
 
     </LinearLayout>
-
 </com.google.android.material.card.MaterialCardView>
