@@ -33,6 +33,7 @@ class TelaRF28CrudADM : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // Botão de voltar (Simulado ou se houver um header com voltar)
+        // Se desejar adicionar um botão de voltar no layout futuramente.
     }
-
 }

@@ -66,7 +66,7 @@
         android:layout_height="0dp"
         android:paddingHorizontal="24dp"
         app:layout_constraintTop_toBottomOf="@id/headerRedefinir"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -115,7 +115,7 @@
                     <EditText
                         android:id="@+id/editTextTextPassword"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="56dp"
                         android:background="@android:color/transparent"
                         android:hint="Enter your Password"
                         android:importantForAutofill="no"
@@ -179,7 +179,7 @@
                     <EditText
                         android:id="@+id/editTextTextPasswordConfirmacao"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="56dp"
                         android:background="@android:color/transparent"
                         android:hint="Enter your Password"
                         android:importantForAutofill="no"
@@ -255,13 +255,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- BARRA ADM -->
-    <FrameLayout
-        android:id="@+id/bottomNavContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent">
-        />
-    </FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
