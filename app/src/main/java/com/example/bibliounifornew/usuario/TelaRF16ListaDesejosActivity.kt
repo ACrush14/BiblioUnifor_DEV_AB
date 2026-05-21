@@ -1,5 +1,6 @@
 package com.example.bibliounifornew.usuario
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -63,23 +64,62 @@ class TelaRF16ListaDesejosActivity : AppCompatActivity() {
         // 2) BOTÃO "Alugar Livro"
         btnAlugar.setOnClickListener {
             if (disponivel) {
-                Toast.makeText(this, "Livro alugado com sucesso", Toast.LENGTH_SHORT).show()
+                showPopupAlugar(livroId)
             } else {
                 Toast.makeText(this, "Livro indisponível no momento", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // 3) BOTÃO EXCLUIR (Novo botão abaixo do Alugar)
+        // 3) BOTÃO EXCLUIR
         btnExcluir.setOnClickListener {
             card.visibility = View.GONE
             Toast.makeText(this, "Livro removido da lista de desejos", Toast.LENGTH_SHORT).show()
         }
 
-        // 4) CLIQUE NOS 3 PONTINHOS (Navega para Detalhes)
+        // 4) CLIQUE NOS 3 PONTINHOS
         menuIcon.setOnClickListener {
             val intent = Intent(this, TelaRF12TelaDoLivro::class.java)
             intent.putExtra("LIVRO_ID", livroId.toString())
             startActivity(intent)
         }
+    }
+
+    private fun showPopupAlugar(livroId: Int) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.popup_alugar_livro)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val btnAlugar = dialog.findViewById<MaterialButton>(R.id.buttonAdicionarLivro)
+        val btnCancelar = dialog.findViewById<TextView>(R.id.textCancelarPopup)
+
+        btnAlugar.setOnClickListener {
+            // TODO: Integrar com Banco de Dados para salvar o aluguel do livroId
+            // Por enquanto, apenas simulamos a adição aos livros alugados.
+            
+            dialog.dismiss()
+            showPopupLivroAdicionado()
+        }
+
+        btnCancelar.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun showPopupLivroAdicionado() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.popup_livro_adicionado)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val btnVerMeusLivros = dialog.findViewById<MaterialButton>(R.id.buttonVerMeusLivros)
+
+        btnVerMeusLivros.setOnClickListener {
+            dialog.dismiss()
+            val intent = Intent(this, TelaRF18StatusAluguel::class.java)
+            startActivity(intent)
+        }
+
+        dialog.show()
     }
 }

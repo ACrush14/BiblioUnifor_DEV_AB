@@ -125,9 +125,6 @@
             android:name=".usuario.TelaRF18CalendarioRenovacao"
             android:exported="false" />
         <activity
-            android:name=".usuario.TelaRF22RenovacaoOnline"
-            android:exported="false" />
-        <activity
             android:name=".adm.TelaRF28DashboardADM"
             android:exported="false" />
         <activity
