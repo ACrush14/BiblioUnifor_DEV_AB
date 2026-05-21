@@ -71,7 +71,7 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
         }
 
         btnStatusAluguel.setOnClickListener {
-            val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF19Solicitacoes::class.java)
+            val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF18StatusAluguel::class.java)
             startActivity(intent)
         }
 

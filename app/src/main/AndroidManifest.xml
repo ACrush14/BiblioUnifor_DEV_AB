@@ -65,6 +65,12 @@
             android:name=".usuario.TelaRF17Amigos"
             android:exported="false" />
         <activity
+            android:name=".usuario.TelaRF17_3_BuscaAmigos"
+            android:exported="false" />
+        <activity
+            android:name=".usuario.TelaRF17_5_PerfilAmigo"
+            android:exported="false" />
+        <activity
             android:name=".adm.TelaRF33CadastroDeLivros"
             android:exported="false" />
         <activity
@@ -114,6 +120,9 @@
             android:exported="false" />
         <activity
             android:name=".usuario.TelaRF18StatusAluguel"
+            android:exported="false" />
+        <activity
+            android:name=".usuario.TelaRF18CalendarioRenovacao"
             android:exported="false" />
         <activity
             android:name=".usuario.TelaRF22RenovacaoOnline"
