@@ -48,8 +48,8 @@ class LivroAdapter(
 
     override fun getItemCount() = livros.size
 
-    fun updateData(newLivros: List<EntidadeLivro>) {
-        livros = newLivros
-        notifyDataSetChanged()
+    fun updateData(novosLivros: List<EntidadeLivro>) {
+        this.livros = novosLivros
+        notifyDataSetChanged() // Aqui sim ela vai ter o poder de piscar a tela!
     }
 }

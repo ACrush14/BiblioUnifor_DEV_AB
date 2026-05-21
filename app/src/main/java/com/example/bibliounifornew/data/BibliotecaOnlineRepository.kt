@@ -18,17 +18,18 @@ class BibliotecaOnlineRepository {
         .create(GoogleBooksService::class.java)
 
     // Busca online e salva no Firestore
-    suspend fun buscarEImportarLivro(
-        termoDeBusca: String,
-        onSuccess: () -> Unit,
-        onFailure: (Exception) -> Unit
-    ) {
+    suspend fun buscarEImportarLivro(termoDeBusca: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         try {
-            // O termoDeBusca pode ser o título, o autor ou o próprio número do ISBN digitado
-            val resposta = googleBooksService.buscarLivros(termoDeBusca)
+            // Substitua pela chave real que você copiou no Passo 1
+            val minhaChaveApi = "AIzaSyAEojGm94sofbQ2ZRnlPjVPiKtrQKeqDE4"
+
+            // Agora enviamos a busca E a chave de acesso juntas
+            val resposta = googleBooksService.buscarLivros(termoDeBusca, minhaChaveApi)
+
             val primeiroLivroEncontrado = resposta.items?.firstOrNull()
 
             if (primeiroLivroEncontrado != null) {
+                // ... (o resto do seu código de salvar no Firestore continua exatamente igual)
                 val info = primeiroLivroEncontrado.volumeInfo
 
                 // Tenta capturar o ISBN_13 prioritariamente, senão pega o primeiro identificador que achar
