@@ -155,7 +155,7 @@
                     android:contentDescription="@string/desc_mostrar_ocultar_senha"
                     android:focusable="true"
                     android:padding="12dp"
-                    android:src="@drawable/ic_eye_closed"
+                    android:src="@drawable/ic_eye_open"
                     app:tint="@color/biblio_blue" />
             </RelativeLayout>
 
@@ -201,7 +201,7 @@
                     android:contentDescription="@string/desc_mostrar_ocultar_senha"
                     android:focusable="true"
                     android:padding="12dp"
-                    android:src="@drawable/ic_eye_closed"
+                    android:src="@drawable/ic_eye_open"
                     app:tint="@color/biblio_blue" />
             </RelativeLayout>
 

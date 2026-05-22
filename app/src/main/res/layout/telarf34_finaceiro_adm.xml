@@ -104,7 +104,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer"
         app:layout_constraintTop_toBottomOf="@id/headerLivrosVencidos">
 
         <LinearLayout
@@ -331,6 +331,17 @@
 
     </ScrollView>
 
+    <!-- ===================================================== -->
+    <!-- BOTTOM NAVIGATION -->
+    <!-- ===================================================== -->
 
+    <FrameLayout
+        android:id="@+id/bottomNavContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+        />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

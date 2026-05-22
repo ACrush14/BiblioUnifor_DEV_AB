@@ -65,7 +65,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer"
         app:layout_constraintTop_toBottomOf="@id/headerConfigAdm">
 
         <LinearLayout
@@ -171,7 +171,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="8dp"
                     android:padding="12dp"
-                    android:src="@drawable/ic_eye_closed"
+                    android:src="@drawable/ic_eye_open"
                     app:tint="@color/biblio_blue"
                     android:contentDescription="@string/desc_mostrar_ocultar_senha"/>
             </RelativeLayout>
@@ -228,6 +228,13 @@
         </LinearLayout>
     </ScrollView>
 
-
+    <!-- BARRA ADM -->
+    <FrameLayout
+        android:id="@+id/bottomNavContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+        />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,6 @@ package com.example.bibliounifornew.adm
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
@@ -24,7 +23,7 @@ class TelaRF28DashboardADM : AppCompatActivity() {
 
         // --- Listeners Principais ---
         btnTelaCrud?.setOnClickListener {
-            val intent = Intent(this@TelaRF28DashboardADM, TelaRF27CrudAdm::class.java)
+            val intent = Intent(this@TelaRF28DashboardADM, TelaRF28CrudADM::class.java)
             startActivity(intent)
         }
 
@@ -46,13 +45,6 @@ class TelaRF28DashboardADM : AppCompatActivity() {
 
         btnVerSolicitacoes?.setOnClickListener {
             val intent = Intent(this@TelaRF28DashboardADM, TelaRF31Solicitacoes::class.java)
-            startActivity(intent)
-        }
-
-        // --- Configuração (Icone do Topo) ---
-        val iconConfig = findViewById<ImageView>(R.id.iconConfigAdm)
-        iconConfig?.setOnClickListener {
-            val intent = Intent(this@TelaRF28DashboardADM, TelaRF38ConfigADM::class.java)
             startActivity(intent)
         }
     }

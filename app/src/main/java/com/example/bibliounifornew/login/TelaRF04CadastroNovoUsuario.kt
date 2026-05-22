@@ -118,31 +118,60 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
         //-----------------------------------
         // OLHO SENHA
         //-----------------------------------
+
         olhoSenha.setOnClickListener {
-            if (senhaVisivel) {
-                senha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                olhoSenha.setImageResource(R.drawable.ic_eye_closed)
-            } else {
-                senha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                olhoSenha.setImageResource(R.drawable.ic_eye_open)
+
+            senhaVisivel =
+                !senhaVisivel
+
+
+            if (senhaVisivel){
+
+                senha.inputType =
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+
+            }else{
+
+                senha.inputType =
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
-            senhaVisivel = !senhaVisivel
-            senha.setSelection(senha.text.length)
+
+            senha.setSelection(
+                senha.text.length
+            )
         }
+
+
 
         //-----------------------------------
         // OLHO CONFIRMAR SENHA
         //-----------------------------------
+
         olhoConfirmar.setOnClickListener {
-            if (confirmarSenhaVisivel) {
-                confirmaSenha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                olhoConfirmar.setImageResource(R.drawable.ic_eye_closed)
-            } else {
-                confirmaSenha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                olhoConfirmar.setImageResource(R.drawable.ic_eye_open)
+
+            confirmarSenhaVisivel =
+                !confirmarSenhaVisivel
+
+
+            if(confirmarSenhaVisivel){
+
+                confirmaSenha.inputType =
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+
+            }else{
+
+                confirmaSenha.inputType =
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
-            confirmarSenhaVisivel = !confirmarSenhaVisivel
-            confirmaSenha.setSelection(confirmaSenha.text.length)
+
+
+            confirmaSenha.setSelection(
+                confirmaSenha.text.length
+            )
         }
 
 

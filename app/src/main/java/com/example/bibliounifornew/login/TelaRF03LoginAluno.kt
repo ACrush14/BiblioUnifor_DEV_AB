@@ -92,15 +92,21 @@ class TelaRF03LoginAluno : AppCompatActivity() {
         }
 
         var senhaVisivel = false
+
+        // Mostrar senha
         mostrarSenha.setOnClickListener {
             if (senhaVisivel) {
+                // ESCONDER SENHA
                 senha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 mostrarSenha.setImageResource(R.drawable.ic_eye_closed)
+                senhaVisivel = false
             } else {
+                // MOSTRAR SENHA
                 senha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 mostrarSenha.setImageResource(R.drawable.ic_eye_open)
+                senhaVisivel = true
             }
-            senhaVisivel = !senhaVisivel
+            // Mantém cursor no final
             senha.setSelection(senha.text.length)
         }
     }

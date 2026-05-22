@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/biblio_bg">
@@ -73,7 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp"
+            android:paddingHorizontal="32dp"
             android:paddingBottom="48dp">
 
             <!-- TÍTULO MINHA LISTA DE DESEJO -->
@@ -103,25 +102,24 @@
 
             <!-- CARD 1: VIDAS SECAS -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardD1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="6dp"
                 app:strokeWidth="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="12dp">
+                    android:padding="20dp">
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/coverD1"
-                        android:layout_width="90dp"
-                        android:layout_height="130dp"
-                        app:cardCornerRadius="4dp"
-                        app:cardElevation="2dp"
+                        android:layout_width="100dp"
+                        android:layout_height="145dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:strokeWidth="0dp">
@@ -136,10 +134,10 @@
                         android:id="@+id/titleD1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
+                        android:layout_marginStart="16dp"
                         android:text="@string/label_vidas_secas"
                         android:textColor="@color/biblio_dark"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toStartOf="@id/menuD1"
                         app:layout_constraintStart_toEndOf="@id/coverD1"
@@ -150,8 +148,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/autor_graciliano"
-                        android:textColor="#444444"
-                        android:textSize="14sp"
+                        android:textColor="#415E5E"
+                        android:textSize="15sp"
                         app:layout_constraintEnd_toEndOf="@id/titleD1"
                         app:layout_constraintStart_toStartOf="@id/titleD1"
                         app:layout_constraintTop_toBottomOf="@id/titleD1" />
@@ -160,114 +158,87 @@
                         android:id="@+id/dateD1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:text="@string/data_exemplo_1"
-                        android:textColor="#888888"
-                        android:textSize="13sp"
+                        android:textColor="#999999"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="@id/titleD1"
                         app:layout_constraintTop_toBottomOf="@id/authorD1" />
 
                     <TextView
-                        android:id="@+id/statusD1"
+                        android:id="@+id/menuD1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Disponível "
-                        android:textColor="#2E7D32"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@id/titleD1"
-                        app:layout_constraintTop_toBottomOf="@id/dateD1" />
-
-                    <!-- Ícone de Menu (3 pontos) -->
-                    <TextView
-                        android:id="@+id/menuD1"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:gravity="center"
                         android:text="@string/menu_opcoes_simbolo"
                         android:textColor="@color/biblio_dark"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnSuaLivraria1"
-                        android:layout_width="120dp"
-                        android:layout_height="45dp"
-                        android:text="@string/btn_sua_livraria"
-                        android:textAllCaps="false"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:backgroundTint="#80CFD8"
-                        android:textColor="@color/white"
-                        app:cornerRadius="4dp"
+                    <!-- BOTÕES LADO DIREITO INFERIOR -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:orientation="vertical"
+                        android:gravity="end"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/menuD1"
-                        app:strokeColor="@color/biblio_dark"
-                        app:strokeWidth="1dp" />
+                        app:layout_constraintTop_toBottomOf="@id/dateD1">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnAlugar1"
-                        android:layout_width="120dp"
-                        android:layout_height="45dp"
-                        android:layout_marginTop="4dp"
-                        android:text="@string/btn_alugar_livro"
-                        android:textAllCaps="false"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:backgroundTint="#80CFD8"
-                        android:textColor="@color/white"
-                        app:cornerRadius="4dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/btnSuaLivraria1"
-                        app:strokeColor="@color/biblio_dark"
-                        app:strokeWidth="1dp" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSuaLivraria1"
+                            android:layout_width="150dp"
+                            android:layout_height="48dp"
+                            android:layout_marginBottom="10dp"
+                            android:text="@string/btn_sua_livraria"
+                            android:textAllCaps="false"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#F0F5F5"
+                            android:textColor="@color/biblio_blue"
+                            app:cornerRadius="24dp"
+                            app:elevation="0dp"
+                            app:strokeColor="@color/biblio_blue"
+                            app:strokeWidth="1dp" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnExcluir1"
-                        android:layout_width="110dp"
-                        android:layout_height="45dp"
-                        android:layout_marginTop="12dp"
-                        android:text="@string/btn_remover"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:backgroundTint="#D9534F"
-                        app:cornerRadius="4dp"
-                        app:layout_constraintStart_toStartOf="@id/titleD1"
-                        app:layout_constraintTop_toBottomOf="@id/statusD1"
-                        app:strokeColor="@color/biblio_dark"
-                        app:strokeWidth="1dp" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAlugar1"
+                            android:layout_width="150dp"
+                            android:layout_height="56dp"
+                            android:text="@string/btn_alugar_livro"
+                            android:textAllCaps="false"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="@color/biblio_blue"
+                            app:cornerRadius="28dp"
+                            app:elevation="4dp" />
+                    </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <!-- CARD 2: O CEIFADOR -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardD2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="6dp"
                 app:strokeWidth="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="12dp">
+                    android:padding="20dp">
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/coverD2"
-                        android:layout_width="90dp"
-                        android:layout_height="130dp"
-                        app:cardCornerRadius="4dp"
-                        app:cardElevation="2dp"
+                        android:layout_width="100dp"
+                        android:layout_height="145dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:strokeWidth="0dp">
@@ -282,15 +253,14 @@
                                 android:src="@drawable/o_alienista_capa"
                                 android:alpha="0.4" />
                             <TextView
-                                android:id="@+id/textForaEstoque2"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:rotation="-45"
                                 android:text="@string/label_fora_estoque"
                                 android:textAlignment="center"
-                                android:textColor="#8B0000"
-                                android:textSize="10sp"
+                                android:textColor="@color/biblio_red"
+                                android:textSize="12sp"
                                 android:textStyle="bold"
                                 android:background="@color/white" />
                         </FrameLayout>
@@ -300,10 +270,10 @@
                         android:id="@+id/titleD2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
+                        android:layout_marginStart="16dp"
                         android:text="@string/titulo_ceifador"
                         android:textColor="@color/biblio_dark"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toStartOf="@id/menuD2"
                         app:layout_constraintStart_toEndOf="@id/coverD2"
@@ -314,8 +284,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/autor_ceifador"
-                        android:textColor="#444444"
-                        android:textSize="14sp"
+                        android:textColor="#415E5E"
+                        android:textSize="15sp"
                         app:layout_constraintEnd_toEndOf="@id/titleD2"
                         app:layout_constraintStart_toStartOf="@id/titleD2"
                         app:layout_constraintTop_toBottomOf="@id/titleD2" />
@@ -324,89 +294,60 @@
                         android:id="@+id/dateD2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:text="@string/data_exemplo_3"
-                        android:textColor="#888888"
-                        android:textSize="13sp"
+                        android:textColor="#999999"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="@id/titleD2"
                         app:layout_constraintTop_toBottomOf="@id/authorD2" />
 
                     <TextView
-                        android:id="@+id/statusD2"
+                        android:id="@+id/menuD2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Indisponível "
-                        android:textColor="#C62828"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@id/titleD2"
-                        app:layout_constraintTop_toBottomOf="@id/dateD2" />
-
-                    <!-- Ícone de Menu (3 pontos) -->
-                    <TextView
-                        android:id="@+id/menuD2"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:gravity="center"
                         android:text="@string/menu_opcoes_simbolo"
                         android:textColor="@color/biblio_dark"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnSuaLivraria2"
-                        android:layout_width="120dp"
-                        android:layout_height="45dp"
-                        android:text="@string/btn_sua_livraria"
-                        android:textAllCaps="false"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:backgroundTint="#80CFD8"
-                        android:textColor="@color/white"
-                        app:cornerRadius="4dp"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:orientation="vertical"
+                        android:gravity="end"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/menuD2"
-                        app:strokeColor="@color/biblio_dark"
-                        app:strokeWidth="1dp" />
+                        app:layout_constraintTop_toBottomOf="@id/dateD2">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnAlugar2"
-                        android:layout_width="120dp"
-                        android:layout_height="45dp"
-                        android:layout_marginTop="4dp"
-                        android:text="@string/btn_alugar_livro"
-                        android:textAllCaps="false"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:backgroundTint="#80CFD8"
-                        android:textColor="@color/white"
-                        app:cornerRadius="4dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/btnSuaLivraria2"
-                        app:strokeColor="@color/biblio_dark"
-                        app:strokeWidth="1dp" />
+                        <com.google.android.material.button.MaterialButton
+                            android:layout_width="150dp"
+                            android:layout_height="48dp"
+                            android:layout_marginBottom="10dp"
+                            android:text="@string/btn_sua_livraria"
+                            android:textAllCaps="false"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#F0F5F5"
+                            android:textColor="@color/biblio_blue"
+                            app:cornerRadius="24dp"
+                            app:elevation="0dp"
+                            app:strokeColor="@color/biblio_blue"
+                            app:strokeWidth="1dp" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnExcluir2"
-                        android:layout_width="110dp"
-                        android:layout_height="45dp"
-                        android:layout_marginTop="12dp"
-                        android:text="@string/btn_remover"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:backgroundTint="#D9534F"
-                        app:cornerRadius="4dp"
-                        app:layout_constraintStart_toStartOf="@id/titleD2"
-                        app:layout_constraintTop_toBottomOf="@id/statusD2"
-                        app:strokeColor="@color/biblio_dark"
-                        app:strokeWidth="1dp" />
+                        <com.google.android.material.button.MaterialButton
+                            android:layout_width="150dp"
+                            android:layout_height="56dp"
+                            android:text="@string/btn_alugar_livro"
+                            android:textAllCaps="false"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="@color/biblio_blue"
+                            app:cornerRadius="28dp"
+                            app:elevation="4dp" />
+                    </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>

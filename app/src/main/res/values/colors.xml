@@ -8,7 +8,4 @@
     <color name="biblio_detalhes">#87B7FE</color> <!-- detalhe de fundo, cor dos icones, barra de tarefas -->
     <color name="biblio_red">#FF0000</color> <!-- cor dos btns de vermelho erro -->
     <color name="biblio_cyan">#87DEDE</color>
-    <color name="gray_light">#E0E0E0</color>
-    <color name="gray_medium">#8A8A8A</color>
-    <color name="gray_hint">#BFBFBF</color>
 </resources>

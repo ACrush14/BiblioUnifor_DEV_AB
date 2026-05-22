@@ -27,7 +27,6 @@ class TelaRF02Intermediaria : AppCompatActivity() {
         }
 
         btnAdmin.setOnClickListener {
-            // Navegação para a Tela de Login do Administrador (RF23)
             val intent = Intent(this, TelaRF23LoginADM::class.java)
             startActivity(intent)
         }

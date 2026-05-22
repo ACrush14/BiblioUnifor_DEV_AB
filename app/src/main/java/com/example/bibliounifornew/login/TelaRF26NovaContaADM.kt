@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -200,27 +198,61 @@ class TelaRF26NovaContaADM :
 
 
         olho1.setOnClickListener{
-            v1 = !v1
+
+            v1=!v1
+
             if(v1){
-                senha.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                olho1.setImageResource(R.drawable.ic_eye_open)
-            } else {
-                senha.transformationMethod = PasswordTransformationMethod.getInstance()
-                olho1.setImageResource(R.drawable.ic_eye_closed)
+
+                senha.inputType=
+
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+
             }
-            senha.setSelection(senha.text.length)
+
+            else{
+
+                senha.inputType=
+
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+            }
+
+            senha.setSelection(
+                senha.text.length
+            )
+
         }
 
+
+
         olho2.setOnClickListener{
-            v2 = !v2
+
+            v2=!v2
+
             if(v2){
-                confirma.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                olho2.setImageResource(R.drawable.ic_eye_open)
-            } else {
-                confirma.transformationMethod = PasswordTransformationMethod.getInstance()
-                olho2.setImageResource(R.drawable.ic_eye_closed)
+
+                confirma.inputType=
+
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+
             }
-            confirma.setSelection(confirma.text.length)
+
+            else{
+
+                confirma.inputType=
+
+                    InputType.TYPE_CLASS_TEXT or
+                            InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+            }
+
+            confirma.setSelection(
+                confirma.text.length
+            )
+
         }
 
 

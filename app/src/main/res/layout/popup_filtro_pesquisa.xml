@@ -1,51 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/bg_popup_rounded"
+    android:background="@color/white"
     android:padding="24dp">
 
-    <!-- BARRA SUPERIOR -->
+    <!-- BARRINHA SUPERIOR -->
     <View
         android:layout_width="40dp"
         android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="22dp"
-        android:background="@color/biblio_detalhes"
-        android:alpha="0.5"/>
+        android:background="#DDDDDD" />
 
     <!-- TÍTULO -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
         android:text="Filtros"
-        android:textSize="26sp"
-        android:fontFamily="sans-serif-black"
-        android:textColor="@color/biblio_blue"
-        android:layout_marginBottom="20dp"/>
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <!-- DISPONIBILIDADE -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="DISPONIBILIDADE"
+        android:textColor="#666666"
         android:textSize="12sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.1"
-        android:textColor="@color/biblio_dark"
-        android:layout_marginBottom="10dp"/>
+        android:textStyle="bold" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroupDisponibilidade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:singleSelection="true"
-        app:selectionRequired="false"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="20dp"
+        app:singleSelection="true">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipDisponiveis"
@@ -53,10 +49,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Disponíveis"
-            app:chipCornerRadius="18dp"
-            app:chipBackgroundColor="@color/biblio_bg"
-            app:chipStrokeColor="@color/biblio_detalhes"
-            app:chipStrokeWidth="1dp"/>
+            android:textColor="#555555"
+            app:chipBackgroundColor="#EAE4EE"
+            app:chipCornerRadius="16dp" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipAlugados"
@@ -64,10 +59,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Alugados"
-            app:chipCornerRadius="18dp"
-            app:chipBackgroundColor="@color/biblio_bg"
-            app:chipStrokeColor="@color/biblio_detalhes"
-            app:chipStrokeWidth="1dp"/>
+            android:textColor="#555555"
+            app:chipBackgroundColor="#EAE4EE"
+            app:chipCornerRadius="16dp" />
 
     </com.google.android.material.chip.ChipGroup>
 
@@ -75,20 +69,18 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="CATEGORIA"
+        android:textColor="#666666"
         android:textSize="12sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.1"
-        android:textColor="@color/biblio_dark"
-        android:layout_marginBottom="10dp"/>
+        android:textStyle="bold" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroupCategoria"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:singleSelection="true"
-        app:selectionRequired="false"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="22dp"
+        app:singleSelection="true">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipPresencial"
@@ -96,10 +88,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Presencial"
-            app:chipCornerRadius="18dp"
-            app:chipBackgroundColor="@color/biblio_bg"
-            app:chipStrokeColor="@color/biblio_detalhes"
-            app:chipStrokeWidth="1dp"/>
+            android:textColor="#555555"
+            app:chipBackgroundColor="#EAE4EE"
+            app:chipCornerRadius="16dp" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipOnline"
@@ -107,86 +98,50 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Online"
-            app:chipCornerRadius="18dp"
-            app:chipBackgroundColor="@color/biblio_bg"
-            app:chipStrokeColor="@color/biblio_detalhes"
-            app:chipStrokeWidth="1dp"/>
+            android:textColor="#555555"
+            app:chipBackgroundColor="#EAE4EE"
+            app:chipCornerRadius="16dp" />
 
     </com.google.android.material.chip.ChipGroup>
 
-    <!-- NOME AUTOR -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="AUTOR"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.1"
-        android:textColor="@color/biblio_dark"
-        android:layout_marginBottom="8dp"/>
-
+    <!-- INPUT AUTOR -->
     <EditText
         android:id="@+id/editAutor"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="58dp"
         android:layout_marginBottom="18dp"
         android:background="@drawable/bg_input"
         android:hint="Nome do autor..."
         android:paddingHorizontal="16dp"
-        android:textColor="#333333"
-        android:textSize="15sp"
-        android:textColorHint="#999999"/>
-
-    <!-- DATA PUBLICAÇÃO -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DATA DE PUBLICAÇÃO"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.1"
-        android:textColor="@color/biblio_dark"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/editDataPublicacao"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/bg_input"
-        android:hint="DD/MM/AAAA"
-        android:inputType="date"
-        android:paddingHorizontal="16dp"
-        android:textColor="#333333"
-        android:textSize="15sp"
-        android:textColorHint="#999999"/>
+        android:textColor="#444444"
+        android:textColorHint="#999999" />
 
     <!-- BOTÃO SALVAR -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonSalvarFiltro"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="58dp"
+        android:layout_marginBottom="16dp"
         android:text="Salvar Filtro"
         android:textAllCaps="false"
-        android:textSize="16sp"
-        android:fontFamily="sans-serif-black"
         android:textColor="@color/white"
+        android:textStyle="bold"
         app:backgroundTint="@color/biblio_blue"
-        app:cornerRadius="28dp"
-        app:elevation="4dp"
-        android:layout_marginBottom="16dp"/>
+        app:cornerRadius="8dp"
+        app:elevation="2dp" />
 
     <!-- BOTÃO LIMPAR -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonLimparFiltro"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="58dp"
         android:text="Limpar Filtragem"
         android:textAllCaps="false"
-        android:textSize="16sp"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/biblio_red"
-        app:cornerRadius="28dp"/>
+        android:textColor="@color/biblio_blue"
+        android:textStyle="bold"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="8dp"
+        app:strokeColor="@color/biblio_blue"
+        app:strokeWidth="1dp" />
 
 </LinearLayout>

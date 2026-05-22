@@ -3,9 +3,6 @@ package com.example.bibliounifornew.adm
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import android.text.InputType
-import android.widget.EditText
-import android.widget.ImageView
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.adm.TelaRF39RedefinirADMInterno
 import com.example.bibliounifornew.login.TelaRF02Intermediaria
@@ -43,25 +40,6 @@ class TelaRF38ConfigADM : AppCompatActivity() {
             val intent = Intent(this@TelaRF38ConfigADM, TelaRF02Intermediaria::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
-        }
-
-        // Senha e Olho
-        val editSenhaAtual = findViewById<EditText>(R.id.editSenhaAtual)
-        val iconOlhoSenha = findViewById<ImageView>(R.id.iconOlhoSenhaAtual)
-
-        editSenhaAtual.isEnabled = false
-
-        var senhaVisivel = false
-        iconOlhoSenha.setOnClickListener {
-            senhaVisivel = !senhaVisivel
-            if (senhaVisivel) {
-                editSenhaAtual.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                iconOlhoSenha.setImageResource(R.drawable.ic_eye_open)
-            } else {
-                editSenhaAtual.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                iconOlhoSenha.setImageResource(R.drawable.ic_eye_closed)
-            }
-            editSenhaAtual.setSelection(editSenhaAtual.text.length)
         }
     }
 }
