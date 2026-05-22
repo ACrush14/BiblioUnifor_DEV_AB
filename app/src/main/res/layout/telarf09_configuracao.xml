@@ -62,6 +62,15 @@
                 android:textSize="26sp"
                 android:fontFamily="sans-serif-black" />
 
+            <ImageView
+                android:id="@+id/btnEditarUsuario"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="10dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_edit_pencil"
+                app:tint="@color/white" />
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -251,7 +260,7 @@
                     android:contentDescription="@string/desc_mostrar_ocultar_senha"
                     android:focusable="true"
                     android:padding="12dp"
-                    android:src="@drawable/ic_eye_closed"
+                    android:src="@drawable/ic_eye_open"
                     app:tint="@color/biblio_blue" />
 
             </RelativeLayout>

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.bibliounifornew.data.EntidadeLivro
 import kotlin.collections.get
 
@@ -16,8 +17,8 @@ class LivroAdapter(
 
     class LivroViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imgLivro: ImageView = view.findViewById(R.id.imgCapaLivro)
-        val textTitulo: TextView = view.findViewById(R.id.textTituloLivro)
-        val textAutor: TextView = view.findViewById(R.id.textAutorLivro)
+        val textTitulo: TextView = view.findViewById(R.id.txtTituloLivro)
+        val textAutor: TextView = view.findViewById(R.id.txtAutorLivro)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LivroViewHolder {
@@ -31,13 +32,15 @@ class LivroAdapter(
         holder.textTitulo.text = livro.title
         holder.textAutor.text = livro.author
 
-        // CORREÇÃO: Usando coverUrl em vez de coverResourceId.
-        // O carregamento real da URL da internet será feito via Glide ou Coil futuramente.
+        // Carregamento real da URL usando Coil
         if (livro.coverUrl.isNotEmpty()) {
-            // TODO: Glide.with(holder.itemView.context).load(livro.coverUrl).into(holder.imgLivro)
-            holder.imgLivro.setImageResource(R.drawable.osda)
+            holder.imgLivro.load(livro.coverUrl) {
+                crossfade(true)
+                placeholder(R.drawable.osda)
+                error(R.drawable.osda)
+            }
         } else {
-            holder.imgLivro.setImageResource(R.drawable.osda) // Default
+            holder.imgLivro.setImageResource(R.drawable.osda)
         }
 
         holder.itemView.setOnClickListener { onItemClick(livro) }
@@ -45,8 +48,8 @@ class LivroAdapter(
 
     override fun getItemCount() = livros.size
 
-    fun updateData(newLivros: List<EntidadeLivro>) {
-        livros = newLivros
-        notifyDataSetChanged()
+    fun updateData(novosLivros: List<EntidadeLivro>) {
+        this.livros = novosLivros
+        notifyDataSetChanged() // Aqui sim ela vai ter o poder de piscar a tela!
     }
 }

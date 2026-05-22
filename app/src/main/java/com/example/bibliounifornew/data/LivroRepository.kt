@@ -7,46 +7,48 @@ import kotlinx.coroutines.flow.Flow
 
 class LivroRepository(
     private val livroDao: LivroDao,
-    private val firestore: FirebaseFirestore // Injetamos o Firestore aqui
+    private val firestore: FirebaseFirestore
 ) {
 
-    // A UI vai observar apenas esta função. Se o Room mudar, a UI atualiza na hora.
     fun buscarTodosLivros(): Flow<List<EntidadeLivro>> {
         return livroDao.buscarTodosLivros()
     }
 
-    // Função de alta performance: Busca na nuvem e atualiza o banco local
     suspend fun sincronizarLivrosDoFirestore() {
         try {
-            // Puxa a coleção "livros" do Firestore
+            Log.d("LivroRepository", "Iniciando busca no Firestore...")
             val snapshot = firestore.collection("livros").get().await()
+            Log.d("LivroRepository", "Documentos encontrados: ${snapshot.size()}")
 
             for (documento in snapshot.documents) {
-                // Mapeia o documento da nuvem para a nossa entidade local
                 val livro = EntidadeLivro(
-                    id = documento.id, // O ID único do Firebase
+                    id = documento.id,
                     title = documento.getString("title") ?: "",
                     author = documento.getString("author") ?: "",
-                    isbn = documento.getString("isbn") ?: "",
+                    description = documento.getString("description") ?: "",
                     category = documento.getString("category") ?: "",
                     isAvailable = documento.getBoolean("isAvailable") ?: true,
                     publishDate = documento.getString("publishDate") ?: "",
-                    content = documento.getString("content") ?: "",
-                    coverUrl = documento.getString("coverUrl") ?: ""
+                    coverUrl = documento.getString("coverUrl") ?: "",
+                    isbn10 = documento.getString("isbn10") ?: "",
+                    isbn13 = documento.getString("isbn13") ?: "",
+                    publisher = documento.getString("publisher") ?: "",
+                    language = documento.getString("language") ?: ""
                 )
-
-                // O OnConflictStrategy.REPLACE no DAO vai atualizar se já existir ou criar se for novo
                 livroDao.inserirLivro(livro)
             }
-            Log.d("LivroRepository", "Sincronização concluída com sucesso. ${snapshot.size()} livros processados.")
+            Log.d("LivroRepository", "Sincronização concluída.")
         } catch (e: Exception) {
-            Log.e("LivroRepository", "Falha ao sincronizar com Firestore: ${e.message}")
-            // Aqui entra a vantagem da nossa arquitetura: se der erro (ex: sem internet),
-            // a UI não quebra, pois ela continua lendo o cache do Room!
+            Log.e("LivroRepository", "Erro ao sincronizar: ", e)
         }
     }
 
     suspend fun buscarLivroPorId(id: String): EntidadeLivro? {
         return livroDao.buscarLivroPorId(id)
+    }
+
+    fun pesquisarLivrosLocais(query: String): Flow<List<EntidadeLivro>> {
+        // Chamada direta ao DAO com o padrão correto
+        return livroDao.pesquisarLivros("%$query%")
     }
 }

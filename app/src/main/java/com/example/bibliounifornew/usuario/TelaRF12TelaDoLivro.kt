@@ -2,25 +2,35 @@ package com.example.bibliounifornew.usuario
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.bibliounifornew.data.AppDatabase
+import coil.load
 import com.example.bibliounifornew.R
-import com.google.android.material.button.MaterialButton
+import com.example.bibliounifornew.data.AppDatabase
+import com.example.bibliounifornew.data.LivroRepository
+import com.example.bibliounifornew.viewmodel.LivroViewModel
+import com.example.bibliounifornew.viewmodel.LivroViewModelFactory
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class TelaRF12TelaDoLivro : AppCompatActivity() {
 
-    private val database by lazy { AppDatabase.getDatabase(this@TelaRF12TelaDoLivro) }
-    private val libroDao by lazy { database.livroDao() }
+    private val viewModel: LivroViewModel by viewModels {
+        val database = AppDatabase.getDatabase(applicationContext)
+        val repository = LivroRepository(database.livroDao(), FirebaseFirestore.getInstance())
+        LivroViewModelFactory(repository)
+    }
+
+    // DECLARAÇÃO FORA DO VIEWMODEL
+    private val usuarioFantasmaId = "USUARIO_TESTE_123"
+    private var livroIdAtual: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,95 +38,102 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
         setContentView(R.layout.telarf12_teladolivro)
 
         val context: Context = this@TelaRF12TelaDoLivro
+        // CORREÇÃO: Pegando o ID como String em vez de Int
         val livroId = intent.getStringExtra("LIVRO_ID")
+        livroIdAtual = livroId
 
+        // CORREÇÃO: Verificando se a String não é nula
         if (livroId != null) {
             carregarDadosDoLivro(livroId)
         }
 
-        // 1. Botão Lista de Desejos
-        findViewById<Button>(R.id.buttonListaDesejos).setOnClickListener {
-            Toast.makeText(context, "Livro adicionado à lista de desejos", Toast.LENGTH_SHORT).show()
-        }
+        configurarBotoesDeStatus()
 
-        // 2. Botão Sua Livraria
-        findViewById<Button>(R.id.buttonSuaLivraria).setOnClickListener {
-            Toast.makeText(context, "Livro adicionado à sua livraria", Toast.LENGTH_SHORT).show()
-        }
-
-        // 3. Status de Leitura (Toggle)
-        val btnNaoLido = findViewById<MaterialButton>(R.id.buttonNaoLido)
-        val btnLendo = findViewById<MaterialButton>(R.id.buttonLendo)
-        val btnLido = findViewById<MaterialButton>(R.id.buttonLido)
-
-        fun atualizarBotoesLeitura(selecionado: MaterialButton) {
-            val corAtiva = Color.parseColor("#B3D7FF") // Mais escuro
-            val corInativa = Color.parseColor("#F0F7FF") // Cor normal/clara
-
-            btnNaoLido.backgroundTintList = ColorStateList.valueOf(corInativa)
-            btnLendo.backgroundTintList = ColorStateList.valueOf(corInativa)
-            btnLido.backgroundTintList = ColorStateList.valueOf(corInativa)
-
-            selecionado.backgroundTintList = ColorStateList.valueOf(corAtiva)
-        }
-
-        btnNaoLido.setOnClickListener { atualizarBotoesLeitura(btnNaoLido) }
-        btnLendo.setOnClickListener { atualizarBotoesLeitura(btnLendo) }
-        btnLido.setOnClickListener { atualizarBotoesLeitura(btnLido) }
-
-        // 4. Botão Solicitar -> TelaRF19Solicitacoes
-        findViewById<Button>(R.id.buttonSolicitar).setOnClickListener {
-            val intentSolicitar = Intent(context, TelaRF19Solicitacoes::class.java)
-            intentSolicitar.putExtra("LIVRO_ID", livroId)
-            startActivity(intentSolicitar)
-        }
-
-        // 5. Botão Ver Mais -> TelaRF13VerMaisLivro
         findViewById<Button>(R.id.buttonVerMais).setOnClickListener {
             val intentVerMais = Intent(context, TelaRF13VerMaisLivro::class.java)
-            intentVerMais.putExtra("LIVRO_ID", livroId)
+            intentVerMais.putExtra("LIVRO_ID", livroId) // Passando a String
             startActivity(intentVerMais)
         }
 
-        // 6. Botão LER -> TelaRF14LeituraActivity
+        findViewById<Button>(R.id.buttonSolicitar).setOnClickListener {
+            val intentSolicitar = Intent(context, TelaRF19Solicitacoes::class.java)
+            intentSolicitar.putExtra("LIVRO_ID", livroId) // Passando a String
+            startActivity(intentSolicitar)
+        }
+
         findViewById<Button>(R.id.buttonLer).setOnClickListener {
             val intentLer = Intent(context, TelaRF14LeituraActivity::class.java)
-            intentLer.putExtra("LIVRO_ID", livroId)
+            intentLer.putExtra("LIVRO_ID", livroId) // Passando a String
             startActivity(intentLer)
         }
     }
 
     private fun carregarDadosDoLivro(id: String) {
         lifecycleScope.launch {
-            val livro = libroDao.buscarLivroPorId(id)
-            if (livro != null) {
-                findViewById<TextView>(R.id.textTituloLivro).text = livro.title
-                findViewById<TextView>(R.id.textAutorLivro).text = livro.author
-                findViewById<TextView>(R.id.textSobreLivro).text = livro.content
+            val livro = viewModel.buscarLivroPorId(id)
+            livro?.let {
+                findViewById<TextView>(R.id.textTituloLivro).text = it.title
+                findViewById<TextView>(R.id.textAutorLivro).text = it.author
+                findViewById<TextView>(R.id.textSobreLivro).text = it.description
 
                 val imgCapa = findViewById<ImageView>(R.id.imageLivroDetalhes)
-                // Usando placeholder ou imagem real se disponível
-                imgCapa.setImageResource(R.drawable.o_alienista_capa)
-            } else {
-                // Mock data para IDs conhecidos da Minha Livraria caso o banco esteja vazio
-                when(id) {
-                    "1" -> {
-                        findViewById<TextView>(R.id.textTituloLivro).text = "O Alienista"
-                        findViewById<TextView>(R.id.textAutorLivro).text = "Machado de Assis"
-                        findViewById<TextView>(R.id.textSobreLivro).text = "Um clássico da literatura brasileira..."
+                if (it.coverUrl.isNotEmpty()) {
+                    imgCapa.load(it.coverUrl) {
+                        placeholder(R.drawable.osda)
+                        error(R.drawable.osda)
                     }
-                    "2" -> {
-                        findViewById<TextView>(R.id.textTituloLivro).text = "A Sociedade do Anel"
-                        findViewById<TextView>(R.id.textAutorLivro).text = "J.R.R. Tolkien"
-                        findViewById<TextView>(R.id.textSobreLivro).text = "O primeiro volume de O Senhor dos Anéis..."
-                    }
-                    "3" -> {
-                        findViewById<TextView>(R.id.textTituloLivro).text = "Vidas Secas"
-                        findViewById<TextView>(R.id.textAutorLivro).text = "Graciliano Ramos"
-                        findViewById<TextView>(R.id.textSobreLivro).text = "Uma das obras mais importantes do regionalismo..."
-                    }
+                } else {
+                    imgCapa.setImageResource(R.drawable.osda)
                 }
             }
         }
+    }
+
+    private fun configurarBotoesDeStatus() {
+        val btnNaoLido = findViewById<Button>(R.id.buttonNaoLido)
+        val btnLendo = findViewById<Button>(R.id.buttonLendo)
+        val btnLido = findViewById<Button>(R.id.buttonLido)
+
+        btnNaoLido.setOnClickListener {
+            mudarCorDosBotoes(btnNaoLido, btnLendo, btnLido)
+            salvarStatusNoFirebase("Não Lido")
+        }
+        btnLendo.setOnClickListener {
+            mudarCorDosBotoes(btnLendo, btnNaoLido, btnLido)
+            salvarStatusNoFirebase("Lendo")
+        }
+        btnLido.setOnClickListener {
+            mudarCorDosBotoes(btnLido, btnNaoLido, btnLendo)
+            salvarStatusNoFirebase("Lido")
+        }
+    }
+
+    private fun mudarCorDosBotoes(ativo: Button, inativo1: Button, inativo2: Button) {
+        ativo.backgroundTintList = getColorStateList(R.color.biblio_dark)
+        inativo1.backgroundTintList = getColorStateList(R.color.biblio_blue)
+        inativo2.backgroundTintList = getColorStateList(R.color.biblio_blue)
+    }
+
+    private fun salvarStatusNoFirebase(status: String) {
+        val idDoLivro = livroIdAtual ?: return
+        val firestore = FirebaseFirestore.getInstance()
+        val documentoId = "${usuarioFantasmaId}_${idDoLivro}"
+
+        val dados = hashMapOf(
+            "usuarioId" to usuarioFantasmaId,
+            "livroId" to idDoLivro,
+            "statusLeitura" to status,
+            "atualizadoEm" to System.currentTimeMillis()
+        )
+
+        firestore.collection("biblioteca_usuarios")
+            .document(documentoId)
+            .set(dados)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Status: $status salvo!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Erro ao salvar.", Toast.LENGTH_SHORT).show()
+            }
     }
 }

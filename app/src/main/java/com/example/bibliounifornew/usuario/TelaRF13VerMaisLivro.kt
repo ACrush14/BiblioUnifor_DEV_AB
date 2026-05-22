@@ -3,38 +3,48 @@ package com.example.bibliounifornew.usuario
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.bibliounifornew.data.AppDatabase
 import com.example.bibliounifornew.R
+import com.example.bibliounifornew.data.AppDatabase
+import com.example.bibliounifornew.data.LivroRepository
+import com.example.bibliounifornew.viewmodel.LivroViewModel
+import com.example.bibliounifornew.viewmodel.LivroViewModelFactory
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class TelaRF13VerMaisLivro : AppCompatActivity() {
 
-    private val database by lazy { AppDatabase.getDatabase(this@TelaRF13VerMaisLivro) }
-    private val libroDao by lazy { database.livroDao() }
+    // Arquitetura limpa: Instanciando a ViewModel via Factory
+    private val viewModel: LivroViewModel by viewModels {
+        val database = AppDatabase.getDatabase(applicationContext)
+        val repository = LivroRepository(database.livroDao(), FirebaseFirestore.getInstance())
+        LivroViewModelFactory(repository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this@TelaRF13VerMaisLivro.setContentView(R.layout.telarf13_telavermaislivro)
+        setContentView(R.layout.telarf13_telavermaislivro)
 
-        // CORREÇÃO: Pegando o ID como String
         val livroId = intent.getStringExtra("LIVRO_ID")
 
-        // CORREÇÃO: Verificando se a String não é nula
         if (livroId != null) {
             carregarDadosDetalhados(livroId)
         }
     }
 
-    // CORREÇÃO: O parâmetro id agora é uma String
     private fun carregarDadosDetalhados(id: String) {
         lifecycleScope.launch {
-            val livro = libroDao.buscarLivroPorId(id)
+            // Buscando da ViewModel em vez do DAO
+            val livro = viewModel.buscarLivroPorId(id)
+
             livro?.let {
                 findViewById<TextView>(R.id.textTituloLivroInfo).text = it.title
                 findViewById<TextView>(R.id.textAutorLivroInfo).text = it.author
-                findViewById<TextView>(R.id.textDescricaoLivro).text = it.content
+
+                // CORRIGIDO: Trocado de 'content' para 'description'
+                findViewById<TextView>(R.id.textDescricaoLivro).text = it.description
 
                 val imgCapa = findViewById<ImageView>(R.id.imageLivroInfo)
                 if (it.coverUrl.isNotEmpty()) {

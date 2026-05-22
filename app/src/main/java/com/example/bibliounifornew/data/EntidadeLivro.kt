@@ -5,17 +5,27 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "books")
 data class EntidadeLivro(
-    @PrimaryKey(autoGenerate = false) // Mudamos para false
-    val id: String = "", // Agora é String, guardará o ID do Firestore
+    @PrimaryKey
+    val id: String = "",
     val title: String,
     val author: String,
-    val isbn: String = "",
+    val description: String = "", // Substitui o 'content' para ficar mais semântico
     val category: String = "",
-    val isAvailable: Boolean = true,
+    val coverUrl: String = "",
+    val stockQuantity: Int = 0,
+    val rating: Float = 0f,
+    val language: String = "",
+    val publisher: String = "",
+    val dimensions: String = "",
+    val isbn10: String = "",
+    val isbn13: String = "",
+    val asin: String = "",
     val publishDate: String = "",
-    val content: String = "",
-    val lastPosition: Int = 0,
-    val isFavorite: Boolean = false,
     val totalPages: Int = 0,
-    val coverUrl: String = ""
+    val hasPdf: Boolean = false,
+    val hasBraille: Boolean = false,
+    val hasAudiobook: Boolean = false,
+    val librarySector: String = "", // Ex: 75H.102B
+    val isAvailable: Boolean = true,
+    val isFavorite: Boolean = false
 )

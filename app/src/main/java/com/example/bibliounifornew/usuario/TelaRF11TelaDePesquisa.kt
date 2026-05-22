@@ -1,16 +1,10 @@
 package com.example.bibliounifornew.usuario
 
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Window
-import android.widget.CalendarView
+import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
@@ -27,59 +21,20 @@ class TelaRF11TelaDePesquisa : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf11_teladepesquisa)
 
-        val iconFiltro = findViewById<ImageView>(R.id.iconFiltro)
-        val btnProcurar = findViewById<MaterialButton>(R.id.buttonProcurar)
-        val editPesquisar = findViewById<EditText>(R.id.editPesquisarLivro)
+        val editPesquisa = findViewById<EditText>(R.id.editPesquisarLivro)
+        val btnProcurar = findViewById<Button>(R.id.buttonProcurar)
 
-        iconFiltro.setOnClickListener { exibirPopupFiltro() }
-        
         btnProcurar.setOnClickListener {
-            val intent = Intent(this, TelaRF11ResultadoPesquisa::class.java)
-            // Opcional: passar o termo de pesquisa
-            intent.putExtra("QUERY", editPesquisar.text.toString())
-            startActivity(intent)
-        }
-    }
+            val termoBusca = editPesquisa.text.toString().trim()
 
-    private fun exibirPopupFiltro() {
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.popup_filtro_pesquisa)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        val editAutor = dialog.findViewById<EditText>(R.id.editAutor)
-        val editDataPublicacao = dialog.findViewById<EditText>(R.id.editDataPublicacao)
-        val chipGroupDisponibilidade = dialog.findViewById<ChipGroup>(R.id.chipGroupDisponibilidade)
-        val chipGroupCategoria = dialog.findViewById<ChipGroup>(R.id.chipGroupCategoria)
-        val btnSalvar = dialog.findViewById<MaterialButton>(R.id.buttonSalvarFiltro)
-        val btnLimpar = dialog.findViewById<MaterialButton>(R.id.buttonLimparFiltro)
-
-        // Configura o campo de data para abrir o calendário e não o teclado
-        editDataPublicacao.isFocusable = false
-        editDataPublicacao.isClickable = true
-        editDataPublicacao.setOnClickListener { 
-            editDataPublicacaoReferencia = editDataPublicacao
-            val intent = Intent(this, TelaCalendario::class.java)
-            startActivityForResult(intent, 100)
-        }
-
-        btnSalvar.setOnClickListener { dialog.dismiss() }
-
-        btnLimpar.setOnClickListener {
-            editAutor.text.clear()
-            editDataPublicacao.text.clear()
-            chipGroupDisponibilidade.clearCheck()
-            chipGroupCategoria.clearCheck()
-        }
-
-        dialog.show()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 100 && resultCode == RESULT_OK) {
-            val selectedDate = data?.getStringExtra("SELECTED_DATE")
-            editDataPublicacaoReferencia?.setText(selectedDate)
+            if (termoBusca.isNotEmpty()) {
+                // Passa o termo que o usuário digitou para a tela de resultados
+                val intent = Intent(this, TelaRF11_1_ResultadoPesquisa::class.java)
+                intent.putExtra("TERMO_PESQUISA", termoBusca)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Digite o nome de um livro ou autor", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

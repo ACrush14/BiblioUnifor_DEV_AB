@@ -20,7 +20,7 @@
             android:layout_width="80dp"
             android:layout_height="120dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/o_alienista_capa" />
+            android:src="@drawable/osda" />
 
         <LinearLayout
             android:layout_width="0dp"

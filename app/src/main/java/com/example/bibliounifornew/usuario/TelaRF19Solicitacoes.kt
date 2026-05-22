@@ -1,13 +1,10 @@
 package com.example.bibliounifornew.usuario
 
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Window
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 
@@ -24,33 +21,27 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
 
         val context: Context = this@TelaRF19Solicitacoes
 
-        // Todos levam para Termos e Condições
-        val clickParaTermos = {
+        btnPdf?.setOnClickListener {
             val intent = Intent(context, TelaRF19SolicitacoesTermosCondicoes::class.java)
             startActivity(intent)
         }
 
-        btnPdf?.setOnClickListener { clickParaTermos() }
-        btnBraile?.setOnClickListener { clickParaTermos() }
-        btnAudio?.setOnClickListener { clickParaTermos() }
-        btnReservar?.setOnClickListener { clickParaTermos() }
-
         btnSetor?.setOnClickListener {
-            showPopupSetor()
-        }
-    }
-
-    private fun showPopupSetor() {
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.popup_setor_localizado)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        val btnVoltar = dialog.findViewById<Button>(R.id.buttonVoltarSetor)
-        btnVoltar.setOnClickListener {
-            dialog.dismiss()
+            Toast.makeText(
+                context,
+                "Setor do livro O Alienista: Setor X",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
-        dialog.show()
+        btnBraile?.setOnClickListener { 
+            // Implementação futura
+        }
+        btnAudio?.setOnClickListener { 
+            // Implementação futura
+        }
+        btnReservar?.setOnClickListener { 
+            // Implementação futura
+        }
     }
 }

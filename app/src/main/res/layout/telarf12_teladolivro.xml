@@ -30,7 +30,7 @@
                 android:layout_width="100dp"
                 android:layout_height="145dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/o_alienista_capa"
+                android:src="@drawable/osda"
                 android:contentDescription="@string/desc_livro" />
         </com.google.android.material.card.MaterialCardView>
 

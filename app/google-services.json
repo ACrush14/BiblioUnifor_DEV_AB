@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "221306164957",
+    "project_id": "bibliounifor-dev-ab",
+    "storage_bucket": "bibliounifor-dev-ab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:221306164957:android:5e9a886f954f9eb21bed34",
+        "android_client_info": {
+          "package_name": "com.example.bibliounifornew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsumplqFDfbLu9lRNrRsyJ21u9Iit7er4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
@@ -13,7 +14,14 @@ import com.google.android.material.button.MaterialButton
 class TelaRF33CadastroLivro : AppCompatActivity() {
 
     private lateinit var etData: EditText
-    private val REQUEST_CODE_DATA = 100
+
+    // Launcher para obter o resultado do calendário
+    private val calendarLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val dataSelecionada = result.data?.getStringExtra("dataSelecionada")
+            etData.setText(dataSelecionada)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +39,11 @@ class TelaRF33CadastroLivro : AppCompatActivity() {
         tvErro.visibility = View.GONE
 
         // Abrir calendário (RF33 -> Calendário) ao clicar no campo de data
-        // Mas permitir digitação manual se o usuário preferir
         etData.setOnClickListener {
             val intent = Intent(this, TelaRF33CalendarioPublicacao::class.java)
             // Se já houver algo digitado, podemos passar para o calendário
             intent.putExtra("dataAtual", etData.text.toString())
-            startActivityForResult(intent, REQUEST_CODE_DATA)
+            calendarLauncher.launch(intent)
         }
 
         btnAvancar.setOnClickListener {
@@ -66,13 +73,5 @@ class TelaRF33CadastroLivro : AppCompatActivity() {
     // Função simples para validar formato de data dd/MM/yyyy
     private fun validarFormatoData(data: String): Boolean {
         return data.matches(Regex("""\d{2}/\d{2}/\d{4}"""))
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_DATA && resultCode == RESULT_OK) {
-            val dataSelecionada = data?.getStringExtra("dataSelecionada")
-            etData.setText(dataSelecionada)
-        }
     }
 }

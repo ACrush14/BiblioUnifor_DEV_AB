@@ -126,7 +126,6 @@
 
             <!-- CARD LIVRO 1 -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardLivro1Historico"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="24dp"
@@ -200,7 +199,6 @@
 
             <!-- STATUS 1 -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardStatus1Historico"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -223,7 +221,6 @@
 
             <!-- CARD LIVRO 2 -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardLivro2Historico"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="24dp"
@@ -297,7 +294,6 @@
 
             <!-- STATUS 2 -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardStatus2Historico"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

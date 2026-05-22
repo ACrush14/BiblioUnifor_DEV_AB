@@ -270,4 +270,5 @@
     <string name="hint_audiobook">Audiobook...</string>
     <string name="label_disponivel_braille">Disponível em Braille</string>
     <string name="btn_salvar_novo_livro">Salvar novo livro</string>
+    <string name="joao_bobo">Joao Bobo</string>
 </resources>

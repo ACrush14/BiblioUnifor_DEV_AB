@@ -116,37 +116,22 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_bem_vindo_caps"
-                        android:textStyle="bold"/>
-
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnProcurarLivros"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:layout_marginTop="12dp"
-                        android:text="@string/btn_procurar_livros"
-                        app:backgroundTint="@color/biblio_dark"/>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+                app:cardCornerRadius="20dp"/>
 
 
 
-            <!-- BOTÕES -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPesquisarLivros"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="14dp"
+                android:text="Pesquisar livros"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-black"
+                app:backgroundTint="@color/biblio_dark"
+                app:cornerRadius="28dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMinhaLivraria"
@@ -191,7 +176,7 @@
                 android:layout_marginTop="10dp"
                 app:backgroundTint="@color/biblio_dark"/>
 
-
+            <!-- BOTÃO SAIR -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSairConta"
                 android:text="@string/btn_sair_conta"
@@ -201,82 +186,90 @@
                 app:backgroundTint="@color/biblio_red"/>
 
 
-
-
-            <!-- ================= DESCOBRIR ================= -->
-
-            <TextView
-                android:text="@string/label_descobrir"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:layout_marginTop="24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-
-            <HorizontalScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none">
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
+
+                <!-- ================= DESCOBRIR ================= -->
+
+                <TextView
+                    android:text="@string/label_descobrir"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="24dp"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:scrollbars="none">
 
-
-                    <!-- LIVRO -->
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="170dp"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="5dp">
+                        android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+
+                        <!-- LIVRO -->
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="170dp"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:padding="12dp">
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="5dp">
 
-                            <ImageView
-                                android:id="@+id/imgLivroAlienista"
-                                android:layout_width="110dp"
-                                android:layout_height="160dp"
-                                android:src="@drawable/o_alienista_capa"
-                                android:contentDescription="@string/desc_livro"/>
-
-
-                            <TextView
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/titulo_livro"
-                                android:textStyle="bold"
-                                android:textSize="18sp"/>
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="12dp">
+
+                                <ImageView
+                                    android:id="@+id/imgLivroAlienista"
+                                    android:layout_width="110dp"
+                                    android:layout_height="160dp"
+                                    android:src="@drawable/o_alienista_capa"
+                                    android:contentDescription="@string/desc_livro"/>
 
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/autor_machado"
-                                android:textColor="#666"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/titulo_livro"
+                                    android:textStyle="bold"
+                                    android:textSize="18sp"/>
 
 
-                        </LinearLayout>
-
-                    </androidx.cardview.widget.CardView>
-
-
-                </LinearLayout>
-
-            </HorizontalScrollView>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/autor_machado"
+                                    android:textColor="#666"/>
 
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="80dp"/>
+                            </LinearLayout>
 
+                        </androidx.cardview.widget.CardView>
+
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"/>
+
+
+            </LinearLayout>
 
         </LinearLayout>
 

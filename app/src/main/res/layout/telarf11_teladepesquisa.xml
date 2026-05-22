@@ -68,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Encontre seu livro"
+            android:text="Encontre seu próximo livro"
             android:textColor="@color/white"
             android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +104,7 @@
                     android:layout_height="match_parent"
                     android:layout_toStartOf="@+id/iconFiltro"
                     android:background="@android:color/transparent"
-                    android:hint="Título/ISBN..."
+                    android:hint="Pesquise por título, autor ou gênero"
                     android:textColor="#444444"
                     android:textColorHint="#999999"
                     android:textSize="16sp" />

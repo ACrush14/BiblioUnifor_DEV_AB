@@ -240,7 +240,6 @@ class TelaRF25RedefinirSenhaADM :
 
                     InputType.TYPE_CLASS_TEXT or
                             InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                olho1.setImageResource(R.drawable.ic_eye_open)
 
             }
 
@@ -250,7 +249,6 @@ class TelaRF25RedefinirSenhaADM :
 
                     InputType.TYPE_CLASS_TEXT or
                             InputType.TYPE_TEXT_VARIATION_PASSWORD
-                olho1.setImageResource(R.drawable.ic_eye_closed)
 
             }
 
@@ -278,7 +276,6 @@ class TelaRF25RedefinirSenhaADM :
 
                     InputType.TYPE_CLASS_TEXT or
                             InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                olho2.setImageResource(R.drawable.ic_eye_open)
 
             }
 
@@ -288,7 +285,6 @@ class TelaRF25RedefinirSenhaADM :
 
                     InputType.TYPE_CLASS_TEXT or
                             InputType.TYPE_TEXT_VARIATION_PASSWORD
-                olho2.setImageResource(R.drawable.ic_eye_closed)
 
             }
 

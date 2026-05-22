@@ -82,7 +82,7 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/headerVerificarMidia"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -140,15 +140,11 @@
                         android:textSize="16sp" />
 
                     <ImageView
-                        android:id="@+id/btnFiltro"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:padding="4dp"
                         android:src="@drawable/ic_chevron_right"
                         android:rotation="90"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
                         app:tint="@color/biblio_blue" />
 
                 </LinearLayout>
@@ -167,7 +163,6 @@
 
             <!-- CARD DO LIVRO -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardLivroExemplo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -258,6 +253,13 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-
+    <!-- BARRA ADM PADRONIZADA -->
+    <FrameLayout
+        android:id="@+id/bottomNavContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+        />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
