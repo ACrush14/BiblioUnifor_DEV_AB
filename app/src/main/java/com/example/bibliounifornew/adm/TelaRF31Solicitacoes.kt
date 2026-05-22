@@ -141,7 +141,7 @@ class TelaRF31Solicitacoes : AppCompatActivity() {
         val txtNome = dialog.findViewById<TextView>(R.id.textPopupNomeUsuario)
         val txtSolicitacoes = dialog.findViewById<TextView>(R.id.textPopupListaSolicitacoes)
         val txtStatus = dialog.findViewById<TextView>(R.id.textPopupStatus)
-        val btnFechar = dialog.findViewById<Button>(R.id.btnFecharPopupSolicitacoes)
+        val btnFechar = dialog.findViewById<Button>(R.id.btnFecharSolicitacoes)
 
         txtNome.text = "Nome: $nome"
         txtSolicitacoes.text = "Solicitações: $solicitacoes"

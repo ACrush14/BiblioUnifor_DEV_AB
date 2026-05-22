@@ -63,7 +63,7 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
         dialog.setContentView(R.layout.popup_solicitacoes_usuario_adm)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        val btnFechar = dialog.findViewById<Button>(R.id.btnFecharPopupSolicitacoes)
+        val btnFechar = dialog.findViewById<Button>(R.id.btnFecharSolicitacoes)
         btnFechar?.setOnClickListener {
             dialog.dismiss()
         }

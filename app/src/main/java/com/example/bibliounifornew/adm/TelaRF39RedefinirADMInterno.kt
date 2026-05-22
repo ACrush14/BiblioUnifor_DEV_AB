@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.widget.EditText
+import androidx.appcompat.widget.AppCompatImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
@@ -19,16 +20,16 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
         setContentView(R.layout.telarf39_redefinir_adm_interno)
 
         // 1. Inicialização dos componentes (findViewById)
-        val btnVoltar = findViewById<ImageView>(R.id.btnVoltar)
+        val btnVoltar = findViewById<AppCompatImageView>(R.id.btnVoltar)
         val btnSalvar = findViewById<MaterialButton>(R.id.btnSalvarAlteracoes)
 
         val editSenhaAtual = findViewById<EditText>(R.id.editSenhaAtual)
         val editNovaSenha = findViewById<EditText>(R.id.editNovaSenha)
         val editConfirmarSenha = findViewById<EditText>(R.id.editConfirmarSenha)
 
-        val eyeSenhaAtual = findViewById<ImageView>(R.id.eyeSenhaAtual)
-        val eyeNovaSenha = findViewById<ImageView>(R.id.eyeNovaSenha)
-        val eyeConfirmarSenha = findViewById<ImageView>(R.id.eyeConfirmarSenha)
+        val eyeSenhaAtual = findViewById<AppCompatImageView>(R.id.eyeSenhaAtual)
+        val eyeNovaSenha = findViewById<AppCompatImageView>(R.id.eyeNovaSenha)
+        val eyeConfirmarSenha = findViewById<AppCompatImageView>(R.id.eyeConfirmarSenha)
 
         val errorSenhaAtual = findViewById<TextView>(R.id.errorSenhaAtual)
         val errorNovaSenha = findViewById<TextView>(R.id.errorNovaSenha)
@@ -100,7 +101,7 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
     /**
      * Função reutilizável para a lógica do olho (mostrar/ocultar senha)
      */
-    private fun configurarOlhoSenha(editText: EditText, imageView: ImageView) {
+    private fun configurarOlhoSenha(editText: EditText, imageView: AppCompatImageView) {
         var isVisible = false
         imageView.setOnClickListener {
             isVisible = !isVisible
