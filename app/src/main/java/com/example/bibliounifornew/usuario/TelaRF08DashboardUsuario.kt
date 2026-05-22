@@ -11,110 +11,227 @@ import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
 
 class TelaRF08DashboardUsuario : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf08_dashboardusuario)
 
-        // Botões do Header
-        val btnConfig = findViewById<ImageView>(R.id.btnConfig)
-        val btnNotificacao = findViewById<ImageView>(R.id.btnNotificacao)
-        val profileImage = findViewById<ImageView>(R.id.imagePerfilUsuario)
-        val textNomeUsuario = findViewById<TextView>(R.id.textNomeUsuario)
+        // Header
+        val btnConfig =
+            findViewById<ImageView>(R.id.btnConfig)
 
-        // Botões de Ações Rápidas (Cards/Buttons no ScrollView)
-        val btnPesquisarLivros = findViewById<MaterialButton>(R.id.btnPesquisarLivros) // NOVO BOTÃO
-        val btnProcurarLivros = findViewById<MaterialButton>(R.id.btnProcurarLivros)
-        val btnMinhaLivraria = findViewById<MaterialButton>(R.id.btnMinhaLivraria)
-        val btnListaDesejo = findViewById<MaterialButton>(R.id.btnListaDesejos)
-        val btnAmigos = findViewById<MaterialButton>(R.id.btnAmigos)
-        val btnHistorico = findViewById<MaterialButton>(R.id.btnHistorico)
-        val btnStatusAluguel = findViewById<MaterialButton>(R.id.btnStatusAluguel)
-        val btnSair = findViewById<MaterialButton>(R.id.btnSairConta)
+        val btnNotificacao =
+            findViewById<ImageView>(R.id.btnNotificacao)
 
-        // Livros (Descobrir)
-        val imgLivroAlienista = findViewById<ImageView>(R.id.imgLivroAlienista)
+        // Ações rápidas
+        val btnPesquisarLivros =
+            findViewById<MaterialButton>(R.id.btnPesquisarLivros)
 
-        // Navegação via Engrenagem -> Configuração (RF09)
+        val btnMinhaLivraria =
+            findViewById<MaterialButton>(R.id.btnMinhaLivraria)
+
+        val btnListaDesejo =
+            findViewById<MaterialButton>(R.id.btnListaDesejos)
+
+        val btnAmigos =
+            findViewById<MaterialButton>(R.id.btnAmigos)
+
+        val btnHistorico =
+            findViewById<MaterialButton>(R.id.btnHistorico)
+
+        val btnStatusAluguel =
+            findViewById<MaterialButton>(R.id.btnStatusAluguel)
+
+        val btnSair =
+            findViewById<MaterialButton>(R.id.btnSairConta)
+
+        // Livro destaque
+        val imgLivroAlienista =
+            findViewById<ImageView>(R.id.imgLivroAlienista)
+
+
+        //------------------------------------
+        // NAVEGAÇÕES
+        //------------------------------------
+
         btnConfig.setOnClickListener {
-            val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF09Configuracao::class.java)
-            startActivity(intent)
+            startActivity(
+                Intent(
+                    this,
+                    TelaRF09Configuracao::class.java
+                )
+            )
         }
 
         btnNotificacao.setOnClickListener {
-            val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF20Notificacoes::class.java)
-            startActivity(intent)
+
+            startActivity(
+                Intent(
+                    this,
+                    TelaRF20Notificacoes::class.java
+                )
+            )
+
         }
 
-        // Ações Rápidas
-
-        // NOVO INTENT PARA A PESQUISA
         btnPesquisarLivros.setOnClickListener {
-            val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF11TelaDePesquisa::class.java)
-            startActivity(intent)
-        }
 
-        btnProcurarLivros.setOnClickListener {
-            val intent = Intent(this, TelaRF11TelaDePesquisa::class.java)
-            startActivity(intent)
+            startActivity(
+                Intent(
+                    this,
+                    TelaRF11TelaDePesquisa::class.java
+                )
+            )
+
         }
 
         btnMinhaLivraria.setOnClickListener {
-            val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF15MinhaLivrariaActivity::class.java)
-            startActivity(intent)
+
+            startActivity(
+                Intent(
+                    this,
+                    TelaRF15MinhaLivrariaActivity::class.java
+                )
+            )
+
         }
 
         btnListaDesejo.setOnClickListener {
-            val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF16ListaDesejosActivity::class.java)
-            startActivity(intent)
+
+            startActivity(
+                Intent(
+                    this,
+                    TelaRF16ListaDesejosActivity::class.java
+                )
+            )
+
         }
 
         btnAmigos.setOnClickListener {
-            val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF17Amigos::class.java)
-            startActivity(intent)
+
+            startActivity(
+                Intent(
+                    this,
+                    TelaRF17Amigos::class.java
+                )
+            )
+
         }
 
         btnHistorico.setOnClickListener {
-            val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF21Historico::class.java)
-            startActivity(intent)
+
+            startActivity(
+                Intent(
+                    this,
+                    TelaRF21Historico::class.java
+                )
+            )
+
         }
 
         btnStatusAluguel.setOnClickListener {
-            val intent = Intent(this@TelaRF08DashboardUsuario, TelaRF18StatusAluguel::class.java)
-            startActivity(intent)
+
+            startActivity(
+                Intent(
+                    this,
+                    TelaRF18StatusAluguel::class.java
+                )
+            )
+
         }
 
         btnSair.setOnClickListener {
             showExitPopup()
         }
 
-        // Click no Livro
         imgLivroAlienista.setOnClickListener {
-            val intent = Intent(this, TelaRF12TelaDoLivro::class.java)
-            intent.putExtra("LIVRO_ID", "1") // O Alienista é ID 1
+
+            val intent =
+                Intent(
+                    this,
+                    TelaRF12TelaDoLivro::class.java
+                )
+
+            intent.putExtra(
+                "LIVRO_ID",
+                "1"
+            )
+
             startActivity(intent)
+
         }
 
     }
+
+
+    //------------------------------------
+    // POPUP SAIR
+    //------------------------------------
 
     private fun showExitPopup() {
-        val dialogView = layoutInflater.inflate(R.layout.popup_sair_conta, null)
-        val builder = AlertDialog.Builder(this)
+
+        val dialogView =
+            layoutInflater.inflate(
+                R.layout.popup_sair_conta,
+                null
+            )
+
+        val builder =
+            AlertDialog.Builder(this)
+
         builder.setView(dialogView)
-        val dialog = builder.create()
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        dialogView.findViewById<MaterialButton>(R.id.btnConfirmarSair).setOnClickListener {
-            dialog.dismiss()
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
-        }
+        val dialog =
+            builder.create()
 
-        dialogView.findViewById<TextView>(R.id.btnCancelarSair).setOnClickListener {
-            dialog.dismiss()
-        }
+        dialog.window?.setBackgroundDrawableResource(
+            android.R.color.transparent
+        )
+
+
+        // Confirmar saída
+
+        dialogView
+            .findViewById<MaterialButton>(
+                R.id.btnConfirmarSair
+            )
+
+            .setOnClickListener {
+
+                dialog.dismiss()
+
+                val intentSair =
+                    Intent(
+                        this,
+                        MainActivity::class.java
+                    )
+
+                intentSair.flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                startActivity(intentSair)
+
+                finish()
+
+            }
+
+
+        // Cancelar
+
+        dialogView
+            .findViewById<TextView>(
+                R.id.btnCancelarSair
+            )
+
+            .setOnClickListener {
+
+                dialog.dismiss()
+
+            }
 
         dialog.show()
+
     }
+
 }

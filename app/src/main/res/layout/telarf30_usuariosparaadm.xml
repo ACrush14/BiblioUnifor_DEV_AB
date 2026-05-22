@@ -90,6 +90,19 @@
                 android:alpha="0.9"
                 android:textSize="14sp" />
 
+            <TextView
+                android:id="@+id/textTipoUsuario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_pill_status"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:text="ALUNO"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

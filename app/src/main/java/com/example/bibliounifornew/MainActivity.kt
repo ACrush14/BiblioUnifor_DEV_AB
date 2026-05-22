@@ -22,13 +22,16 @@ class MainActivity : AppCompatActivity() {
             val tipoUsuario = listOf("adm", "user").random()
 
             if (!usuarioLogado) {
-                startActivity(Intent(this@MainActivity, TelaRF02Intermediaria::class.java))
+                val intent = Intent(this@MainActivity, TelaRF02Intermediaria::class.java)
+                startActivity(intent)
 
             } else {
                 if (tipoUsuario == "adm") {
-                    startActivity(Intent(this@MainActivity, TelaRF28DashboardADM::class.java))
+                    val intent = Intent(this@MainActivity, TelaRF28DashboardADM::class.java)
+                    startActivity(intent)
                 } else {
-                    startActivity(Intent(this@MainActivity, TelaRF08DashboardUsuario::class.java))
+                    val intent = Intent(this@MainActivity, TelaRF08DashboardUsuario::class.java)
+                    startActivity(intent)
                 }
             }
 

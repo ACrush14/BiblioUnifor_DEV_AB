@@ -578,11 +578,11 @@
 
     </ScrollView>
 
-    <!-- NAV BAR -->
-    <include
+    <!-- Espaçador Inferior para evitar sobreposição (Substituindo o include que causava crash) -->
+    <View
         android:id="@+id/bottomNavAdm"
         android:layout_width="match_parent"
-        android:layout_height="74dp"
+        android:layout_height="1dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
