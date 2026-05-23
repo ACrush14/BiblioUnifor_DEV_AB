@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLivro"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="280dp"
         android:background="@color/biblio_detalhes"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -53,57 +53,84 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- TÍTULO IMPACTANTE -->
-        <TextView
-            android:id="@+id/textTituloLivro"
+        <EditText
+            android:id="@+id/editTituloLivro"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="55dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="8dp"
             android:text="O Alienista"
             android:textColor="@color/white"
             android:textSize="26sp"
             android:fontFamily="sans-serif-black"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@android:color/transparent"
+            android:enabled="false"
+            app:layout_constraintEnd_toStartOf="@id/btnEditTitulo"
             app:layout_constraintStart_toEndOf="@id/cardCapaLivro"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/btnEditTitulo"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_edit_pencil"
+            app:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/editTituloLivro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/editTituloLivro" />
+
         <!-- AUTOR ELEGANTE -->
-        <TextView
-            android:id="@+id/textAutorLivro"
+        <EditText
+            android:id="@+id/editAutorLivro"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="8dp"
             android:text="Machado de Assis"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:alpha="0.8"
             android:fontFamily="sans-serif-medium"
+            android:background="@android:color/transparent"
+            android:enabled="false"
+            app:layout_constraintEnd_toStartOf="@id/btnEditAutor"
+            app:layout_constraintStart_toStartOf="@id/editTituloLivro"
+            app:layout_constraintTop_toBottomOf="@id/editTituloLivro" />
+
+        <ImageView
+            android:id="@+id/btnEditAutor"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_edit_pencil"
+            app:tint="@color/white"
+            android:alpha="0.8"
+            app:layout_constraintBottom_toBottomOf="@id/editAutorLivro"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/textTituloLivro"
-            app:layout_constraintTop_toBottomOf="@id/textTituloLivro" />
+            app:layout_constraintTop_toTopOf="@id/editAutorLivro" />
 
         <!-- BOTÃO APAGAR (PILL-SHAPE PERFEITO) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnApagarMidia"
             android:layout_width="0dp"
             android:layout_height="56dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
+            android:fontFamily="sans-serif-black"
+            android:letterSpacing="0.02"
             android:text="Apagar Mídia"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:fontFamily="sans-serif-black"
-            android:letterSpacing="0.02"
             app:backgroundTint="@color/biblio_red"
             app:cornerRadius="28dp"
             app:elevation="8dp"
-            app:rippleColor="#40FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/textTituloLivro"
-            app:layout_constraintTop_toBottomOf="@id/textAutorLivro" />
+            app:layout_constraintStart_toStartOf="@id/editTituloLivro"
+            app:layout_constraintTop_toBottomOf="@id/editAutorLivro"
+            app:rippleColor="#40FFFFFF" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -134,15 +161,29 @@
                 android:orientation="vertical"
                 android:padding="28dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sobre"
-                    android:textColor="@color/black"
-                    android:textSize="26sp"
-                    android:fontFamily="sans-serif-black" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Sobre"
+                        android:textColor="@color/black"
+                        android:textSize="26sp"
+                        android:fontFamily="sans-serif-black" />
+                    <ImageView
+                        android:id="@+id/btnEditDescricao"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_edit_pencil"
+                        app:tint="@color/black" />
+                </LinearLayout>
 
-                <TextView
+                <EditText
+                    android:id="@+id/editDescricaoLivro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -150,7 +191,9 @@
                     android:text="Machado de Assis, neste livro, propõe a seguinte pergunta: quem é louco? Conheça a história do médico Simão Bacamarte, dedicado e estudioso da mente humana, que decide construir um hospício para tratar os doentes mentais na pequena cidade de Itaguaí a casa verde. Quem entra e quem fica de fora? Surpreenda-se com o final."
                     android:textColor="#555555"
                     android:textSize="16sp"
-                    android:fontFamily="sans-serif" />
+                    android:fontFamily="sans-serif"
+                    android:background="@android:color/transparent"
+                    android:enabled="false" />
             </LinearLayout>
 
             <!-- LISTA DE DETALHES REFINADA -->
@@ -174,14 +217,18 @@
                         android:textColor="@color/black"
                         android:textSize="17sp"
                         android:fontFamily="sans-serif-medium" />
-                    <TextView
+                    <EditText
+                        android:id="@+id/editLingua"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Português"
                         android:textColor="#777777"
-                        android:textSize="17sp" />
+                        android:textSize="17sp"
+                        android:background="@android:color/transparent"
+                        android:enabled="false" />
                     <ImageView
+                        android:id="@+id/btnEditLingua"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_edit_pencil"
@@ -203,14 +250,18 @@
                         android:textColor="@color/black"
                         android:textSize="17sp"
                         android:fontFamily="sans-serif-medium" />
-                    <TextView
+                    <EditText
+                        android:id="@+id/editEditora"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Intrínseca"
                         android:textColor="#777777"
-                        android:textSize="17sp" />
+                        android:textSize="17sp"
+                        android:background="@android:color/transparent"
+                        android:enabled="false" />
                     <ImageView
+                        android:id="@+id/btnEditEditora"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_edit_pencil"
@@ -232,14 +283,18 @@
                         android:textColor="@color/black"
                         android:textSize="17sp"
                         android:fontFamily="sans-serif-medium" />
-                    <TextView
+                    <EditText
+                        android:id="@+id/editDimensao"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="15.24 x 0.51 x 22.86 cm"
                         android:textColor="#777777"
-                        android:textSize="17sp" />
+                        android:textSize="17sp"
+                        android:background="@android:color/transparent"
+                        android:enabled="false" />
                     <ImageView
+                        android:id="@+id/btnEditDimensao"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_edit_pencil"
@@ -261,14 +316,18 @@
                         android:textColor="@color/black"
                         android:textSize="17sp"
                         android:fontFamily="sans-serif-medium" />
-                    <TextView
+                    <EditText
+                        android:id="@+id/editISBN10"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="856356093X"
                         android:textColor="#777777"
-                        android:textSize="17sp" />
+                        android:textSize="17sp"
+                        android:background="@android:color/transparent"
+                        android:enabled="false" />
                     <ImageView
+                        android:id="@+id/btnEditISBN10"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_edit_pencil"
@@ -290,14 +349,18 @@
                         android:textColor="@color/black"
                         android:textSize="17sp"
                         android:fontFamily="sans-serif-medium" />
-                    <TextView
+                    <EditText
+                        android:id="@+id/editISBN13"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="978-8563560933"
                         android:textColor="#777777"
-                        android:textSize="17sp" />
+                        android:textSize="17sp"
+                        android:background="@android:color/transparent"
+                        android:enabled="false" />
                     <ImageView
+                        android:id="@+id/btnEditISBN13"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_edit_pencil"
@@ -319,14 +382,18 @@
                         android:textColor="@color/black"
                         android:textSize="17sp"
                         android:fontFamily="sans-serif-medium" />
-                    <TextView
+                    <EditText
+                        android:id="@+id/editData"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="18 dezembro 2019"
                         android:textColor="#777777"
-                        android:textSize="17sp" />
+                        android:textSize="17sp"
+                        android:background="@android:color/transparent"
+                        android:enabled="false" />
                     <ImageView
+                        android:id="@+id/btnEditData"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_edit_pencil"
@@ -348,14 +415,18 @@
                         android:textColor="@color/black"
                         android:textSize="17sp"
                         android:fontFamily="sans-serif-medium" />
-                    <TextView
+                    <EditText
+                        android:id="@+id/editPaginas"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="80"
                         android:textColor="#777777"
-                        android:textSize="17sp" />
+                        android:textSize="17sp"
+                        android:background="@android:color/transparent"
+                        android:enabled="false" />
                     <ImageView
+                        android:id="@+id/btnEditPaginas"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_edit_pencil"
@@ -394,6 +465,7 @@
 
                     <!-- MENOS (CÍRCULO ELEVADO) -->
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btnDiminuirExemplares"
                         android:layout_width="42dp"
                         android:layout_height="42dp"
                         app:cardBackgroundColor="@color/white"
@@ -412,6 +484,7 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <TextView
+                        android:id="@+id/textExemplaresTotal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -423,6 +496,7 @@
 
                     <!-- MAIS (CÍRCULO ELEVADO) -->
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btnAumentarExemplares"
                         android:layout_width="42dp"
                         android:layout_height="42dp"
                         app:cardBackgroundColor="@color/white"

@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="@string/titulo_adicionar_midia"
+            android:text="Arquivos e Mídia"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold"
@@ -77,7 +77,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerAdicionarArquivos">
 
         <LinearLayout
@@ -116,9 +116,11 @@
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
                     android:clickable="true"
-                    android:focusable="false"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:gravity="center_vertical"
-                    android:hint="PDF..."
+                    android:hint="Caminho ou link do PDF..."
+                    android:inputType="textUri"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:textColor="@color/black"
@@ -154,9 +156,11 @@
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
                     android:clickable="true"
-                    android:focusable="false"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:gravity="center_vertical"
-                    android:hint="Audiobook..."
+                    android:hint="Caminho ou link do Audiobook..."
+                    android:inputType="textUri"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:textColor="@color/black"
@@ -220,16 +224,6 @@
 
     </ScrollView>
 
-    <!-- ====================================================== -->
-    <!-- BOTTOM NAVIGATION -->
-    <!-- ====================================================== -->
 
-    <FrameLayout
-        android:id="@+id/bottomNavContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent">/>
-
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

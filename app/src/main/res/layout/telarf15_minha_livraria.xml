@@ -106,14 +106,17 @@
                     android:layout_weight="1" />
 
                 <ImageView
-                    android:layout_width="27dp"
-                    android:layout_height="match_parent"
+                    android:id="@+id/imgFiltroStatus"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="10dp"
                     android:src="@android:drawable/arrow_down_float"
                     app:tint="@color/biblio_dark" />
             </LinearLayout>
 
             <!-- ITEM 1: O ALIENISTA -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardLivro1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -175,12 +178,16 @@
 
                     <TextView
                         android:id="@+id/menu1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:text="@string/menu_opcoes_simbolo"
                         android:textColor="@color/black"
                         android:textSize="22sp"
                         android:textStyle="bold"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -207,7 +214,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnRemover1"
                         android:layout_width="wrap_content"
-                        android:layout_height="44dp"
+                        android:layout_height="48dp"
                         android:text="@string/btn_remover"
                         android:textAllCaps="false"
                         app:backgroundTint="@color/biblio_blue"
@@ -216,10 +223,11 @@
                         app:layout_constraintEnd_toEndOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- ITEM 2: A SOCIEDADE DO ANEL -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardLivro2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -281,12 +289,16 @@
 
                     <TextView
                         android:id="@+id/menu2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:text="@string/menu_opcoes_simbolo"
                         android:textColor="@color/black"
                         android:textSize="22sp"
                         android:textStyle="bold"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -301,8 +313,9 @@
                         app:layout_constraintStart_toStartOf="@id/title2" />
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRemover2"
                         android:layout_width="wrap_content"
-                        android:layout_height="44dp"
+                        android:layout_height="48dp"
                         android:text="@string/btn_remover"
                         android:textAllCaps="false"
                         app:backgroundTint="@color/biblio_blue"
@@ -311,10 +324,11 @@
                         app:layout_constraintEnd_toEndOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- ITEM 3: VIDAS SECAS -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardLivro3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -376,12 +390,16 @@
 
                     <TextView
                         android:id="@+id/menu3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:text="@string/menu_opcoes_simbolo"
                         android:textColor="@color/black"
                         android:textSize="22sp"
                         android:textStyle="bold"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -406,8 +424,9 @@
                         app:layout_constraintStart_toStartOf="@id/title3" />
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRemover3"
                         android:layout_width="wrap_content"
-                        android:layout_height="44dp"
+                        android:layout_height="48dp"
                         android:text="@string/btn_remover"
                         android:textAllCaps="false"
                         app:backgroundTint="@color/biblio_blue"
@@ -416,7 +435,7 @@
                         app:layout_constraintEnd_toEndOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

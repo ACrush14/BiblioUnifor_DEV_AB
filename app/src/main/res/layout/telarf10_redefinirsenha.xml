@@ -100,7 +100,8 @@
                 android:layout_marginTop="4dp"
                 android:text="Campo obrigatório"
                 android:textColor="@color/biblio_red"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
 
             <!-- INPUT NOVA SENHA -->
             <RelativeLayout
@@ -130,7 +131,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="4dp"
                     android:padding="12dp"
-                    android:src="@drawable/ic_eye_open"
+                    android:src="@drawable/ic_eye_closed"
                     app:tint="@color/biblio_blue"
                     android:clickable="true"
                     android:focusable="true"
@@ -146,7 +147,8 @@
                 android:layout_marginTop="8dp"
                 android:text="A senha é a mesma da antiga"
                 android:textColor="@color/biblio_red"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
 
             <!-- CONFIRMAR LABEL -->
             <TextView
@@ -167,7 +169,8 @@
                 android:layout_marginTop="4dp"
                 android:text="Campo obrigatório"
                 android:textColor="@color/biblio_red"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
 
             <!-- INPUT CONFIRMAR -->
             <RelativeLayout
@@ -197,7 +200,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="4dp"
                     android:padding="12dp"
-                    android:src="@drawable/ic_eye_open"
+                    android:src="@drawable/ic_eye_closed"
                     app:tint="@color/biblio_blue"
                     android:clickable="true"
                     android:focusable="true"
@@ -214,7 +217,8 @@
                 android:text="• A senha deve conter pelo menos 8 caracteres&#10;• Um número&#10;• Uma letra maiúscula"
                 android:textColor="@color/biblio_red"
                 android:textSize="13sp"
-                android:alpha="0.8" />
+                android:alpha="0.8"
+                android:visibility="gone" />
 
             <!-- ERRO -->
             <TextView
@@ -225,7 +229,8 @@
                 android:text="As senhas estão diferentes, verifique!"
                 android:textColor="@color/biblio_red"
                 android:textSize="13sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <!-- BOTÃO -->
             <com.google.android.material.button.MaterialButton

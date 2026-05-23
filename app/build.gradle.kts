@@ -43,6 +43,12 @@ kotlin {
 }
 
 dependencies {
+
+    // Importa a Bill of Materials (BoM) do Firebase para alinhar as versões
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+
+    // Adiciona a dependência do Firebase Authentication
+    implementation("com.google.firebase:firebase-auth")
     // Android UI e Core
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
@@ -66,10 +72,13 @@ dependencies {
     // Coil para carregamento de imagens por URL
     implementation("io.coil-kt:coil:2.7.0")
 
+    implementation("com.google.firebase:firebase-messaging:23.4.1") // ou versão mais recente sugerida pelo Android Studio
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
     // Retrofit para chamadas de internet
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Converte o resultado para objetos Kotlin
 
+    implementation("com.google.firebase:firebase-firestore")
     // Testes
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)

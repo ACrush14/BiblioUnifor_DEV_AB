@@ -225,71 +225,33 @@ class TelaRF07RedefinirSenha :
         //---------------------------------
         // OLHO SENHA
         //---------------------------------
-
-        var visivel1=false
-
+        var visivel1 = false
         olhoSenha.setOnClickListener {
-
-            visivel1=!visivel1
-
-            if(visivel1){
-
-                senhaNova.inputType=
-
-                    InputType.TYPE_CLASS_TEXT or
-                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-
+            if (visivel1) {
+                senhaNova.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                olhoSenha.setImageResource(R.drawable.ic_eye_closed)
+            } else {
+                senhaNova.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                olhoSenha.setImageResource(R.drawable.ic_eye_open)
             }
-
-            else{
-
-                senhaNova.inputType=
-
-                    InputType.TYPE_CLASS_TEXT or
-                            InputType.TYPE_TEXT_VARIATION_PASSWORD
-
-            }
-
-            senhaNova.setSelection(
-                senhaNova.text.length
-            )
-
+            visivel1 = !visivel1
+            senhaNova.setSelection(senhaNova.text.length)
         }
-
-
 
         //---------------------------------
         // OLHO CONFIRMAR
         //---------------------------------
-
-        var visivel2=false
-
+        var visivel2 = false
         olhoConfirmar.setOnClickListener {
-
-            visivel2=!visivel2
-
-            if(visivel2){
-
-                confirmar.inputType=
-
-                    InputType.TYPE_CLASS_TEXT or
-                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-
+            if (visivel2) {
+                confirmar.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                olhoConfirmar.setImageResource(R.drawable.ic_eye_closed)
+            } else {
+                confirmar.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                olhoConfirmar.setImageResource(R.drawable.ic_eye_open)
             }
-
-            else{
-
-                confirmar.inputType=
-
-                    InputType.TYPE_CLASS_TEXT or
-                            InputType.TYPE_TEXT_VARIATION_PASSWORD
-
-            }
-
-            confirmar.setSelection(
-                confirmar.text.length
-            )
-
+            visivel2 = !visivel2
+            confirmar.setSelection(confirmar.text.length)
         }
 
     }

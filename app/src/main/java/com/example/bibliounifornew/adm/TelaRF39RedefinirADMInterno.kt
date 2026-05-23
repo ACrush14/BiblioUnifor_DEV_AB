@@ -1,17 +1,14 @@
 package com.example.bibliounifornew.adm
 
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.widget.Button
 import android.text.InputType
-import android.view.View
 import android.widget.EditText
-import androidx.appcompat.widget.AppCompatImageView
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
-import com.google.android.material.button.MaterialButton
 
 class TelaRF39RedefinirADMInterno : AppCompatActivity() {
 
@@ -19,122 +16,55 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf39_redefinir_adm_interno)
 
-        // 1. Inicialização dos componentes (findViewById)
-        val btnVoltar = findViewById<AppCompatImageView>(R.id.btnVoltar)
-        val btnSalvar = findViewById<MaterialButton>(R.id.btnSalvarAlteracoes)
+        val etSenha = findViewById<EditText>(R.id.editTextTextPassword)
+        val etSenhaConfirmacao = findViewById<EditText>(R.id.editTextTextPasswordConfirmacao)
+        val bntX = findViewById<TextView>(R.id.buttonX) // Alterado para TextView para evitar crash
+        val bntSalvar = findViewById<Button>(R.id.buttonSalvar)
 
-        val editSenhaAtual = findViewById<EditText>(R.id.editSenhaAtual)
-        val editNovaSenha = findViewById<EditText>(R.id.editNovaSenha)
-        val editConfirmarSenha = findViewById<EditText>(R.id.editConfirmarSenha)
+        val iconOlhoSenha = findViewById<ImageView>(R.id.iconOlhoSenha)
+        val iconOlhoSenhaConfirmacao = findViewById<ImageView>(R.id.iconOlhoSenhaConfirmacao)
 
-        val eyeSenhaAtual = findViewById<AppCompatImageView>(R.id.eyeSenhaAtual)
-        val eyeNovaSenha = findViewById<AppCompatImageView>(R.id.eyeNovaSenha)
-        val eyeConfirmarSenha = findViewById<AppCompatImageView>(R.id.eyeConfirmarSenha)
+        var senhaVisivel = false
+        var senhaConfirmacaoVisivel = false
 
-        val errorSenhaAtual = findViewById<TextView>(R.id.errorSenhaAtual)
-        val errorNovaSenha = findViewById<TextView>(R.id.errorNovaSenha)
-        val errorConfirmarSenha = findViewById<TextView>(R.id.errorConfirmarSenha)
+        iconOlhoSenha.setOnClickListener {
+            senhaVisivel = !senhaVisivel
+            if (senhaVisivel) {
+                etSenha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                iconOlhoSenha.setImageResource(R.drawable.ic_eye_open)
+            } else {
+                etSenha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                iconOlhoSenha.setImageResource(R.drawable.ic_eye_closed)
+            }
+            etSenha.setSelection(etSenha.text.length)
+        }
 
-        // 2. Lógica para mostrar/ocultar senha (Olho)
-        configurarOlhoSenha(editSenhaAtual, eyeSenhaAtual)
-        configurarOlhoSenha(editNovaSenha, eyeNovaSenha)
-        configurarOlhoSenha(editConfirmarSenha, eyeConfirmarSenha)
+        iconOlhoSenhaConfirmacao.setOnClickListener {
+            senhaConfirmacaoVisivel = !senhaConfirmacaoVisivel
+            if (senhaConfirmacaoVisivel) {
+                etSenhaConfirmacao.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                iconOlhoSenhaConfirmacao.setImageResource(R.drawable.ic_eye_open)
+            } else {
+                etSenhaConfirmacao.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                iconOlhoSenhaConfirmacao.setImageResource(R.drawable.ic_eye_closed)
+            }
+            etSenhaConfirmacao.setSelection(etSenhaConfirmacao.text.length)
+        }
 
-        // 3. Botão Voltar
-        btnVoltar.setOnClickListener {
+        bntSalvar.setOnClickListener {
+            val s1 = etSenha.text.toString()
+            val s2 = etSenhaConfirmacao.text.toString()
+
+            if (s1 == s2 && s1.isNotEmpty()) {
+                Toast.makeText(this, "Senha redefinida com sucesso!", Toast.LENGTH_SHORT).show()
+                finish()
+            } else {
+                Toast.makeText(this, "As senhas não coincidem", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        bntX.setOnClickListener {
             finish()
         }
-
-        // 4. Botão Salvar com Validações
-        btnSalvar.setOnClickListener {
-            val senhaAtual = editSenhaAtual.text.toString()
-            val novaSenha = editNovaSenha.text.toString()
-            val confirmarSenha = editConfirmarSenha.text.toString()
-
-            // Resetar erros visualmente
-            errorSenhaAtual.visibility = View.GONE
-            errorNovaSenha.visibility = View.GONE
-            errorConfirmarSenha.visibility = View.GONE
-
-            var isValid = true
-
-            // Validação: Senha Atual (Simulação: senha correta é 'admin123')
-            if (senhaAtual.isEmpty()) {
-                errorSenhaAtual.text = "Preencha este campo"
-                errorSenhaAtual.visibility = View.VISIBLE
-                isValid = false
-            } else if (senhaAtual != "admin123") {
-                errorSenhaAtual.text = "Senha inválida"
-                errorSenhaAtual.visibility = View.VISIBLE
-                isValid = false
-            }
-
-            // Validação: Nova Senha
-            if (novaSenha.isEmpty()) {
-                errorNovaSenha.text = "Preencha este campo"
-                errorNovaSenha.visibility = View.VISIBLE
-                isValid = false
-            } else if (novaSenha.length < 8) {
-                errorNovaSenha.text = "Mínimo 8 caracteres"
-                errorNovaSenha.visibility = View.VISIBLE
-                isValid = false
-            }
-
-            // Validação: Confirmar Senha
-            if (confirmarSenha.isEmpty()) {
-                errorConfirmarSenha.text = "Preencha este campo"
-                errorConfirmarSenha.visibility = View.VISIBLE
-                isValid = false
-            } else if (confirmarSenha != novaSenha) {
-                errorConfirmarSenha.text = "As senhas não coincidem"
-                errorConfirmarSenha.visibility = View.VISIBLE
-                isValid = false
-            }
-
-            // Se tudo estiver correto, abre o popup de sucesso
-            if (isValid) {
-                exibirPopupSucesso()
-            }
-        }
-    }
-
-    /**
-     * Função reutilizável para a lógica do olho (mostrar/ocultar senha)
-     */
-    private fun configurarOlhoSenha(editText: EditText, imageView: AppCompatImageView) {
-        var isVisible = false
-        imageView.setOnClickListener {
-            isVisible = !isVisible
-            if (isVisible) {
-                // Mostra a senha
-                editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                imageView.setImageResource(R.drawable.ic_eye_open)
-            } else {
-                // Oculta a senha (formato •••••)
-                editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                imageView.setImageResource(R.drawable.ic_eye_closed)
-            }
-            // Mantém o cursor no final do texto
-            editText.setSelection(editText.text.length)
-        }
-    }
-
-    /**
-     * Exibe o popup de sucesso ao salvar alterações
-     */
-    private fun exibirPopupSucesso() {
-        val dialog = Dialog(this)
-        dialog.setContentView(R.layout.popup_salvar_sucesso)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setCancelable(false) // Impede fechar clicando fora
-
-        val btnVoltarPopup = dialog.findViewById<MaterialButton>(R.id.buttonVoltarPopup)
-
-        btnVoltarPopup.setOnClickListener {
-            dialog.dismiss()
-            finish() // Retorna para a tela de Configurações ADM
-        }
-
-        dialog.show()
     }
 }

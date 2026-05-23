@@ -4,19 +4,21 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface UsuarioDao {
 
-    // insere ou atualizar os users logados ai se ele ja existir substitui com os dados novos
+    // REPLACE garante que se o usuário já existir localmente (ex: fez login em outro aparelho e baixou os dados), ele atualiza.
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun inserirOuAtualizarUsuario(usuario: Usuario)
+    suspend fun inserirUsuario(usuario: Usuario)
 
-    // Busca os dados do usuário logado pra montar a dashboard do 08
-    @Query("SELECT * FROM tabela_usuarios WHERE uid = :uid LIMIT 1")
-    suspend fun obterUsuarioPorUid(uid: String): Usuario?
+    @Query("SELECT * FROM tabela_usuarios WHERE uid = :uid")
+    suspend fun buscarUsuarioPorUid(uid: String): Usuario?
 
-    // Deleta os dados locais quando o usuario deslogar do app
-    @Query("DELETE FROM tabela_usuarios")
-    suspend fun deslogarUsuarioLocal()
+    @Query("SELECT * FROM tabela_usuarios")
+    suspend fun buscarTodosUsuarios(): List<Usuario>
+
+    @Update
+    suspend fun atualizarUsuario(usuario: Usuario)
 }
