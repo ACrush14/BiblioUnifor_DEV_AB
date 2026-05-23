@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="320dp"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_popup_rounded"
+    android:background="@drawable/bg_dialog_rounded"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="32dp">
+    android:paddingLeft="32dp"
+    android:paddingRight="32dp"
+    android:paddingTop="48dp"
+    android:paddingBottom="40dp">
 
     <!-- TÍTULO -->
     <TextView
@@ -14,34 +17,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:lineSpacingExtra="4dp"
-        android:text='Você deseja alugar o livro "O Alienista"?'
+        android:lineSpacingExtra="8dp"
+        android:text='Você deseja alugar o livro\n"O Alienista"?'
         android:textColor="@color/biblio_blue"
         android:textSize="22sp"
         android:textStyle="bold" />
 
-    <!-- BOTÃO PRIMÁRIO -->
+    <!-- BOTÃO ALUGAR -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonAdicionarLivro"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginTop="32dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="40dp"
         android:text="Alugar"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:backgroundTint="@color/biblio_blue"
-        app:cornerRadius="28dp"
-        app:elevation="0dp" />
+        app:cornerRadius="31dp"
+        app:elevation="2dp" />
 
     <!-- CANCELAR -->
     <TextView
         android:id="@+id/textCancelarPopup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:padding="8dp"
+        android:layout_marginTop="24dp"
+        android:padding="12dp"
         android:gravity="center"
         android:text="Cancelar"
         android:textColor="@color/biblio_red"

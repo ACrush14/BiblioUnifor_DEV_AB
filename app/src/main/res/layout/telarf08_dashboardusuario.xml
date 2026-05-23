@@ -179,12 +179,20 @@
             <!-- BOTÃO SAIR -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSairConta"
-                android:text="@string/btn_sair_conta"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="24dp"
-                app:backgroundTint="@color/biblio_red"/>
+                android:text="@string/btn_sair_conta"
+                app:backgroundTint="@color/biblio_red" />
 
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/label_descobrir"
+                android:textSize="28sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -195,14 +203,6 @@
 
 
                 <!-- ================= DESCOBRIR ================= -->
-
-                <TextView
-                    android:text="@string/label_descobrir"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="24dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
 
 
                 <HorizontalScrollView
