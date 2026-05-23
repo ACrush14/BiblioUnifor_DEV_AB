@@ -13,7 +13,6 @@ import com.example.bibliounifornew.data.AuthRepository
 import com.example.bibliounifornew.data.UsuarioRepository
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
-import com.example.bibliounifornew.R
 
 class TelaRF15MinhaLivrariaActivity : AppCompatActivity() {
 

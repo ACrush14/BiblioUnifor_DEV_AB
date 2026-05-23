@@ -42,13 +42,23 @@ kotlin {
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        force("com.google.firebase:firebase-messaging:24.0.0")
+        force("com.google.android.gms:play-services-tasks:18.1.0")
+        force("com.google.android.gms:play-services-basement:18.3.0")
+    }
+}
+
 dependencies {
+    // Firebase BoM para alinhar as versões
+    implementation(platform(libs.firebase.bom))
 
-    // Importa a Bill of Materials (BoM) do Firebase para alinhar as versões
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    // Firebase (versões gerenciadas pelo BoM)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.messaging)
 
-    // Adiciona a dependência do Firebase Authentication
-    implementation("com.google.firebase:firebase-auth")
     // Android UI e Core
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
@@ -61,24 +71,18 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    // Firebase (BOM garante compatibilidade entre todas as libs do Firebase)
-    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-auth")
-
     // Coroutines para Firebase (.await)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
 
     // Coil para carregamento de imagens por URL
     implementation("io.coil-kt:coil:2.7.0")
 
-    implementation("com.google.firebase:firebase-messaging:23.4.1") // ou versão mais recente sugerida pelo Android Studio
     implementation("com.google.android.gms:play-services-auth:21.2.0")
+
     // Retrofit para chamadas de internet
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Converte o resultado para objetos Kotlin
 
-    implementation("com.google.firebase:firebase-firestore")
     // Testes
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
