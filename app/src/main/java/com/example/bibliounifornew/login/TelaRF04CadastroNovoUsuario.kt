@@ -137,9 +137,11 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
                     btnCriar.text = "Criar Conta"
 
                     if (sucesso) {
+                        com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+                            ?.sendEmailVerification()
                         mostrarPopupSucesso()
                     } else {
-                        Toast.makeText(this@TelaRF04CadastroNovoUsuario, "Erro: $mensagem", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@TelaRF04CadastroNovoUsuario, traduzirErroFirebase(mensagem), Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -160,6 +162,21 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
             finish()
         }
         dialog.show()
+    }
+
+    private fun traduzirErroFirebase(mensagem: String?): String {
+        return when {
+            mensagem == null                                        -> "Ocorreu um erro inesperado. Tente novamente."
+            mensagem.contains("email address is already")          -> "Este e-mail já está cadastrado."
+            mensagem.contains("badly formatted")                   -> "Formato de e-mail inválido."
+            mensagem.contains("network error", ignoreCase = true)
+                || mensagem.contains("unreachable")                -> "Sem conexão com a internet. Verifique sua rede."
+            mensagem.contains("password is invalid")
+                || mensagem.contains("least 6 characters")        -> "Senha muito fraca. Use pelo menos 8 caracteres."
+            mensagem.contains("too many requests", ignoreCase = true) -> "Muitas tentativas. Aguarde alguns minutos."
+            mensagem.contains("Conta criada, mas falha")           -> "Conta criada! Mas não foi possível salvar seu perfil. Tente fazer login."
+            else                                                   -> "Não foi possível criar a conta. Tente novamente."
+        }
     }
 
     private fun carregarLogoSegura(imageView: ImageView) {

@@ -142,10 +142,11 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/txtContadorUsuarios"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="5.785"
+                                android:text="—"
                                 android:textColor="@color/biblio_blue"
                                 android:textSize="24sp"
                                 android:textStyle="bold" />
@@ -166,10 +167,11 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/txtContadorAlugueis"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="342"
+                                android:text="—"
                                 android:textColor="@color/biblio_blue"
                                 android:textSize="24sp"
                                 android:textStyle="bold" />
@@ -217,73 +219,14 @@
                         android:textStyle="bold" />
 
                     <LinearLayout
+                        android:id="@+id/containerAnaliseAlugueis"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:orientation="vertical">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingVertical="4dp">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Março 2026"
-                                android:textColor="#415E5E"
-                                android:textSize="16sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="342"
-                                android:textColor="@color/black"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
+                        <!-- populado em runtime por carregarEstatisticas() -->
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingVertical="4dp">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Fevereiro 2026"
-                                android:textColor="#415E5E"
-                                android:textSize="16sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="294"
-                                android:textColor="@color/black"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingVertical="4dp">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Janeiro 2026"
-                                android:textColor="#415E5E"
-                                android:textSize="16sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="648"
-                                android:textColor="@color/black"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
@@ -327,52 +270,14 @@
                         android:textStyle="bold" />
 
                     <LinearLayout
+                        android:id="@+id/containerAtrasosCriticos"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:orientation="vertical">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingVertical="4dp">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="João Bobo"
-                                android:textColor="#415E5E"
-                                android:textSize="16sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="15 dias"
-                                android:textColor="@color/biblio_red"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
+                        <!-- populado em runtime por carregarAtrasosCriticos() -->
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingVertical="4dp">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Roberta Sá"
-                                android:textColor="#415E5E"
-                                android:textSize="16sp" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="3 dias"
-                                android:textColor="@color/biblio_red"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
@@ -416,34 +321,14 @@
                         android:textStyle="bold" />
 
                     <LinearLayout
+                        android:id="@+id/containerCadastrosPendentes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingVertical="4dp"
-                            android:text="• Jéssica Amaral"
-                            android:textColor="#415E5E"
-                            android:textSize="16sp" />
+                        <!-- populado em runtime por carregarEstatisticas() -->
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingVertical="4dp"
-                            android:text="• Jeferson da Rocha"
-                            android:textColor="#415E5E"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingVertical="4dp"
-                            android:text="• Roberto de Souza"
-                            android:textColor="#415E5E"
-                            android:textSize="16sp" />
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton

@@ -10,9 +10,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.firestore.FirebaseFirestore
 
 class TelaRF33CadastroLivro : AppCompatActivity() {
 
+    private val db            = FirebaseFirestore.getInstance()
     private lateinit var etData: EditText
 
     // Launcher para obter o resultado do calendário
@@ -27,51 +29,84 @@ class TelaRF33CadastroLivro : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf33_cadastro_livro)
 
-        val etTitulo = findViewById<EditText>(R.id.editTituloLivro)
-        val etAutor = findViewById<EditText>(R.id.editAutorLivro)
-        val etISBN = findViewById<EditText>(R.id.editCodigoIsbn)
-        etData = findViewById<EditText>(R.id.editDataPublicacao)
-        val etQuantidade = findViewById<EditText>(R.id.editQuantidadeExemplares)
+        val etTitulo   = findViewById<EditText>(R.id.editTituloLivro)
+        val etAutor    = findViewById<EditText>(R.id.editAutorLivro)
+        val etISBN     = findViewById<EditText>(R.id.editCodigoIsbn)
+        etData         = findViewById<EditText>(R.id.editDataPublicacao)
+        val etQtd      = findViewById<EditText>(R.id.editQuantidadeExemplares)
         val btnAvancar = findViewById<MaterialButton>(R.id.btnEditarMaisInformacoes2)
-        val tvErro = findViewById<TextView>(R.id.textErroCampos)
+        val tvErro     = findViewById<TextView>(R.id.textErroCampos)
 
-        // Esconder erro inicialmente
         tvErro.visibility = View.GONE
 
-        // Abrir calendário (RF33 -> Calendário) ao clicar no campo de data
+        // Abrir calendário ao clicar no campo de data
         etData.setOnClickListener {
             val intent = Intent(this, TelaRF33CalendarioPublicacao::class.java)
-            // Se já houver algo digitado, podemos passar para o calendário
             intent.putExtra("dataAtual", etData.text.toString())
             calendarLauncher.launch(intent)
         }
 
         btnAvancar.setOnClickListener {
-            val titulo = etTitulo.text.toString().trim()
-            val autor = etAutor.text.toString().trim()
-            val isbn = etISBN.text.toString().trim()
-            val data = etData.text.toString().trim()
-            val quantidade = etQuantidade.text.toString().trim()
+            val titulo    = etTitulo.text.toString().trim()
+            val autor     = etAutor.text.toString().trim()
+            val isbn      = etISBN.text.toString().trim()
+            val data      = etData.text.toString().trim()
+            val qtdStr    = etQtd.text.toString().trim()
 
-            // Validação de campos obrigatórios
-            if (titulo.isEmpty() || autor.isEmpty() || isbn.isEmpty() || data.isEmpty() || quantidade.isEmpty()) {
+            // ── Validação ────────────────────────────────────────────────────
+            if (titulo.isEmpty() || autor.isEmpty() || isbn.isEmpty() || data.isEmpty() || qtdStr.isEmpty()) {
                 tvErro.visibility = View.VISIBLE
-                tvErro.text = "Preencha todas as informações do livro"
-                Toast.makeText(this, "Preencha todas as informações do livro", Toast.LENGTH_SHORT).show()
-            } else if (!validarFormatoData(data)) {
-                tvErro.visibility = View.VISIBLE
-                tvErro.text = "Data inválida (dd/mm/aaaa)"
-                Toast.makeText(this, "Data inválida", Toast.LENGTH_SHORT).show()
-            } else {
-                tvErro.visibility = View.GONE
-                val intent = Intent(this, TelaRF33AdicionarMidiasExtras::class.java)
-                startActivity(intent)
+                tvErro.text = "Preencha todas as informações do livro."
+                return@setOnClickListener
             }
+            if (!validarFormatoData(data)) {
+                tvErro.visibility = View.VISIBLE
+                tvErro.text = "Data inválida (dd/mm/aaaa)."
+                return@setOnClickListener
+            }
+            val quantidade = qtdStr.toLongOrNull()
+            if (quantidade == null || quantidade < 1) {
+                tvErro.visibility = View.VISIBLE
+                tvErro.text = "Quantidade deve ser um número maior que zero."
+                return@setOnClickListener
+            }
+
+            // ── Salvar no Firestore ───────────────────────────────────────────
+            tvErro.visibility    = View.GONE
+            btnAvancar.isEnabled = false
+
+            val dados = hashMapOf(
+                "title"          to titulo,
+                "titulo"         to titulo,
+                "author"         to autor,
+                "autor"          to autor,
+                "isbn"           to isbn,
+                "codigo_isbn"    to isbn,
+                "dataPublicacao" to data,
+                "quantidade"     to quantidade,
+                "exemplares"     to quantidade,
+                "criadoEm"       to System.currentTimeMillis()
+            )
+
+            db.collection("livros")
+                .add(dados)
+                .addOnSuccessListener { docRef ->
+                    btnAvancar.isEnabled = true
+                    Toast.makeText(this, "Livro cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, TelaRF33AdicionarMidiasExtras::class.java)
+                    intent.putExtra("LIVRO_ID", docRef.id)
+                    startActivity(intent)
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    btnAvancar.isEnabled = true
+                    tvErro.visibility    = View.VISIBLE
+                    tvErro.text          = "Erro ao salvar: ${e.message}"
+                    Toast.makeText(this, "Falha ao cadastrar livro.", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 
-    // Função simples para validar formato de data dd/MM/yyyy
-    private fun validarFormatoData(data: String): Boolean {
-        return data.matches(Regex("""\d{2}/\d{2}/\d{4}"""))
-    }
+    private fun validarFormatoData(data: String): Boolean =
+        data.matches(Regex("""\d{2}/\d{2}/\d{4}"""))
 }
