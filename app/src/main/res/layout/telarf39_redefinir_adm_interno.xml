@@ -140,13 +140,15 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tvErroIgualAntiga"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="A senha é a mesma da antiga"
+                android:text="A senha não pode ser igual à anterior"
                 android:textColor="@color/biblio_red"
                 android:textSize="12sp"
                 android:layout_marginTop="4dp"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="8dp"
+                android:visibility="gone"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -211,23 +213,29 @@
                 android:layout_marginStart="8dp">
 
                 <TextView
+                    android:id="@+id/tvErroMinCaracteres"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="• A senha deve conter pelo menos 8 caracteres"
                     android:textColor="@color/biblio_red"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
                 <TextView
+                    android:id="@+id/tvErroNumero"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="• Um número"
+                    android:text="• Adicione pelo menos 1 número"
                     android:textColor="@color/biblio_red"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
                 <TextView
+                    android:id="@+id/tvErroMaiuscula"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="• Uma letra maiúscula"
+                    android:text="• Adicione pelo menos 1 letra maiúscula"
                     android:textColor="@color/biblio_red"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <TextView
@@ -236,10 +244,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_gravity="center_horizontal"
-                android:text="As senhas estão diferentes, verifique!"
+                android:text="As senhas estão diferentes"
                 android:textColor="@color/biblio_red"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonSalvar"

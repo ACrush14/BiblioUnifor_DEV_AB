@@ -190,39 +190,15 @@
                 app:cornerRadius="12dp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnVoltarDashboard"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginBottom="12dp"
-                android:text="Voltar ao Dashboard"
-                android:textAllCaps="false"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                app:backgroundTint="@color/biblio_blue"
-                app:cornerRadius="12dp" />
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnApagarConta"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="20dp"
                 android:text="Apagar conta"
                 android:textAllCaps="false"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                app:backgroundTint="@color/biblio_blue"
-                app:cornerRadius="12dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnVoltar"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginBottom="20dp"
-                android:text="Voltar"
-                android:textAllCaps="false"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                app:backgroundTint="@color/biblio_blue"
+                app:backgroundTint="@color/biblio_red"
                 app:cornerRadius="12dp" />
 
         </LinearLayout>

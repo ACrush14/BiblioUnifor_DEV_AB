@@ -70,6 +70,9 @@ class TelaRF16ListaDesejosActivity : AppCompatActivity() {
             autor          = "Neal Shusterman",
             disponivel     = false
         )
+
+        // Configurar Barra de Navegação
+        NavigationHelper.configurarBarraNavegacao(this)
     }
 
     private fun configurarLivro(

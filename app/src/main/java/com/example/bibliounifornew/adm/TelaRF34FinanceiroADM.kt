@@ -46,6 +46,8 @@ class TelaRF34FinanceiroADM : AppCompatActivity() {
             val intent = Intent(this, TelaRF18_2CalendarioRenovacao::class.java)
             startActivity(intent)
         }
+
+        NavigationHelperADM.configurarBarraNavegacao(this)
     }
 
     /**

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="84dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+    android:layout_marginBottom="24dp"
+    app:cardBackgroundColor="#F8F8F8"
+    app:cardCornerRadius="36dp"
+    app:cardElevation="12dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:weightSum="5">
+
+        <!-- HOME (ATIVO) -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnHomeAdm"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Home"
+            android:focusable="true"
+            android:padding="16dp"
+            android:src="@drawable/ic_home"
+            app:tint="#0D47FF"
+            tools:ignore="HardcodedText" />
+
+        <!-- FINANCEIRO -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnFinanceiro"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Financeiro"
+            android:focusable="true"
+            android:padding="16dp"
+            android:src="@drawable/ic_payments"
+            app:tint="#B7B7B7"
+            tools:ignore="HardcodedText" />
+
+        <!-- GESTÃO USUÁRIOS -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnUsuarios"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Gestão Usuários"
+            android:focusable="true"
+            android:padding="16dp"
+            android:src="@drawable/ic_manage_users"
+            app:tint="#B7B7B7"
+            tools:ignore="HardcodedText" />
+
+        <!-- SUPORTE -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnSuporte"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Suporte"
+            android:focusable="true"
+            android:padding="16dp"
+            android:src="@drawable/ic_help"
+            app:tint="#B7B7B7"
+            tools:ignore="HardcodedText" />
+
+        <!-- LIVROS -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnLivros"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Livros"
+            android:focusable="true"
+            android:padding="16dp"
+            android:src="@drawable/ic_library"
+            app:tint="#B7B7B7"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

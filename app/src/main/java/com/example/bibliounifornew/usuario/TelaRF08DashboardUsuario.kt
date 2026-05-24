@@ -58,10 +58,10 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
         val btnConfig = findViewById<ImageView>(R.id.btnConfig)
         val btnNotificacao = findViewById<ImageView>(R.id.btnNotificacao)
         val btnPesquisarLivros = findViewById<MaterialButton>(R.id.btnPesquisarLivros)
-        val btnMinhaLivraria = findViewById<MaterialButton>(R.id.btnMinhaLivraria)
+        val btnMinhaLivrariaDashboard = findViewById<MaterialButton>(R.id.btnMinhaLivraria)
         val btnListaDesejo = findViewById<MaterialButton>(R.id.btnListaDesejos)
-        val btnAmigos = findViewById<MaterialButton>(R.id.btnAmigos)
-        val btnHistorico = findViewById<MaterialButton>(R.id.btnHistorico)
+        val btnAmigosDashboard = findViewById<MaterialButton>(R.id.btnAmigos)
+        val btnHistoricoDashboard = findViewById<MaterialButton>(R.id.btnHistorico)
         val btnStatusAluguel = findViewById<MaterialButton>(R.id.btnStatusAluguel)
         val btnSair = findViewById<MaterialButton>(R.id.btnSairConta)
         val imgLivroAlienista = findViewById<ImageView>(R.id.imgLivroAlienista)
@@ -69,10 +69,10 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
         btnConfig.setOnClickListener { startActivity(Intent(this, TelaRF09Configuracao::class.java)) }
         btnNotificacao.setOnClickListener { startActivity(Intent(this, TelaRF20Notificacoes::class.java)) }
         btnPesquisarLivros.setOnClickListener { startActivity(Intent(this, TelaRF11TelaDePesquisa::class.java)) }
-        btnMinhaLivraria.setOnClickListener { startActivity(Intent(this, TelaRF15MinhaLivrariaActivity::class.java)) }
+        btnMinhaLivrariaDashboard.setOnClickListener { startActivity(Intent(this, TelaRF15MinhaLivrariaActivity::class.java)) }
         btnListaDesejo.setOnClickListener { startActivity(Intent(this, TelaRF16ListaDesejosActivity::class.java)) }
-        btnAmigos.setOnClickListener { startActivity(Intent(this, TelaRF17Amigos::class.java)) }
-        btnHistorico.setOnClickListener { startActivity(Intent(this, TelaRF21Historico::class.java)) }
+        btnAmigosDashboard.setOnClickListener { startActivity(Intent(this, TelaRF17Amigos::class.java)) }
+        btnHistoricoDashboard.setOnClickListener { startActivity(Intent(this, TelaRF21Historico::class.java)) }
         btnStatusAluguel.setOnClickListener { startActivity(Intent(this, TelaRF18StatusAluguel::class.java)) }
 
         // Sair desloga do Firebase antes de voltar para o menu inicial
@@ -83,6 +83,9 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
             intent.putExtra("LIVRO_ID", "1")
             startActivity(intent)
         }
+
+        // Configurar Barra de Navegação
+        NavigationHelper.configurarBarraNavegacao(this)
     }
 
     private fun showExitPopup() {

@@ -28,7 +28,7 @@ class TelaRF33Versoes : AppCompatActivity() {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setCancelable(false)
 
-        val btnVoltarPopup = dialog.findViewById<MaterialButton>(R.id.btnVoltarMidias)
+        val btnVoltarPopup = dialog.findViewById<MaterialButton>(R.id.btnVoltar)
 
         btnVoltarPopup.setOnClickListener {
             dialog.dismiss()

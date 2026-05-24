@@ -73,6 +73,9 @@ class TelaRF17Amigos : AppCompatActivity() {
         // ─── CARREGAMENTO DE DADOS ────────────────────────────────────────────
         carregarAmigos()
         carregarSolicitacoesRecebidas()
+
+        // Configurar Barra de Navegação
+        NavigationHelper.configurarBarraNavegacao(this)
     }
 
     // ─── CARREGAMENTO ─────────────────────────────────────────────────────────

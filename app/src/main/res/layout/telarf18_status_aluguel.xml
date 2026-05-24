@@ -67,7 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/barraUsuario"
         app:layout_constraintTop_toBottomOf="@id/headerStatusAluguel">
 
         <LinearLayout
@@ -76,7 +76,7 @@
             android:orientation="vertical"
             android:paddingHorizontal="32dp"
             android:paddingTop="24dp"
-            android:paddingBottom="40dp">
+            android:paddingBottom="100dp">
 
             <!-- TÍTULO -->
             <TextView
@@ -347,5 +347,13 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <!-- BARRA DE TAREFAS FIXA -->
+    <include
+        android:id="@+id/barraUsuario"
+        layout="@layout/barra_tarefas_usuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -68,5 +68,8 @@ class TelaRF18StatusAluguel : AppCompatActivity() {
         btnRenovar3?.setOnClickListener {
             Toast.makeText(this, "Prazo expirado. Por favor, devolva o livro na biblioteca.", Toast.LENGTH_LONG).show()
         }
+
+        // Configurar Barra de Navegação
+        NavigationHelper.configurarBarraNavegacao(this)
     }
 }

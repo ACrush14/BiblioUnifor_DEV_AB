@@ -15,7 +15,6 @@ import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.AuthRepository
 import com.example.bibliounifornew.data.UsuarioRepository
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 
 class TelaRF21Historico : AppCompatActivity() {
@@ -23,6 +22,7 @@ class TelaRF21Historico : AppCompatActivity() {
     private val authRepository    = AuthRepository()
     private val usuarioRepository = UsuarioRepository()
     private val db                = FirebaseFirestore.getInstance()
+
     private lateinit var adapter  : HistoricoAdapter
     private val listaHistorico    = mutableListOf<ItemHistorico>()
     private var usuarioId         : String = ""
@@ -31,7 +31,7 @@ class TelaRF21Historico : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf21_historico)
 
-        // ─── AUTENTICAÇÃO ─────────────────────────────────────────────────────
+        // ─── AUTENTICAÇÃO E SESSÃO SEGURA ─────────────────────────────────────
         val textCabecalho = findViewById<TextView>(R.id.textEmailHistorico)
         val usuarioAtual  = authRepository.getUsuarioAtual()
 
@@ -44,13 +44,22 @@ class TelaRF21Historico : AppCompatActivity() {
             return
         }
 
-        // ─── RECYCLERVIEW ─────────────────────────────────────────────────────
+        // ─── BARRA DE NAVEGAÇÃO FIXA (Brena) ──────────────────────────────────
+        try {
+            com.example.bibliounifornew.util.NavigationHelper.configurarBarraNavegacao(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        // ─── RECYCLERVIEW DINÂMICO ─────────────────────────────────────────────
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewHistorico)
         adapter = HistoricoAdapter(listaHistorico) { item, position ->
             showPopupRemover(item.titulo) {
+                // Remove fisicamente do Firestore usando o repositório integrado
                 usuarioRepository.removerDoHistorico(usuarioId, item.livroId) { sucesso ->
                     if (sucesso) {
                         adapter.removerItem(position)
+                        Toast.makeText(this, "Item removido do seu histórico.", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this, "Falha ao remover. Tente novamente.", Toast.LENGTH_SHORT).show()
                     }
@@ -60,10 +69,13 @@ class TelaRF21Historico : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        // ─── CONSULTA FIRESTORE ───────────────────────────────────────────────
+        // ─── CONSULTA FIRESTORE REAL ───────────────────────────────────────────
         carregarHistorico()
     }
 
+    /**
+     * Carrega os dados reais do histórico ordenados por data de adição
+     */
     private fun carregarHistorico() {
         db.collection("historico_usuarios")
             .whereEqualTo("usuarioId", usuarioId)
@@ -72,25 +84,17 @@ class TelaRF21Historico : AppCompatActivity() {
             .addOnSuccessListener { result ->
                 listaHistorico.clear()
                 for (document in result) {
-                    val livroId = document.getString("livroId")
-                        ?: document.id.substringAfter("${usuarioId}_")
-                    val item = ItemHistorico(
-                        livroId  = livroId,
-                        titulo   = document.getString("titulo") ?: "",
-                        autor    = document.getString("autor")  ?: "",
-                        dataLido = document.getLong("adicionadoEm") ?: 0L
-                    )
-                    listaHistorico.add(item)
+                    val livroId  = document.getString("livroId") ?: ""
+                    val titulo   = document.getString("titulo") ?: "Título Indisponível"
+                    val autor    = document.getString("autor") ?: "Autor Desconhecido"
+                    val dataLido = document.getLong("adicionadoEm") ?: 0L
+
+                    listaHistorico.add(ItemHistorico(livroId, titulo, autor, dataLido))
                 }
                 adapter.notifyDataSetChanged()
             }
-            .addOnFailureListener { e ->
-                val mensagem = if (e is FirebaseFirestoreException) {
-                    "Histórico indisponível. Configure o índice no Firestore Console."
-                } else {
-                    "Erro ao carregar histórico."
-                }
-                Toast.makeText(this, mensagem, Toast.LENGTH_LONG).show()
+            .addOnFailureListener {
+                Toast.makeText(this, "Erro ao carregar histórico.", Toast.LENGTH_SHORT).show()
             }
     }
 

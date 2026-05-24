@@ -38,6 +38,8 @@ class TelaRF32LivrosCRUD : AppCompatActivity() {
         findViewById<ImageView>(R.id.btnFiltro)?.setOnClickListener {
             abrirPopupFiltro()
         }
+
+        NavigationHelperADM.configurarBarraNavegacao(this)
     }
 
     private fun abrirPopupFiltro() {
