@@ -79,6 +79,9 @@ class TelaRF15MinhaLivrariaActivity : AppCompatActivity() {
             menuIconId = R.id.menu3,
             livroId = 3
         )
+
+        // Configurar Barra de Navegação
+        NavigationHelper.configurarBarraNavegacao(this)
     }
 
     // ----------------------------------------------------

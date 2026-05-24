@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="84dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+    android:layout_marginBottom="24dp"
+    app:cardBackgroundColor="#F8F8F8"
+    app:cardCornerRadius="36dp"
+    app:cardElevation="12dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:weightSum="6">
+
+        <!-- HOME (ATIVO) -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/nav_btnHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Home"
+            android:focusable="true"
+            android:padding="18dp"
+            android:src="@drawable/ic_home"
+            app:tint="#0D47FF"
+            tools:ignore="HardcodedText" />
+
+        <!-- MINHA LIVRARIA -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/nav_btnMinhaLivraria"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Livraria"
+            android:focusable="true"
+            android:padding="18dp"
+            android:src="@drawable/ic_library"
+            app:tint="#B7B7B7"
+            tools:ignore="HardcodedText" />
+
+        <!-- PESQUISA -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/nav_btnPesquisa"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Pesquisa"
+            android:focusable="true"
+            android:padding="18dp"
+            android:src="@drawable/ic_search"
+            app:tint="#B7B7B7"
+            tools:ignore="HardcodedText" />
+
+        <!-- LISTA DE DESEJOS -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/nav_btnDesejos"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Desejos"
+            android:focusable="true"
+            android:padding="18dp"
+            android:src="@drawable/ic_favorite"
+            app:tint="#B7B7B7"
+            tools:ignore="HardcodedText" />
+
+        <!-- HISTÓRICO -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/nav_btnHistorico"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Histórico"
+            android:focusable="true"
+            android:padding="18dp"
+            android:src="@drawable/ic_history"
+            app:tint="#B7B7B7"
+            tools:ignore="HardcodedText" />
+
+        <!-- AMIGOS -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/nav_btnAmigos"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Amigos"
+            android:focusable="true"
+            android:padding="18dp"
+            android:src="@drawable/ic_people"
+            app:tint="#B7B7B7"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

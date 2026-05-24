@@ -66,7 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/barraUsuario"
         app:layout_constraintTop_toBottomOf="@id/headerListaDesejos">
 
         <LinearLayout
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="16dp"
-            android:paddingBottom="48dp">
+            android:paddingBottom="100dp">
 
             <!-- TÍTULO MINHA LISTA DE DESEJO -->
             <LinearLayout
@@ -413,5 +413,13 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <!-- BARRA DE TAREFAS FIXA -->
+    <include
+        android:id="@+id/barraUsuario"
+        layout="@layout/barra_tarefas_usuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -55,5 +55,8 @@ class TelaRF28DashboardADM : AppCompatActivity() {
             val intent = Intent(this@TelaRF28DashboardADM, TelaRF38ConfigADM::class.java)
             startActivity(intent)
         }
+
+        // --- Configuração da Barra de Navegação ---
+        NavigationHelperADM.configurarBarraNavegacao(this)
     }
 }

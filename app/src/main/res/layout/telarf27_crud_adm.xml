@@ -67,10 +67,11 @@
     <!-- CONTEÚDO COM BOTÕES PILL -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:paddingHorizontal="32dp"
         android:paddingTop="40dp"
+        app:layout_constraintBottom_toTopOf="@id/include_nav_adm"
         app:layout_constraintTop_toBottomOf="@id/headerCrudAdm">
 
         <!-- BOTÃO 1: CRIAR MÍDIA -->
@@ -127,5 +128,12 @@
             app:rippleColor="#40FFFFFF" />
 
     </LinearLayout>
+
+    <include
+        android:id="@+id/include_nav_adm"
+        layout="@layout/barra_tarefas_adm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

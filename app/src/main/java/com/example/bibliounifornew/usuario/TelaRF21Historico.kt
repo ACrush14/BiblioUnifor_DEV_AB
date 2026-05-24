@@ -65,6 +65,9 @@ class TelaRF21Historico : AppCompatActivity() {
                 Toast.makeText(this, "Livro removido do histórico", Toast.LENGTH_SHORT).show()
             }
         }
+
+        // Configurar Barra de Navegação
+        NavigationHelper.configurarBarraNavegacao(this)
     }
 
     /**
