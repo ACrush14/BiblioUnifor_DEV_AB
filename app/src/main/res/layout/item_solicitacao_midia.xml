@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/txtTituloLivro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Título do Livro"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtAutorLivro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Autor do Livro"
+            android:textColor="#666666"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/txtNomeUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Solicitado por: Usuário"
+            android:textColor="@color/biblio_blue"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/txtTiposSolicitados"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Tipos: Audiobook, PDF"
+            android:textColor="#333333"
+            android:textSize="14sp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnVerSolicitacao"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ver"
+                    app:icon="@android:drawable/ic_menu_view" />
+
+                <Button
+                    android:id="@+id/btnAudiobook"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Audio"
+                    app:icon="@android:drawable/ic_lock_silent_mode_off" />
+
+                <Button
+                    android:id="@+id/btnPdf"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PDF"
+                    app:icon="@android:drawable/ic_menu_save" />
+
+                <Button
+                    android:id="@+id/btnBraille"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Braille"
+                    app:icon="@android:drawable/ic_menu_send" />
+
+                <Button
+                    android:id="@+id/btnExcluir"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Excluir"
+                    android:textColor="@color/design_default_color_error"
+                    app:icon="@android:drawable/ic_menu_delete"
+                    app:iconTint="@color/design_default_color_error" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
