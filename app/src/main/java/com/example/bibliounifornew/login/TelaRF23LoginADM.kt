@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.InputType
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -40,40 +42,11 @@ class TelaRF23LoginADM : AppCompatActivity() {
 
         // LOGIN
         botaoEntrar.setOnClickListener {
-
-            val textoEmail = email.text.toString().trim()
-            val textoSenha = senha.text.toString().trim()
-            val textoCredencial = credential.text.toString().trim()
-
-            erro.visibility = View.GONE
-
-            when {
-
-                textoEmail.isEmpty() || textoSenha.isEmpty() || textoCredencial.isEmpty() -> {
-                    erro.text = "Preencha todos os campos"
-                    erro.visibility = View.VISIBLE
-                }
-
-                textoEmail != "a" ||
-                        textoSenha != "b" ||
-                        textoCredencial != "c" -> {
-
-                    erro.text = "E-mail, senha ou credencial incorretos"
-                    erro.visibility = View.VISIBLE
-                }
-
-                else -> {
-                    Toast.makeText(
-                        this@TelaRF23LoginADM,
-                        "Login realizado com sucesso!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    val intent = Intent(this@TelaRF23LoginADM, TelaRF28DashboardADM::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-            }
+            // TODO: Integrar com autenticação futuramente
+            // Por enquanto, apenas navegação direta conforme solicitado
+            val intent = Intent(this@TelaRF23LoginADM, TelaRF28DashboardADM::class.java)
+            startActivity(intent)
+            finish()
         }
 
         // CRIAR CONTA -> TelaRF27
@@ -102,28 +75,16 @@ class TelaRF23LoginADM : AppCompatActivity() {
 
         bntMostraSenha.setOnClickListener {
             if (senhaVisivel) {
-
                 // ESCONDER SENHA
-                senha.inputType =
-                    InputType.TYPE_CLASS_TEXT or
-                            InputType.TYPE_TEXT_VARIATION_PASSWORD
-
+                senha.transformationMethod = PasswordTransformationMethod.getInstance()
                 bntMostraSenha.setImageResource(R.drawable.ic_eye_closed)
-
                 senhaVisivel = false
-
             } else {
-
                 // MOSTRAR SENHA
-                senha.inputType =
-                    InputType.TYPE_CLASS_TEXT or
-                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-
+                senha.transformationMethod = HideReturnsTransformationMethod.getInstance()
                 bntMostraSenha.setImageResource(R.drawable.ic_eye_open)
-
                 senhaVisivel = true
             }
-
             // Mantém cursor no final
             senha.setSelection(senha.text.length)
         }

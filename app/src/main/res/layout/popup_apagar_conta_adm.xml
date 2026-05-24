@@ -1,89 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="320dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_popup_rounded"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:layout_gravity="center">
+    android:background="@android:color/transparent"
+    android:gravity="center"
+    android:padding="20dp">
 
-    <!-- TÍTULO -->
-    <TextView
-        android:id="@+id/textTituloApagar"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardApagarContaADM"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Deseja apagar conta?"
-        android:textColor="@color/biblio_red"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center" />
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="8dp">
 
-    <!-- DESCRIÇÃO -->
-    <TextView
-        android:id="@+id/textMensagemApagar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Essa ação não poderá ser desfeita."
-        android:textColor="#555555"
-        android:textSize="16sp"
-        android:gravity="center" />
-
-    <!-- INPUT SENHA -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:passwordToggleEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editSenhaApagarContaADM"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-                    android:background="@android:color/transparent"
-            android:hint="************"
-            android:inputType="textPassword"
-                    android:paddingHorizontal="14dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
-                    android:textSize="15sp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="32dp"
+            android:paddingBottom="24dp">
 
-    <!-- BOTÕES -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:orientation="horizontal">
+            <TextView
+                android:id="@+id/textTituloApagarContaADM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Apagar conta?"
+                android:textColor="@color/biblio_blue"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonCancelarApagarContaADM"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:text="Cancelar"
-            android:textAllCaps="false"
-            android:textColor="@color/biblio_blue"
-            app:strokeColor="@color/biblio_blue"
-            app:strokeWidth="1dp"
-            app:backgroundTint="@color/white"
-            app:cornerRadius="25dp" />
+            <TextView
+                android:id="@+id/textDescricaoApagarContaADM"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:text="Essa ação não poderá ser desfeita.\nDigite sua senha atual para confirmar."
+                android:textColor="#555555"
+                android:textSize="14sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonConfirmarApagarContaADM"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="Apagar"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/biblio_red"
-            app:cornerRadius="25dp" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputSenhaApagarContaADM"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:endIconMode="password_toggle">
 
-    </LinearLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editSenhaApagarContaADM"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Sua senha"
+                    android:inputType="textPassword" />
 
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonCancelarApagarContaADM"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_weight="1"
+                    android:text="Cancelar"
+                    android:textColor="#757575"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonConfirmarApagarContaADM"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_weight="1.2"
+                    android:text="Apagar"
+                    android:textAllCaps="false"
+                    app:backgroundTint="@color/biblio_red"
+                    app:cornerRadius="27dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

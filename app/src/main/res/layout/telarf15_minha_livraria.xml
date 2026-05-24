@@ -13,7 +13,6 @@
         android:background="@color/biblio_detalhes"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- CÍRCULO DECORATIVO -->
         <View
             android:layout_width="260dp"
             android:layout_height="260dp"
@@ -25,7 +24,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- FOTO DO USUÁRIO -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardFotoUsuario"
             android:layout_width="110dp"
@@ -56,18 +54,17 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardFotoUsuario" />
+            app:layout_constraintTop_toBottomOf="@+id/cardFotoUsuario" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- CONTEÚDO SCROLLÁVEL -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerMinhaLivraria">
+        app:layout_constraintTop_toBottomOf="@+id/headerMinhaLivraria">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,7 +73,6 @@
             android:paddingHorizontal="16dp"
             android:paddingBottom="40dp">
 
-            <!-- TÍTULO MEUS LIVROS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,14 +102,16 @@
                     android:layout_weight="1" />
 
                 <ImageView
-                    android:layout_width="27dp"
-                    android:layout_height="match_parent"
+                    android:id="@+id/imgFiltroStatus"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="10dp"
                     android:src="@android:drawable/arrow_down_float"
                     app:tint="@color/biblio_dark" />
             </LinearLayout>
 
-            <!-- ITEM 1: O ALIENISTA -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardLivro1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -149,8 +147,8 @@
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@id/menu1"
-                        app:layout_constraintStart_toEndOf="@id/cover1"
+                        app:layout_constraintEnd_toStartOf="@+id/menu1"
+                        app:layout_constraintStart_toEndOf="@+id/cover1"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -160,9 +158,9 @@
                         android:text="@string/autor_livro"
                         android:textColor="@color/biblio_dark"
                         android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="@id/title1"
-                        app:layout_constraintStart_toStartOf="@id/title1"
-                        app:layout_constraintTop_toBottomOf="@id/title1" />
+                        app:layout_constraintEnd_toEndOf="@+id/title1"
+                        app:layout_constraintStart_toStartOf="@+id/title1"
+                        app:layout_constraintTop_toBottomOf="@+id/title1" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -170,17 +168,21 @@
                         android:text="@string/data_exemplo_1"
                         android:textColor="#999999"
                         android:textSize="12sp"
-                        app:layout_constraintStart_toStartOf="@id/title1"
-                        app:layout_constraintTop_toBottomOf="@id/author1" />
+                        app:layout_constraintStart_toStartOf="@+id/title1"
+                        app:layout_constraintTop_toBottomOf="@+id/author1" />
 
                     <TextView
                         android:id="@+id/menu1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:text="@string/menu_opcoes_simbolo"
                         android:textColor="@color/black"
                         android:textSize="22sp"
                         android:textStyle="bold"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -191,8 +193,8 @@
                         android:text="@string/label_alugado"
                         android:textColor="@color/biblio_dark"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@id/status1"
-                        app:layout_constraintStart_toStartOf="@id/title1" />
+                        app:layout_constraintBottom_toTopOf="@+id/status1"
+                        app:layout_constraintStart_toStartOf="@+id/title1" />
 
                     <TextView
                         android:id="@+id/status1"
@@ -202,12 +204,12 @@
                         android:textColor="@color/biblio_dark"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/title1" />
+                        app:layout_constraintStart_toStartOf="@+id/title1" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnRemover1"
                         android:layout_width="wrap_content"
-                        android:layout_height="44dp"
+                        android:layout_height="48dp"
                         android:text="@string/btn_remover"
                         android:textAllCaps="false"
                         app:backgroundTint="@color/biblio_blue"
@@ -216,10 +218,10 @@
                         app:layout_constraintEnd_toEndOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- ITEM 2: A SOCIEDADE DO ANEL -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardLivro2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -255,9 +257,9 @@
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@id/menu2"
+                        app:layout_constraintEnd_toStartOf="@+id/menu2"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/cover2" />
+                        app:layout_constraintStart_toEndOf="@+id/cover2" />
 
                     <TextView
                         android:id="@+id/author2"
@@ -266,9 +268,9 @@
                         android:text="@string/autor_tolkien"
                         android:textColor="@color/biblio_dark"
                         android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="@id/title2"
-                        app:layout_constraintStart_toStartOf="@id/title2"
-                        app:layout_constraintTop_toBottomOf="@id/title2" />
+                        app:layout_constraintEnd_toEndOf="@+id/title2"
+                        app:layout_constraintStart_toStartOf="@+id/title2"
+                        app:layout_constraintTop_toBottomOf="@+id/title2" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -276,17 +278,21 @@
                         android:text="@string/data_exemplo_2"
                         android:textColor="#999999"
                         android:textSize="12sp"
-                        app:layout_constraintStart_toStartOf="@id/title2"
-                        app:layout_constraintTop_toBottomOf="@id/author2" />
+                        app:layout_constraintStart_toStartOf="@+id/title2"
+                        app:layout_constraintTop_toBottomOf="@+id/author2" />
 
                     <TextView
                         android:id="@+id/menu2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:text="@string/menu_opcoes_simbolo"
                         android:textColor="@color/black"
                         android:textSize="22sp"
                         android:textStyle="bold"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -298,11 +304,12 @@
                         android:textColor="@color/biblio_dark"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/title2" />
+                        app:layout_constraintStart_toStartOf="@+id/title2" />
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRemover2"
                         android:layout_width="wrap_content"
-                        android:layout_height="44dp"
+                        android:layout_height="48dp"
                         android:text="@string/btn_remover"
                         android:textAllCaps="false"
                         app:backgroundTint="@color/biblio_blue"
@@ -311,10 +318,10 @@
                         app:layout_constraintEnd_toEndOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- ITEM 3: VIDAS SECAS -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardLivro3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -350,8 +357,8 @@
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@id/menu3"
-                        app:layout_constraintStart_toEndOf="@id/cover3"
+                        app:layout_constraintEnd_toStartOf="@+id/menu3"
+                        app:layout_constraintStart_toEndOf="@+id/cover3"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -361,9 +368,9 @@
                         android:text="@string/autor_graciliano"
                         android:textColor="@color/biblio_dark"
                         android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="@id/title3"
-                        app:layout_constraintStart_toStartOf="@id/title3"
-                        app:layout_constraintTop_toBottomOf="@id/title3" />
+                        app:layout_constraintEnd_toEndOf="@+id/title3"
+                        app:layout_constraintStart_toStartOf="@+id/title3"
+                        app:layout_constraintTop_toBottomOf="@+id/title3" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -371,17 +378,21 @@
                         android:text="@string/data_exemplo_2"
                         android:textColor="#999999"
                         android:textSize="12sp"
-                        app:layout_constraintStart_toStartOf="@id/title3"
-                        app:layout_constraintTop_toBottomOf="@id/author3" />
+                        app:layout_constraintStart_toStartOf="@+id/title3"
+                        app:layout_constraintTop_toBottomOf="@+id/author3" />
 
                     <TextView
                         android:id="@+id/menu3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:text="@string/menu_opcoes_simbolo"
                         android:textColor="@color/black"
                         android:textSize="22sp"
                         android:textStyle="bold"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -392,8 +403,8 @@
                         android:text="@string/label_alugado"
                         android:textColor="@color/biblio_dark"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@id/status3"
-                        app:layout_constraintStart_toStartOf="@id/title3" />
+                        app:layout_constraintBottom_toTopOf="@+id/status3"
+                        app:layout_constraintStart_toStartOf="@+id/title3" />
 
                     <TextView
                         android:id="@+id/status3"
@@ -403,11 +414,12 @@
                         android:textColor="@color/biblio_dark"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/title3" />
+                        app:layout_constraintStart_toStartOf="@+id/title3" />
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRemover3"
                         android:layout_width="wrap_content"
-                        android:layout_height="44dp"
+                        android:layout_height="48dp"
                         android:text="@string/btn_remover"
                         android:textAllCaps="false"
                         app:backgroundTint="@color/biblio_blue"
@@ -416,7 +428,7 @@
                         app:layout_constraintEnd_toEndOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

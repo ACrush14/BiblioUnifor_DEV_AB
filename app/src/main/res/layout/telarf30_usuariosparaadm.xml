@@ -96,11 +96,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_pill_status"
+                android:backgroundTint="#80000000"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="4dp"
-                android:text="ALUNO"
+                android:text="USUÁRIO COMUM"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="10sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

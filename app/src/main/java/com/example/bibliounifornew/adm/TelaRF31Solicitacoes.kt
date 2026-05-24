@@ -133,21 +133,24 @@ class TelaRF31Solicitacoes : AppCompatActivity() {
     }
 
     // 2) POPUP SOLICITAÇÕES USUÁRIO
+// 2) POPUP SOLICITAÇÕES USUÁRIO
     private fun abrirPopupSolicitacoesUsuario(nome: String, solicitacoes: String, status: String) {
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.popup_solicitacoes_usuario_adm)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
+        // Buscando explicitamente dentro do escopo do layout inflado no dialog
         val txtNome = dialog.findViewById<TextView>(R.id.textPopupNomeUsuario)
         val txtSolicitacoes = dialog.findViewById<TextView>(R.id.textPopupListaSolicitacoes)
         val txtStatus = dialog.findViewById<TextView>(R.id.textPopupStatus)
         val btnFechar = dialog.findViewById<Button>(R.id.btnFecharSolicitacoes)
 
-        txtNome.text = "Nome: $nome"
-        txtSolicitacoes.text = "Solicitações: $solicitacoes"
-        txtStatus.text = "Status: $status"
+        // Atribuição segura com Safe Cast ou validação de nulidade para evitar Crash se o ID mudar
+        txtNome?.text = "Nome: $nome"
+        txtSolicitacoes?.text = "Solicitações: $solicitacoes"
+        txtStatus?.text = "Status: $status"
 
-        btnFechar.setOnClickListener { dialog.dismiss() }
+        btnFechar?.setOnClickListener { dialog.dismiss() }
         dialog.show()
     }
 
