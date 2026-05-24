@@ -30,6 +30,8 @@ class TelaRF35ConfirmarCadastroADM : AppCompatActivity() {
         item1?.setOnClickListener { exibirPopupConfirmacao() }
         item2?.setOnClickListener { exibirPopupConfirmacao() }
         item3?.setOnClickListener { exibirPopupConfirmacao() }
+
+        NavigationHelperADM.configurarBarraNavegacao(this)
     }
 
     /**

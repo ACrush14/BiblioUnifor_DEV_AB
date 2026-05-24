@@ -95,6 +95,8 @@ class TelaRF31Solicitacoes : AppCompatActivity() {
         btnExcluirSolicitacao?.setOnClickListener {
             abrirPopupConfirmarExclusao()
         }
+
+        NavigationHelperADM.configurarBarraNavegacao(this)
     }
 
     // 1) POPUP FILTRO

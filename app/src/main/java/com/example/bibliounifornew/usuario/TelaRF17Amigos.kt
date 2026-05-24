@@ -46,6 +46,9 @@ class TelaRF17Amigos : AppCompatActivity() {
         configurarCliquePerfil(R.id.fotoAmigo3, R.id.nomeAmigo3, R.id.menuAmigo3)
         configurarCliquePerfil(R.id.fotoAmigo4, R.id.nomeAmigo4, R.id.menuAmigo4)
         configurarCliquePerfil(R.id.fotoAmigo5, R.id.nomeAmigo5, R.id.menuAmigo5)
+
+        // Configurar Barra de Navegação
+        NavigationHelper.configurarBarraNavegacao(this)
     }
 
     // ----------------------------------------------------

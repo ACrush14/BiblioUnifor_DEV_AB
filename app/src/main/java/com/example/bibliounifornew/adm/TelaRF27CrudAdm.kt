@@ -31,5 +31,7 @@ class TelaRF27CrudAdm : AppCompatActivity() {
             val intent = Intent(this, TelaRF29GerenciamentoDeUsuarios::class.java)
             startActivity(intent)
         }
+
+        NavigationHelperADM.configurarBarraNavegacao(this)
     }
 }

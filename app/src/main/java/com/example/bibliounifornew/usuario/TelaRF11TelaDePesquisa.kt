@@ -36,5 +36,8 @@ class TelaRF11TelaDePesquisa : AppCompatActivity() {
                 Toast.makeText(this, "Digite o nome de um livro ou autor", Toast.LENGTH_SHORT).show()
             }
         }
+
+        // Configurar Barra de Navegação
+        NavigationHelper.configurarBarraNavegacao(this)
     }
 }

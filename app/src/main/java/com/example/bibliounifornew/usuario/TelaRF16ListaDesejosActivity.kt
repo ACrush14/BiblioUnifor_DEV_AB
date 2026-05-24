@@ -74,6 +74,9 @@ class TelaRF16ListaDesejosActivity : AppCompatActivity() {
             livroId = 2,
             disponivel = false
         )
+
+        // Configurar Barra de Navegação
+        NavigationHelper.configurarBarraNavegacao(this)
     }
 
     private fun configurarLivro(

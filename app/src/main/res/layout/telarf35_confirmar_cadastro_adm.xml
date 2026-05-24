@@ -134,7 +134,7 @@
         android:layout_marginTop="16dp"
         android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/layoutBusca"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/include_nav_adm">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -293,5 +293,12 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/include_nav_adm"
+        layout="@layout/barra_tarefas_adm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

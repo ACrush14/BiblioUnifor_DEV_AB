@@ -37,5 +37,7 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
             val intent = Intent(this@TelaRF36ListaAlugueisADM, TelaRF30UsuariosParaADM::class.java)
             startActivity(intent)
         }
+
+        NavigationHelperADM.configurarBarraNavegacao(this)
     }
 }
