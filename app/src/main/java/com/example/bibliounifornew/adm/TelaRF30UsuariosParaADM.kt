@@ -37,7 +37,7 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
 
         // 4) BOTÃO ALUGADOS -> Nova Tela (Intent)
         btnAlugados?.setOnClickListener {
-            val intent = Intent(this, TelaRF36ListaAlugueisADM::class.java)
+            val intent = Intent(this, TelaRFAdmUsuarioAlugados::class.java)
             startActivity(intent)
         }
 

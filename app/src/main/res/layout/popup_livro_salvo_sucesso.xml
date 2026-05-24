@@ -32,7 +32,7 @@
             android:layout_marginTop="24dp"
             android:gravity="center"
             android:lineSpacingExtra="4dp"
-            android:text="Renovação realizada com sucesso"
+            android:text="Livro salvo com sucesso! Voltando para as mídias!"
             android:textAlignment="center"
             android:textColor="@color/biblio_blue"
             android:textSize="18sp" />

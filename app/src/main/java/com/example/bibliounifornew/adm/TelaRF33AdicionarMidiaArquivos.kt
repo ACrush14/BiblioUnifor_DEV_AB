@@ -42,7 +42,7 @@ class TelaRF33AdicionarMidiaArquivos : AppCompatActivity() {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setCancelable(false)
 
-        val btnVoltar = dialog.findViewById<MaterialButton>(R.id.btnVoltarMidias)
+        val btnVoltar = dialog.findViewById<MaterialButton>(R.id.btnVoltar)
         btnVoltar.setOnClickListener {
             dialog.dismiss()
             // Retorna para a Dashboard Inicial ADM

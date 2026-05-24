@@ -29,12 +29,12 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
 
         // Botão "Ver Usuário"
         findViewById<Button>(R.id.btnVerUsuario1)?.setOnClickListener {
-            val intent = Intent(this@TelaRF36ListaAlugueisADM, TelaRF29GerenciamentoDeUsuarios::class.java)
+            val intent = Intent(this@TelaRF36ListaAlugueisADM, TelaRF30UsuariosParaADM::class.java)
             startActivity(intent)
         }
 
         findViewById<Button>(R.id.btnVerUsuario2)?.setOnClickListener {
-            val intent = Intent(this@TelaRF36ListaAlugueisADM, TelaRF29GerenciamentoDeUsuarios::class.java)
+            val intent = Intent(this@TelaRF36ListaAlugueisADM, TelaRF30UsuariosParaADM::class.java)
             startActivity(intent)
         }
     }
