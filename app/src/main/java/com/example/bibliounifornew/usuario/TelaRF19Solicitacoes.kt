@@ -1,7 +1,6 @@
 package com.example.bibliounifornew.usuario
 
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -22,12 +21,9 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
         val btnReservar = findViewById<Button>(R.id.buttonReservarLivro)
         val btnSetor = findViewById<Button>(R.id.buttonSetorLocalizado)
 
-        val context: Context = this@TelaRF19Solicitacoes
-
         // Todos levam para Termos e Condições
         val clickParaTermos = {
-            val intent = Intent(context, TelaRF19SolicitacoesTermosCondicoes::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, TelaRF19SolicitacoesTermosCondicoes::class.java))
         }
 
         btnPdf?.setOnClickListener { clickParaTermos() }

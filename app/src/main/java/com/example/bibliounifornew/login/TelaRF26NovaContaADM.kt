@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -12,9 +11,14 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
+import com.example.bibliounifornew.data.AuthRepository
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
-class TelaRF26NovaContaADM :
-    AppCompatActivity() {
+class TelaRF26NovaContaADM : AppCompatActivity() {
+
+    private val authRepository = AuthRepository()
+    private val db             = FirebaseFirestore.getInstance()
 
     override fun onCreate(
         savedInstanceState: Bundle?
@@ -251,11 +255,11 @@ class TelaRF26NovaContaADM :
                     Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
                 }
 
-                !sEmail.contains("@") || sEmail == "admin@jaexiste.com" -> {
+                !android.util.Patterns.EMAIL_ADDRESS.matcher(sEmail).matches() -> {
                     erroEmail.visibility = View.VISIBLE
                 }
 
-                sCredencial == "123" -> { // Simulação de credencial inválida/já cadastrada
+                !sCredencial.equals("DevsAB", ignoreCase = true) -> { // Credencial master inválida
                     erroCredencial.visibility = View.VISIBLE
                 }
 
@@ -288,12 +292,42 @@ class TelaRF26NovaContaADM :
                     erroSenhaDiferente.visibility = View.VISIBLE
                 }
 
-                sSenha == "12345678" -> { // Simulação de senha igual à anterior
-                    erroSenhaIgual.visibility = View.VISIBLE
-                }
-
                 else -> {
-                    popup()
+                    criar.isEnabled = false
+                    criar.text = "Criando..."
+                    authRepository.registrarUsuario(sEmail, sSenha) { sucesso, uidOuErro ->
+                        runOnUiThread {
+                            if (sucesso && uidOuErro != null) {
+                                // Salva perfil ADM no Firestore
+                                val perfil = hashMapOf(
+                                    "nome"                to sNome,
+                                    "usuario"             to sUsuario,
+                                    "email"               to sEmail,
+                                    "role"                to "adm",
+                                    "cadastroConfirmado"  to false,
+                                    "criadoEm"            to System.currentTimeMillis()
+                                )
+                                db.collection("usuarios").document(uidOuErro)
+                                    .set(perfil, SetOptions.merge())
+                                    .addOnSuccessListener {
+                                        com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+                                            ?.sendEmailVerification()
+                                        popup()
+                                    }
+                                    .addOnFailureListener {
+                                        criar.isEnabled = true
+                                        criar.text = "Criar Conta ADM"
+                                        Toast.makeText(this, "Conta criada, mas não foi possível salvar o perfil. Tente fazer login.", Toast.LENGTH_LONG).show()
+                                        popup()
+                                    }
+                            } else {
+                                criar.isEnabled = true
+                                criar.text = "Criar Conta ADM"
+                                val mensagem = traduzirErroFirebase(uidOuErro)
+                                Toast.makeText(this, mensagem, Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -340,6 +374,8 @@ class TelaRF26NovaContaADM :
             R.layout.popup_sucesso_cadastro
         )
 
+        dialog.setCancelable(false)
+
         dialog.window
             ?.setBackgroundDrawableResource(
                 android.R.color.transparent
@@ -379,6 +415,24 @@ class TelaRF26NovaContaADM :
 
         dialog.show()
 
+    }
+
+    //--------------------------------
+    // TRADUÇÃO DE ERROS DO FIREBASE
+    //--------------------------------
+
+    private fun traduzirErroFirebase(mensagem: String?): String {
+        return when {
+            mensagem == null                                   -> "Ocorreu um erro inesperado. Tente novamente."
+            mensagem.contains("email address is already")     -> "Este e-mail já está cadastrado."
+            mensagem.contains("badly formatted")              -> "Formato de e-mail inválido."
+            mensagem.contains("network error", ignoreCase = true)
+                || mensagem.contains("unreachable")           -> "Sem conexão com a internet. Verifique sua rede."
+            mensagem.contains("password is invalid")
+                || mensagem.contains("least 6 characters")   -> "Senha muito fraca. Use pelo menos 8 caracteres."
+            mensagem.contains("too many requests", ignoreCase = true) -> "Muitas tentativas. Aguarde alguns minutos e tente novamente."
+            else                                              -> "Não foi possível criar a conta. Tente novamente."
+        }
     }
 
 }

@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/o_alienista_capa" />
+                android:src="@drawable/osda" />
         </com.google.android.material.card.MaterialCardView>
 
         <!-- INFOS -->
@@ -62,7 +62,7 @@
                 android:id="@+id/textTituloLivroInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="O Alienista"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:alpha="0.8"
-                android:text="Machado de Assis"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="17sp" />
 
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Machado de Assis, neste livro, propõe a seguinte pergunta: quem é louco? Conheça a história do médico Simão Bacamarte, dedicado e estudioso da mente humana, que decide construir um hospício para tratar os doentes mentais na pequena cidade de Itaguaí a casa verde. Quem entra e quem fica de fora? Surpreenda-se com o final."
+                android:text=""
                 android:textColor="#415E5E"
                 android:textSize="17sp" />
 
@@ -121,7 +121,7 @@
                 android:layout_marginTop="32dp"
                 android:orientation="vertical">
 
-                <!-- LINHA -->
+                <!-- Língua -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -137,15 +137,16 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorLingua"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Português"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
-                <!-- LINHA -->
+                <!-- Editora -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -161,15 +162,16 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorEditora"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Intrínseca"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
-                <!-- LINHA -->
+                <!-- Dimensão -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -185,15 +187,16 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorDimensao"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="15.24 x 0.51 x 22.86 cm"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
-                <!-- LINHA -->
+                <!-- ISBN-10 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -209,15 +212,16 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorIsbn10"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="856356093X"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
-                <!-- LINHA -->
+                <!-- ISBN-13 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -233,15 +237,16 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorIsbn13"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="978-8563560933"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
-                <!-- LINHA -->
+                <!-- ASIN -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -257,15 +262,16 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorAsin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="8580572266"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
-                <!-- LINHA -->
+                <!-- Data -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -281,15 +287,16 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorData"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="18 dezembro 2019"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
-                <!-- LINHA -->
+                <!-- PDF -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -305,15 +312,16 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorPdf"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sim"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
-                <!-- LINHA -->
+                <!-- Braille -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -329,15 +337,16 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorBraille"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Não"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
-                <!-- LINHA -->
+                <!-- Audiobook -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -353,15 +362,16 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorAudiobook"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Não"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
-                <!-- LINHA -->
+                <!-- Páginas -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -377,15 +387,16 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorPaginas"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="80"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 
                 </LinearLayout>
 
-                <!-- LINHA -->
+                <!-- Setor -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -400,9 +411,10 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/textValorSetor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="75H.102B"
+                        android:text="Sem informação"
                         android:textColor="#415E5E"
                         android:textSize="17sp" />
 

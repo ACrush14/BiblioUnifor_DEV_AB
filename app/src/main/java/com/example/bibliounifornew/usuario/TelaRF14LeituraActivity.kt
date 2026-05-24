@@ -9,9 +9,11 @@ import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import coil.load
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.AuthRepository
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,12 +24,24 @@ class TelaRF14LeituraActivity : AppCompatActivity() {
     private val db             = FirebaseFirestore.getInstance()
     private var livroIdAtual   : String = ""
 
+    /** URLs de mídia — populadas por carregarCabecalho(), usadas pelos botões */
+    private var linkPdfAtual   : String = ""
+    private var linkAudioAtual : String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf14_leitura)
 
-        // Recebe o ID do livro passado via Intent (de TelaRF12TelaDoLivro)
         livroIdAtual = intent.getStringExtra("LIVRO_ID") ?: ""
+
+        // Placeholder enquanto os dados carregam
+        findViewById<TextView>(R.id.textTituloLivroAcoes)?.text    = "Carregando..."
+        findViewById<TextView>(R.id.textAutorLivroAcoes)?.text     = ""
+        findViewById<TextView>(R.id.textCategoriaLivroAcoes)?.text = ""
+
+        if (livroIdAtual.isNotEmpty()) {
+            carregarCabecalho(livroIdAtual)
+        }
 
         // ─── BOTÃO ALUGAR ─────────────────────────────────────────────────────
         findViewById<Button>(R.id.buttonAlugarLivro).setOnClickListener {
@@ -41,17 +55,82 @@ class TelaRF14LeituraActivity : AppCompatActivity() {
 
         // ─── BOTÃO ABRIR PDF ──────────────────────────────────────────────────
         findViewById<Button>(R.id.buttonAbrirPdfLivro).setOnClickListener {
-            abrirPdf()
+            abrirMidia(linkPdfAtual, "pdf")
         }
 
         // ─── BOTÃO ABRIR AUDIOBOOK ────────────────────────────────────────────
         findViewById<Button>(R.id.buttonAbrirAudioLivro).setOnClickListener {
-            abrirAudiobook()
+            abrirMidia(linkAudioAtual, "audio")
         }
 
         // ─── BOTÃO SETOR LOCALIZADO ──────────────────────────────────────────
         findViewById<Button>(R.id.buttonSetorLivro).setOnClickListener {
             showPopupSetor()
+        }
+    }
+
+    // ─── CABEÇALHO DINÂMICO ───────────────────────────────────────────────────
+
+    private fun carregarCabecalho(id: String) {
+        db.collection("livros").document(id).get()
+            .addOnSuccessListener { doc ->
+                if (!doc.exists()) return@addOnSuccessListener
+
+                val titulo    = doc.getString("title")    ?: doc.getString("titulo")    ?: ""
+                val autor     = doc.getString("author")   ?: doc.getString("autor")     ?: ""
+                val categoria = doc.getString("category") ?: doc.getString("categoria") ?: ""
+                val coverUrl  = doc.getString("coverUrl") ?: ""
+
+                // Armazena para uso posterior nos listeners dos botões
+                linkPdfAtual   = doc.getString("linkPdf")      ?: ""
+                linkAudioAtual = doc.getString("linkAudiobook") ?: ""
+
+                findViewById<TextView>(R.id.textTituloLivroAcoes)?.text    = titulo.ifEmpty { "Título indisponível" }
+                findViewById<TextView>(R.id.textAutorLivroAcoes)?.text     = autor
+                findViewById<TextView>(R.id.textCategoriaLivroAcoes)?.text = categoria
+
+                val imgCapa = findViewById<ImageView>(R.id.imageLivroAcoes)
+                if (coverUrl.isNotEmpty()) {
+                    imgCapa?.load(coverUrl) {
+                        placeholder(R.drawable.osda)
+                        error(R.drawable.osda)
+                    }
+                } else {
+                    imgCapa?.setImageResource(R.drawable.osda)
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Erro ao carregar dados do livro.", Toast.LENGTH_SHORT).show()
+                findViewById<TextView>(R.id.textTituloLivroAcoes)?.text = "Sem título"
+            }
+    }
+
+    // ─── ABRIR MÍDIA (PDF ou AUDIOBOOK) ──────────────────────────────────────
+
+    /**
+     * Abre a URL de mídia com um chooser nativo.
+     * Se o link estiver vazio/nulo, exibe mensagem orientando o usuário a aguardar o bibliotecário.
+     */
+    private fun abrirMidia(url: String, tipo: String) {
+        if (url.isBlank()) {
+            Toast.makeText(
+                this,
+                "Bibliotecário ainda não mandou o arquivo. Aguarde ou fale com um administrador",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+        try {
+            val uri    = Uri.parse(url)
+            val mime   = if (tipo == "pdf") "application/pdf" else "audio/*"
+            val titulo = if (tipo == "pdf") "Abrir PDF com..." else "Ouvir Audiobook com..."
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, mime)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(Intent.createChooser(intent, titulo))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Não foi possível abrir o arquivo.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -87,17 +166,15 @@ class TelaRF14LeituraActivity : AppCompatActivity() {
         }
 
         val dados = hashMapOf(
-            "uidAluno"         to usuarioAtual.uid,
-            "idLivro"          to livroIdAtual,
-            "status"           to "pendente",
-            "dataSolicitacao"  to System.currentTimeMillis()
+            "uidAluno"        to usuarioAtual.uid,
+            "idLivro"         to livroIdAtual,
+            "status"          to "pendente",
+            "dataSolicitacao" to System.currentTimeMillis()
         )
 
         db.collection("solicitacoes_emprestimo")
             .add(dados)
-            .addOnSuccessListener {
-                showPopupSucesso()
-            }
+            .addOnSuccessListener { showPopupSucesso() }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Erro ao registrar solicitação: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -128,37 +205,5 @@ class TelaRF14LeituraActivity : AppCompatActivity() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.findViewById<Button>(R.id.buttonVoltarSetor).setOnClickListener { dialog.dismiss() }
         dialog.show()
-    }
-
-    // ─── INTENTS NATIVOS DE MÍDIA ─────────────────────────────────────────────
-
-    /**
-     * Abre o PDF com Intent.ACTION_VIEW e MIME application/pdf.
-     */
-    private fun abrirPdf() {
-        val pdfUri = Uri.parse("https://www.google.com") 
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(pdfUri, "application/pdf")
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        val chooser = Intent.createChooser(intent, "Abrir PDF com...")
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(chooser)
-        } else {
-            startActivity(Intent(Intent.ACTION_VIEW, pdfUri))
-        }
-    }
-
-    /**
-     * Abre o audiobook com Intent.ACTION_VIEW e MIME de áudio.
-     * O Android apresenta o chooser com todos os players de áudio do aparelho.
-     */
-    private fun abrirAudiobook() {
-        val audioUri = Uri.parse("https://www.spotify.com")
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(audioUri, "audio/*")
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        startActivity(Intent.createChooser(intent, "Ouvir Audiobook com..."))
     }
 }

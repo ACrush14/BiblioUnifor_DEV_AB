@@ -3,260 +3,118 @@ package com.example.bibliounifornew.login
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Patterns
 import android.view.View
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
+import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 
-class TelaRF05RecuperacaoSenha :
-    AppCompatActivity() {
+class TelaRF05RecuperacaoSenha : AppCompatActivity() {
 
-    override fun onCreate(
-        savedInstanceState: Bundle?
-    ) {
+    private val auth = FirebaseAuth.getInstance()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.telarf05_recuperacao_senha)
 
-        setContentView(
-            R.layout.telarf05_recuperacao_senha
-        )
+        // ─── LOGO ─────────────────────────────────────────────────────────────
+        carregarLogoSegura(findViewById(R.id.imageLogoRecSenha))
 
+        // ─── COMPONENTES ──────────────────────────────────────────────────────
+        val editEmail = findViewById<EditText>(R.id.editTextEmailRec)
+        val btnEnviar = findViewById<MaterialButton>(R.id.buttonEnviarCOD)
+        val txtErro   = findViewById<TextView>(R.id.textErroEmail)
+        val txtVoltar = findViewById<TextView>(R.id.buttonVoltarLog)
 
+        txtErro.visibility = View.GONE
 
-        //--------------------------------
-        // LOGO
-        //--------------------------------
+        // ─── UX: limpa erro ao digitar ou focar ───────────────────────────────
+        editEmail.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                txtErro.visibility = View.GONE
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+        editEmail.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) txtErro.visibility = View.GONE
+        }
 
-        val imageLogo =
+        // ─── ENVIAR E-MAIL DE RECUPERAÇÃO ─────────────────────────────────────
+        btnEnviar.setOnClickListener {
+            val email = editEmail.text.toString().trim()
 
-            findViewById<ImageView>(
-                R.id.imageLogoRecSenha
-            )
+            // 1) Campo vazio
+            if (email.isEmpty()) {
+                txtErro.text       = "Informe seu e-mail."
+                txtErro.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
 
-        carregarLogoSegura(
-            imageLogo
-        )
+            // 2) Formato inválido (validação client-side)
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                txtErro.text       = "Formato de e-mail inválido."
+                txtErro.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
 
+            // 3) Chama Firebase — desabilita botão para evitar double-tap
+            btnEnviar.isEnabled = false
+            txtErro.visibility  = View.GONE
 
-
-        //--------------------------------
-        // COMPONENTES
-        //--------------------------------
-
-        val email =
-
-            findViewById<EditText>(
-                R.id.editTextEmailRec
-            )
-
-
-        val enviar =
-            findViewById<com.google.android.material.button.MaterialButton>(
-                R.id.buttonEnviarCOD
-            )
-
-
-        val erro =
-
-            findViewById<TextView>(
-                R.id.textErroEmail
-            )
-
-
-        val voltar =
-
-            findViewById<TextView>(
-                R.id.buttonVoltarLog
-            )
-
-
-
-        erro.visibility =
-            View.GONE
-
-
-
-        //--------------------------------
-        // EMAIL MOCKADO
-        //--------------------------------
-
-        val emailValido =
-
-            "usuario@gmail.com"
-
-
-
-        //--------------------------------
-        // ENVIAR
-        //--------------------------------
-
-        enviar.setOnClickListener {
-
-
-            val textoEmail =
-
-                email.text
-                    .toString()
-                    .trim()
-
-
-
-            erro.visibility =
-                View.GONE
-
-
-
-            when{
-
-
-                //-------------------
-                // CAMPO VAZIO
-                //-------------------
-
-                textoEmail.isEmpty() -> {
-
+            auth.sendPasswordResetEmail(email)
+                .addOnSuccessListener {
+                    // Firebase não informa se o e-mail existe ou não (segurança).
+                    // Em ambos os casos exibimos a mensagem de sucesso.
+                    btnEnviar.isEnabled = true
                     Toast.makeText(
-
                         this,
-
-                        "Preencha todos os campos",
-
-                        Toast.LENGTH_SHORT
-
+                        "E-mail de recuperação enviado com sucesso!",
+                        Toast.LENGTH_LONG
                     ).show()
-
+                    // Volta para o Login do Aluno
+                    startActivity(Intent(this, TelaRF03LoginAluno::class.java))
+                    finish()
                 }
-
-
-
-                //-------------------
-                // EMAIL ERRADO
-                //-------------------
-
-                textoEmail != emailValido -> {
-
-                    erro.text =
-                        "E-mail não cadastrado"
-
-                    erro.visibility =
-                        View.VISIBLE
-                }
-
-
-
-                //-------------------
-                // SUCESSO
-                //-------------------
-
-                else -> {
-
-                    val intent = Intent(
-                        this,
-                        TelaRF06ValidacaoCodigo::class.java
-                    )
-
-                    intent.putExtra("tipo", "usuario")
-
-                    startActivity(intent)
-
-                }
-
-            }
-
-        }
-
-
-
-        //--------------------------------
-        // VOLTAR LOGIN
-        //--------------------------------
-
-        voltar.setOnClickListener {
-
-            startActivity(
-
-                Intent(
-
-                    this,
-
-                    TelaRF03LoginAluno::class.java
-
-                )
-
-            )
-
-            finish()
-
-        }
-
-
-
-        //--------------------------------
-        // UX
-        //--------------------------------
-
-        email.setOnFocusChangeListener {
-
-                _,
-                hasFocus ->
-
-            if(hasFocus){
-
-                erro.visibility =
-                    View.GONE
-            }
-
-        }
-
-    }
-
-
-
-
-    //--------------------------------
-    // LOGO
-    //--------------------------------
-
-    private fun carregarLogoSegura(
-        imageView: ImageView
-    ){
-
-        try{
-
-            val options =
-
-                BitmapFactory.Options()
-                    .apply {
-
-                        inSampleSize = 4
+                .addOnFailureListener { e ->
+                    btnEnviar.isEnabled = true
+                    val mensagem = when (e) {
+                        is FirebaseAuthInvalidCredentialsException ->
+                            "Formato de e-mail inválido."
+                        else ->
+                            "Erro ao enviar e-mail. Verifique sua conexão e tente novamente."
                     }
-
-
-            val bitmap =
-
-                BitmapFactory.decodeResource(
-
-                    resources,
-
-                    R.drawable.unifor_marca,
-
-                    options
-
-                )
-
-
-            imageView.setImageBitmap(
-                bitmap
-            )
-
+                    txtErro.text       = mensagem
+                    txtErro.visibility = View.VISIBLE
+                }
         }
 
-        catch(e:Exception){
-
-            e.printStackTrace()
-
+        // ─── VOLTAR PARA LOGIN ────────────────────────────────────────────────
+        txtVoltar.setOnClickListener {
+            startActivity(Intent(this, TelaRF03LoginAluno::class.java))
+            finish()
         }
-
     }
 
+    // ─── LOGO ─────────────────────────────────────────────────────────────────
+    private fun carregarLogoSegura(imageView: ImageView) {
+        try {
+            val options = BitmapFactory.Options().apply {
+                inSampleSize       = 4
+                inJustDecodeBounds = false
+            }
+            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.unifor_marca, options)
+            imageView.setImageBitmap(bitmap)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

@@ -88,12 +88,14 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp">
                 <EditText
+                    android:id="@+id/editNomeAdm"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:background="@drawable/bg_input_pill"
                     android:paddingHorizontal="16dp"
-                    android:text="João Bobo"
+                    android:hint="Seu nome"
                     android:textColor="#444444"
+                    android:textColorHint="#AAAAAA"
                     android:inputType="textPersonName" />
                 <ImageView
                     android:layout_width="24dp"
@@ -120,12 +122,14 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp">
                 <EditText
+                    android:id="@+id/editUsuarioAdm"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:background="@drawable/bg_input_pill"
                     android:paddingHorizontal="16dp"
-                    android:text="Joãobobo69420"
+                    android:hint="Nome de usuário"
                     android:textColor="#444444"
+                    android:textColorHint="#AAAAAA"
                     android:inputType="text" />
                 <ImageView
                     android:layout_width="24dp"
@@ -175,6 +179,19 @@
                     app:tint="@color/biblio_blue"
                     android:contentDescription="@string/desc_mostrar_ocultar_senha"/>
             </RelativeLayout>
+
+            <!-- BOTÃO SALVAR ALTERAÇÕES -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSalvarAlteracoes"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginBottom="12dp"
+                android:text="Salvar Alterações"
+                android:textAllCaps="false"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/biblio_detalhes"
+                app:cornerRadius="12dp" />
 
             <!-- BOTÕES -->
             <com.google.android.material.button.MaterialButton

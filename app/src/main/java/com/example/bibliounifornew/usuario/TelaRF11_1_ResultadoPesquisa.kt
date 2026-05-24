@@ -48,13 +48,50 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewResultados)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        adapter = LivroAdapter(mutableListOf()) { livroSelecionado ->
-            val intent = Intent(this, TelaRF12TelaDoLivro::class.java)
-            intent.putExtra("LIVRO_ID", livroSelecionado.id)
-            startActivity(intent)
-        }
+        adapter = LivroAdapter(
+            livros        = mutableListOf(),
+            onItemClick   = { livro ->
+                startActivity(
+                    Intent(this, TelaRF12TelaDoLivro::class.java)
+                        .putExtra("LIVRO_ID", livro.id)
+                )
+            },
+            onSuaLivraria = { livro -> adicionarSuaLivraria(livro) },
+            onAlugarLivro = { livro ->
+                startActivity(
+                    Intent(this, TelaRF14LeituraActivity::class.java)
+                        .putExtra("LIVRO_ID", livro.id)
+                )
+            }
+        )
 
         recyclerView.adapter = adapter
+    }
+
+    private fun adicionarSuaLivraria(livro: com.example.bibliounifornew.data.EntidadeLivro) {
+        val uid = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid
+        if (uid == null) {
+            Toast.makeText(this, "Faça login para usar esta função.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val dados = hashMapOf(
+            "usuarioId"     to uid,
+            "livroId"       to livro.id,
+            "titulo"        to livro.title,
+            "autor"         to livro.author,
+            "statusLeitura" to "Não Lido",
+            "adicionadoEm"  to System.currentTimeMillis()
+        )
+        FirebaseFirestore.getInstance()
+            .collection("biblioteca_usuarios")
+            .document("${uid}_${livro.id}")
+            .set(dados, com.google.firebase.firestore.SetOptions.merge())
+            .addOnSuccessListener {
+                Toast.makeText(this, "\"${livro.title}\" adicionado à sua Livraria!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Não foi possível adicionar à Livraria.", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun realizarBusca(termo: String) {
