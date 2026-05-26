@@ -233,7 +233,7 @@ class TelaRF38ConfigADM : AppCompatActivity() {
                             firestoreDelete?.addOnFailureListener { /* silencia erro de limpeza */ }
                             dialog.dismiss()
                             Toast.makeText(this, "Conta apagada com sucesso.", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this, TelaRF01BemVindo::class.java)
+                            val intent = Intent(this, com.example.bibliounifornew.login.TelaRF01BemVindo::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
                         }

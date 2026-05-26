@@ -16,6 +16,7 @@ import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.Solicitacao
 import com.example.bibliounifornew.data.SolicitacaoRepository
 import com.example.bibliounifornew.features.usuario.livro.TelaRF12TelaDoLivro
+import com.example.bibliounifornew.data.UsuarioRepository
 import com.google.firebase.auth.FirebaseAuth
 
 class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
@@ -23,7 +24,11 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
     // ─── DEPENDÊNCIAS ────────────────────────────────────────────────────────
     // SolicitacaoRepository encapsula toda a lógica de persistência.
     private val solicitacaoRepository = SolicitacaoRepository()
+    private val usuarioRepository     = UsuarioRepository()
     private val auth                  = FirebaseAuth.getInstance()
+
+    private var tituloLivro: String = ""
+    private var autorLivro: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +37,8 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
         // ─── EXTRAS RECEBIDOS DE TelaRF19Solicitacoes ────────────────────────
         val tipoMidia = intent.getStringExtra("TIPO_MIDIA") ?: ""
         val livroId   = intent.getStringExtra("LIVRO_ID")   ?: ""
+        tituloLivro   = intent.getStringExtra("TITULO")     ?: ""
+        autorLivro    = intent.getStringExtra("AUTOR")      ?: ""
 
         // ─── VIEWS ────────────────────────────────────────────────────────────
         val scrollView   = findViewById<ScrollView>(R.id.scrollTermos)
@@ -100,6 +107,13 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
             if (isFinishing || isDestroyed) return@gravarSolicitacao
 
             if (sucesso) {
+                // RF15.8: Registra no histórico a solicitação
+                val acao = when(tipoMidia) {
+                    "Reserva" -> "Reserva Solicitada"
+                    else -> "$tipoMidia Solicitado"
+                }
+                usuarioRepository.registrarNoHistorico(uid, livroId, tituloLivro, autorLivro, acao)
+
                 showPopupSucesso(livroId)
             } else {
                 btnConfirmar?.isEnabled = true

@@ -51,88 +51,99 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
      * com nome do usuário via join em usuarios/{uidAluno} e título via livros/{idLivro}.
      */
     private fun carregarAlugueis() {
+        // Tenta buscar na coleção solicitacoes_emprestimo
+        // Se falhar, tentamos carregar sem o orderBy para evitar erro de índice ausente
         db.collection("solicitacoes_emprestimo")
-            .whereIn("status", listOf("pendente", "ativo"))
-            .orderBy("dataSolicitacao", Query.Direction.DESCENDING)
+            .whereIn("status", listOf("pendente", "ativo", "atrasado"))
             .get()
             .addOnSuccessListener { result ->
                 if (result.isEmpty) {
-                    Toast.makeText(this, "Nenhum aluguel ativo.", Toast.LENGTH_SHORT).show()
+                    // Se estiver vazio, talvez a coleção seja 'alugueis'? 
+                    // Vamos tentar uma segunda busca preventiva
+                    buscarNaColecaoAlternativa()
                     return@addOnSuccessListener
                 }
+                processarDocumentos(result.documents)
+            }
+            .addOnFailureListener { e ->
+                android.util.Log.e("FirestoreError", "Erro ao carregar alugueis: ${e.message}")
+                Toast.makeText(this, "Erro: ${e.message}", Toast.LENGTH_LONG).show()
+                buscarNaColecaoAlternativa()
+            }
+    }
 
-                val documentos = result.documents
-                val totalDocs  = documentos.size
-                var processados = 0
-                val listaTemp  = mutableListOf<ItemAluguel>()
+    private fun buscarNaColecaoAlternativa() {
+        db.collection("alugueis")
+            .get()
+            .addOnSuccessListener { result ->
+                if (!result.isEmpty) {
+                    processarDocumentos(result.documents)
+                } else {
+                    Toast.makeText(this, "Nenhum aluguel encontrado em nenhuma coleção.", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
 
-                for (doc in documentos) {
-                    val docId    = doc.id
-                    val uidAluno = doc.getString("uidAluno") ?: ""
-                    val idLivro  = doc.getString("idLivro")  ?: ""
-                    val status   = doc.getString("status")   ?: "pendente"
-                    val dataMs   = doc.getLong("dataSolicitacao") ?: 0L
+    private fun processarDocumentos(documentos: List<com.google.firebase.firestore.DocumentSnapshot>) {
+        val totalDocs = documentos.size
+        var processados = 0
+        val listaTemp = mutableListOf<ItemAluguel>()
 
-                    // Placeholders enquanto os joins carregam
-                    val itemBase = ItemAluguel(
-                        docId       = docId,
-                        uidAluno    = uidAluno,
-                        idLivro     = idLivro,
-                        dataMs      = dataMs,
-                        status      = status
-                    )
-                    listaTemp.add(itemBase)
+        for (doc in documentos) {
+            val docId = doc.id
+            val uidAluno = doc.getString("uidAluno") ?: doc.getString("usuarioId") ?: ""
+            val idLivro = doc.getString("idLivro") ?: doc.getString("livroId") ?: ""
+            val status = doc.getString("status") ?: "ativo"
+            val dataMs = doc.getLong("dataSolicitacao") ?: doc.getLong("dataMs") ?: 0L
 
-                    // Join: busca nome do usuário e título do livro em paralelo
-                    var nomeUsuario = "Usuário"
-                    var tituloLivro = "Título Indisponível"
-                    var autorLivro  = "Autor Desconhecido"
-                    var joinsRestantes = 2
+            val itemBase = ItemAluguel(
+                docId = docId,
+                uidAluno = uidAluno,
+                idLivro = idLivro,
+                dataMs = dataMs,
+                status = status
+            )
+            listaTemp.add(itemBase)
 
-                    fun verificarConclusao() {
-                        joinsRestantes--
-                        if (joinsRestantes == 0) {
-                            val idx = listaTemp.indexOfFirst { it.docId == docId }
-                            if (idx >= 0) {
-                                listaTemp[idx] = listaTemp[idx].copy(
-                                    nomeUsuario = nomeUsuario,
-                                    tituloLivro = tituloLivro,
-                                    autorLivro  = autorLivro
-                                )
-                            }
-                            processados++
-                            if (processados == totalDocs) {
-                                adapter.atualizarLista(listaTemp)
-                            }
-                        }
+            var nomeUsuario = "Usuário"
+            var tituloLivro = "Título..."
+            var autorLivro = "Autor..."
+            var joinsRestantes = 2
+
+            fun verificarConclusao() {
+                joinsRestantes--
+                if (joinsRestantes == 0) {
+                    val idx = listaTemp.indexOfFirst { it.docId == docId }
+                    if (idx >= 0) {
+                        listaTemp[idx] = listaTemp[idx].copy(
+                            nomeUsuario = nomeUsuario,
+                            tituloLivro = tituloLivro,
+                            autorLivro = autorLivro
+                        )
                     }
-
-                    if (uidAluno.isNotEmpty()) {
-                        db.collection("usuarios").document(uidAluno).get()
-                            .addOnSuccessListener { u ->
-                                nomeUsuario = u.getString("nome") ?: u.getString("email") ?: "Usuário"
-                                verificarConclusao()
-                            }
-                            .addOnFailureListener { verificarConclusao() }
-                    } else {
-                        verificarConclusao()
-                    }
-
-                    if (idLivro.isNotEmpty()) {
-                        db.collection("livros").document(idLivro).get()
-                            .addOnSuccessListener { l ->
-                                tituloLivro = l.getString("title")  ?: l.getString("titulo") ?: "Título Indisponível"
-                                autorLivro  = l.getString("author") ?: l.getString("autor")  ?: "Autor Desconhecido"
-                                verificarConclusao()
-                            }
-                            .addOnFailureListener { verificarConclusao() }
-                    } else {
-                        verificarConclusao()
+                    processados++
+                    if (processados == totalDocs) {
+                        adapter.atualizarLista(listaTemp.sortedByDescending { it.dataMs })
                     }
                 }
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Não foi possível carregar os aluguéis. Verifique sua conexão.", Toast.LENGTH_SHORT).show()
-            }
+
+            if (uidAluno.isNotEmpty()) {
+                db.collection("usuarios").document(uidAluno).get()
+                    .addOnSuccessListener { u ->
+                        nomeUsuario = u.getString("nome") ?: u.getString("email") ?: "Usuário"
+                        verificarConclusao()
+                    }.addOnFailureListener { verificarConclusao() }
+            } else { verificarConclusao() }
+
+            if (idLivro.isNotEmpty()) {
+                db.collection("livros").document(idLivro).get()
+                    .addOnSuccessListener { l ->
+                        tituloLivro = l.getString("title") ?: l.getString("titulo") ?: "Título"
+                        autorLivro = l.getString("author") ?: l.getString("autor") ?: "Autor"
+                        verificarConclusao()
+                    }.addOnFailureListener { verificarConclusao() }
+            } else { verificarConclusao() }
+        }
     }
 }

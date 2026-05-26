@@ -18,6 +18,7 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
 
     private val db = FirebaseFirestore.getInstance()
     private var tituloAtual: String = ""
+    private var autorAtual: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +45,8 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
                 Intent(this, TelaRF19SolicitacoesTermosCondicoes::class.java)
                     .putExtra("TIPO_MIDIA", tipoMidia)
                     .putExtra("LIVRO_ID",   livroId)
+                    .putExtra("TITULO",     tituloAtual)
+                    .putExtra("AUTOR",      autorAtual)
             )
         }
 
@@ -81,6 +84,7 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
                 val titulo   = doc.getString("title")       ?: doc.getString("titulo")    ?: ""
                 tituloAtual = titulo
                 val autor    = doc.getString("author")      ?: doc.getString("autor")     ?: ""
+                autorAtual  = autor
                 val genero   = doc.getString("category")    ?: doc.getString("categoria") ?: ""
                 val coverUrl = doc.getString("coverUrl")    ?: ""
 

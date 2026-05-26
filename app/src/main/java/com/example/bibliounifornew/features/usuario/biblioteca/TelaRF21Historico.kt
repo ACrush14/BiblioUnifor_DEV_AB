@@ -81,18 +81,20 @@ class TelaRF21Historico : AppCompatActivity() {
     private fun carregarHistorico() {
         db.collection("historico_usuarios")
             .whereEqualTo("usuarioId", usuarioId)
-            .orderBy("adicionadoEm", Query.Direction.DESCENDING)
+            // .orderBy("adicionadoEm", Query.Direction.DESCENDING) // Comentado para evitar erro de índice ausente no Firestore
             .get()
             .addOnSuccessListener { result ->
                 listaHistorico.clear()
-                for (document in result) {
+                val itens = result.documents.mapNotNull { document ->
                     val livroId  = document.getString("livroId") ?: ""
                     val titulo   = document.getString("titulo") ?: "Título Indisponível"
                     val autor    = document.getString("autor") ?: "Autor Desconhecido"
+                    val acao     = document.getString("acao") ?: "Adicionado"
                     val dataLido = document.getLong("adicionadoEm") ?: 0L
-
-                    listaHistorico.add(ItemHistorico(livroId, titulo, autor, dataLido))
-                }
+                    ItemHistorico(livroId, titulo, autor, acao, dataLido)
+                }.sortedByDescending { it.dataLido }
+                
+                listaHistorico.addAll(itens)
                 adapter.notifyDataSetChanged()
             }
             .addOnFailureListener {

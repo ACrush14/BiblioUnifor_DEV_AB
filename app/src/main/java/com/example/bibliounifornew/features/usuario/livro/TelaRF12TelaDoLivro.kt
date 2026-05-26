@@ -265,6 +265,8 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
         db.collection("biblioteca_usuarios").document("${uid}_${livroIdAtual}")
             .set(dados, SetOptions.merge())
             .addOnSuccessListener {
+                // RF15.8: Registra no histórico a adição
+                usuarioRepository.registrarNoHistorico(uid, livroIdAtual, tituloAtual, autorAtual, "Adicionado")
                 Toast.makeText(this, "\"${tituloAtual.ifEmpty { livroIdAtual }}\" adicionado à sua Livraria!", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {

@@ -93,11 +93,16 @@ class TelaRF15MinhaLivrariaActivity : AppCompatActivity() {
     /**
      * Remove o livro de biblioteca_usuarios e limpa o item da lista visual
      */
+    private val usuarioRepository = com.example.bibliounifornew.data.UsuarioRepository()
+
     private fun removerLivro(item: ItemLivraria, position: Int) {
         val docId = "${usuarioId}_${item.livroId}"
         db.collection("biblioteca_usuarios").document(docId)
             .delete()
             .addOnSuccessListener {
+                // RF15.8: Registra no histórico a remoção
+                usuarioRepository.registrarNoHistorico(usuarioId, item.livroId, item.titulo, item.autor, "Removido")
+
                 adapter.removerItem(position)
                 Toast.makeText(this, "\"${item.titulo}\" removido com sucesso.", Toast.LENGTH_SHORT).show()
             }

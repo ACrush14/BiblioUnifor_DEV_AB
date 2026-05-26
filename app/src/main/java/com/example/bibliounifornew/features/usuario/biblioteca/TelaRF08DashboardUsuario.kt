@@ -190,7 +190,7 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
         dialogView.findViewById<MaterialButton>(R.id.btnConfirmarSair).setOnClickListener {
             dialog.dismiss()
             com.google.firebase.auth.FirebaseAuth.getInstance().signOut()
-            val intentSair = Intent(this, MainActivity::class.java)
+            val intentSair = Intent(this, com.example.bibliounifornew.login.TelaRF01BemVindo::class.java)
             intentSair.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intentSair)
             finish()

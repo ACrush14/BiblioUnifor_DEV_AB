@@ -93,7 +93,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/o_alienista_capa" />
+                            android:src="@drawable/osda" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- INFO -->
@@ -109,7 +109,7 @@
                             android:id="@+id/textTituloLivroSolicitado"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="O Ceifador"
+                            android:text="Título do Livro"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -119,7 +119,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Neal Shusterman"
+                            android:text="Autor"
                             android:textColor="#555555"
                             android:textSize="14sp" />
 
@@ -128,7 +128,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="Solicitado em: 23 mar. 2018"
+                            android:text="Solicitado em: --/--/----"
                             android:textColor="@color/biblio_blue"
                             android:textSize="12sp"
                             android:textStyle="bold" />

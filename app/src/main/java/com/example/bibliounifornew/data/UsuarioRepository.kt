@@ -92,12 +92,51 @@ class UsuarioRepository {
 
     /**
      * Remove um item do histórico do usuário no Firestore.
-     * A collection segue o padrão: historico_usuarios/{uid}_{livroId}
+     * Busca por usuarioId e livroId e deleta todos os registros correspondentes.
      */
     fun removerDoHistorico(uid: String, livroId: String, onComplete: (Boolean) -> Unit) {
-        val documentoId = "${uid}_${livroId}"
-        db.collection("historico_usuarios").document(documentoId)
-            .delete()
+        db.collection("historico_usuarios")
+            .whereEqualTo("usuarioId", uid)
+            .whereEqualTo("livroId", livroId)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val batch = db.batch()
+                for (doc in snapshot.documents) {
+                    batch.delete(doc.reference)
+                }
+                batch.commit()
+                    .addOnSuccessListener { onComplete(true) }
+                    .addOnFailureListener { onComplete(false) }
+            }
+            .addOnFailureListener { onComplete(false) }
+    }
+
+    /**
+     * Registra uma ação (adição/remoção) no histórico do usuário.
+     * RF15.8: Manter registro de livros adicionados ou removidos.
+     */
+    fun registrarNoHistorico(
+        uid: String,
+        livroId: String,
+        titulo: String,
+        autor: String,
+        acao: String, // "Adicionado", "Removido" ou "Solicitado"
+        coverUrl: String = "",
+        onComplete: (Boolean) -> Unit = {}
+    ) {
+        val historicoData = hashMapOf(
+            "usuarioId" to uid,
+            "livroId" to livroId,
+            "titulo" to titulo,
+            "autor" to autor,
+            "coverUrl" to coverUrl,
+            "acao" to acao,
+            "adicionadoEm" to System.currentTimeMillis()
+        )
+        
+        // Usamos um ID gerado automaticamente para permitir múltiplos registros do mesmo livro (ex: add, remove, add)
+        db.collection("historico_usuarios")
+            .add(historicoData)
             .addOnSuccessListener { onComplete(true) }
             .addOnFailureListener { onComplete(false) }
     }
