@@ -32,6 +32,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="Título"
             android:textColor="@color/black"
             android:textSize="18sp"
@@ -46,6 +48,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="Autor"
             android:textColor="@color/biblio_dark"
             android:textSize="14sp"
@@ -58,13 +62,13 @@
             android:id="@+id/txtStatusLivraria"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="8dp"
             android:text="Não Lido"
             android:textColor="@color/biblio_dark"
             android:textSize="13sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/btnRemoverLivraria"
-            app:layout_constraintStart_toStartOf="@+id/txtTituloLivraria" />
+            app:layout_constraintStart_toStartOf="@+id/txtTituloLivraria"
+            app:layout_constraintTop_toBottomOf="@+id/txtAutorLivraria" />
 
         <!-- MENU 3 PONTOS — abre RF12 com o ID correto -->
         <ImageView
