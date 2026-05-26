@@ -213,6 +213,10 @@ class TelaRF14LeituraActivity : AppCompatActivity() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_setor_localizado)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        // Define o nome do livro dinamicamente
+        dialog.findViewById<TextView>(R.id.textLivroSetor)?.text = "Livro: $tituloAtual"
+
         dialog.findViewById<Button>(R.id.buttonVoltarSetor).setOnClickListener { dialog.dismiss() }
         dialog.show()
     }
