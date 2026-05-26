@@ -1,182 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:background="@color/biblio_bg">
 
-    <View
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="-100dp"
-        android:layout_marginTop="-100dp"
-        android:alpha="0.3"
-        android:background="@drawable/bg_circle"
-        android:backgroundTint="@color/biblio_detalhes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imageLogoLogin"
-        android:layout_width="300dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="45dp"
-        android:adjustViewBounds="true"
-        android:contentDescription="Logo Unifor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textTituloLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Acesse sua Conta"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageLogoLogin" />
-
-    <TextView
-        android:id="@+id/textBemVindo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:text="Bem vindo de novo!"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textTituloLogin" />
-
-    <TextView
-        android:id="@+id/textErroLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:text="Email ou senha incorretos\nPreencha todos os os campos"
-        android:textAlignment="center"
-        android:textColor="@color/biblio_red"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textBemVindo" />
-
-    <EditText
-        android:id="@+id/editEmail"
-        android:layout_width="0dp"
-        android:layout_height="55dp"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/bg_input"
-        android:hint="Digite seu e-mail"
-        android:inputType="textEmailAddress"
-        android:paddingHorizontal="20dp"
-        android:textColor="@color/black"
-        android:textColorHint="#9E9E9E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textErroLogin" />
-
-    <RelativeLayout
-        android:id="@+id/layoutSenha"
-        android:layout_width="0dp"
-        android:layout_height="55dp"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editEmail">
-
-        <EditText
-            android:id="@+id/editSenha"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_input"
-            android:hint="Digite sua senha"
-            android:inputType="textPassword"
-            android:paddingStart="20dp"
-            android:paddingEnd="48dp"
-            android:textColor="@color/black"
-            android:textColorHint="#9E9E9E"
-            android:importantForAutofill="no" />
+        <View
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="-100dp"
+            android:layout_marginTop="-100dp"
+            android:alpha="0.3"
+            android:background="@drawable/bg_circle"
+            android:backgroundTint="@color/biblio_detalhes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/iconOlhoSenha"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="4dp"
-            android:clickable="true"
-            android:contentDescription="@string/desc_mostrar_ocultar_senha"
-            android:focusable="true"
-            android:padding="12dp"
-            android:src="@drawable/ic_eye_closed"
-            app:tint="@color/biblio_blue" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/textEsqueceuSenha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="Esqueceu a senha?"
-        android:textColor="@color/biblio_blue"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutSenha" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonEntrar"
-        android:layout_width="0dp"
-        android:layout_height="55dp"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="26dp"
-        android:text="Entrar"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:backgroundTint="@color/biblio_blue"
-        app:cornerRadius="12dp"
-        app:elevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textEsqueceuSenha" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonEntrar">
+            android:id="@+id/imageLogoLogin"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="45dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="Logo Unifor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/textTituloLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Não tem uma conta? "
+            android:layout_marginTop="10dp"
+            android:text="Acesse sua Conta"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageLogoLogin" />
 
         <TextView
-            android:id="@+id/textCriarConta"
+            android:id="@+id/textBemVindo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Crie aqui"
+            android:layout_marginTop="35dp"
+            android:text="Bem vindo de novo!"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textTituloLogin" />
+
+        <TextView
+            android:id="@+id/textErroLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Email ou senha incorretos\nPreencha todos os os campos"
+            android:textAlignment="center"
+            android:textColor="@color/biblio_red"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textBemVindo" />
+
+        <EditText
+            android:id="@+id/editEmail"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_input"
+            android:hint="Digite seu e-mail"
+            android:inputType="textEmailAddress"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="#9E9E9E"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textErroLogin" />
+
+        <RelativeLayout
+            android:id="@+id/layoutSenha"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editEmail">
+
+            <EditText
+                android:id="@+id/editSenha"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_input"
+                android:hint="Digite sua senha"
+                android:inputType="textPassword"
+                android:paddingStart="20dp"
+                android:paddingEnd="48dp"
+                android:textColor="@color/black"
+                android:textColorHint="#9E9E9E"
+                android:importantForAutofill="no" />
+
+            <ImageView
+                android:id="@+id/iconOlhoSenha"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="4dp"
+                android:clickable="true"
+                android:contentDescription="@string/desc_mostrar_ocultar_senha"
+                android:focusable="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_eye_closed"
+                app:tint="@color/biblio_blue" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textEsqueceuSenha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Esqueceu a senha?"
             android:textColor="@color/biblio_blue"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutSenha" />
 
-    </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonEntrar"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="26dp"
+            android:text="Entrar"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/biblio_blue"
+            app:cornerRadius="12dp"
+            app:elevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textEsqueceuSenha" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:id="@+id/layoutLinkCadastro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:layout_marginBottom="32dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonEntrar">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Não tem uma conta? "
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textCriarConta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Crie aqui"
+                android:textColor="@color/biblio_blue"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -8,15 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.features.usuario.perfil.NavigationHelper
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.chip.ChipGroup
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class TelaRF11TelaDePesquisa : AppCompatActivity() {
-
-    private var editDataPublicacaoReferencia: EditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
