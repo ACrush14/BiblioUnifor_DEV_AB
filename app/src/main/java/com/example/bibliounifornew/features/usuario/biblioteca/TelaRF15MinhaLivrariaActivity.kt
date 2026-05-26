@@ -48,10 +48,6 @@ class TelaRF15MinhaLivrariaActivity : AppCompatActivity() {
             e.printStackTrace()
         }
 
-        // ─── FILTRO ────────────────────────────────────────────────────────────
-        findViewById<ImageView>(R.id.imgFiltroStatus)?.setOnClickListener {
-            abrirPopupFiltro()
-        }
 
         // ─── RECYCLERVIEW DINÂMICO ─────────────────────────────────────────────
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewLivraria)
@@ -110,17 +106,4 @@ class TelaRF15MinhaLivrariaActivity : AppCompatActivity() {
             }
     }
 
-    private fun abrirPopupFiltro() {
-        val dialog = Dialog(this)
-        dialog.setContentView(R.layout.popup_filtrar_midia)
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-        dialog.findViewById<MaterialButton>(R.id.btnLimparFiltro)?.setOnClickListener { dialog.dismiss() }
-        dialog.findViewById<MaterialButton>(R.id.btnSalvarFiltro)?.setOnClickListener {
-            Toast.makeText(this, "Filtro aplicado.", Toast.LENGTH_SHORT).show()
-            dialog.dismiss()
-        }
-
-        dialog.show()
-    }
 }

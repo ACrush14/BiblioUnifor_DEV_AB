@@ -53,9 +53,11 @@ class ListaDesejosAdapter(
         if (item.disponivel) {
             holder.txtStatus.text      = "Disponível"
             holder.txtStatus.setTextColor(android.graphics.Color.parseColor("#2E7D32"))
+            holder.btnAlugar.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#0056FF")) // Azul original
         } else {
             holder.txtStatus.text      = "Indisponível"
             holder.txtStatus.setTextColor(android.graphics.Color.parseColor("#C62828"))
+            holder.btnAlugar.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#9E9E9E")) // Cinza
         }
 
         if (item.coverUrl.isNotEmpty()) {

@@ -216,25 +216,31 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
 
     private fun adicionarListaDesejos() {
         if (livroIdAtual.isEmpty()) {
-            Toast.makeText(this, "Livro sem ID. Tente novamente.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Aguarde o carregamento do livro...", Toast.LENGTH_SHORT).show()
             return
         }
         val uid = authRepository.getUsuarioAtual()?.uid ?: run {
             Toast.makeText(this, "Faça login para usar esta função.", Toast.LENGTH_SHORT).show()
             return
         }
+
+        // Buscamos os nomes atuais dos campos ou usamos o ID como fallback seguro
+        val tituloParaSalvar = if (tituloAtual.isNotEmpty()) tituloAtual else "Livro em processamento"
+        val autorParaSalvar  = if (autorAtual.isNotEmpty()) autorAtual else "Aguardando dados"
+
         val dados = hashMapOf(
             "usuarioId"    to uid,
             "livroId"      to livroIdAtual,
-            "titulo"       to tituloAtual,
-            "autor"        to autorAtual,
+            "titulo"       to tituloParaSalvar,
+            "autor"        to autorParaSalvar,
             "adicionadoEm" to System.currentTimeMillis()
         )
-        usuarioRepository.salvarListaDesejos(uid, livroIdAtual, dados) { sucesso, _ ->
+
+        usuarioRepository.salvarListaDesejos(uid, livroIdAtual, dados) { sucesso, erro ->
             if (sucesso) {
-                Toast.makeText(this, "\"${tituloAtual.ifEmpty { livroIdAtual }}\" adicionado à Lista de Desejos!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Adicionado à Lista de Desejos!", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Erro ao adicionar à Lista de Desejos.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Erro ao salvar: $erro", Toast.LENGTH_SHORT).show()
             }
         }
     }

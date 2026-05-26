@@ -104,18 +104,6 @@
                     android:layout_height="1dp"
                     android:layout_weight="1" />
 
-                <ImageView
-                    android:id="@+id/imgFiltroStatus"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="10dp"
-                    android:src="@android:drawable/arrow_down_float"
-                    app:tint="@color/biblio_dark"
-                    android:contentDescription="Filtrar livros" />
-
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView

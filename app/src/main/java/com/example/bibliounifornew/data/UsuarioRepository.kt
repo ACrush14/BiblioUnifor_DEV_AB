@@ -103,8 +103,8 @@ class UsuarioRepository {
     }
 
     /**
-     * Salva ou atualiza o item na lista de desejos no Firestore.
-     * Collection: lista_desejos/{uid}_{livroId}
+     * Salva ou atualiza o item na lista de desejos no Firestore com segurança.
+     * Padrão do ID do Documento: {uid}_{livroId} para evitar duplicidade.
      */
     fun salvarListaDesejos(
         uid: String,
@@ -112,11 +112,16 @@ class UsuarioRepository {
         dados: Map<String, Any>,
         onComplete: (Boolean, String?) -> Unit
     ) {
+        if (uid.isBlank() || livroId.isBlank()) {
+            onComplete(false, "ID de usuário ou livro inválido.")
+            return
+        }
+
         val documentoId = "${uid}_${livroId}"
         db.collection("lista_desejos").document(documentoId)
             .set(dados, SetOptions.merge())
             .addOnSuccessListener { onComplete(true, null) }
-            .addOnFailureListener { e -> onComplete(false, e.message) }
+            .addOnFailureListener { e -> onComplete(false, e.localizedMessage) }
     }
 
     /**

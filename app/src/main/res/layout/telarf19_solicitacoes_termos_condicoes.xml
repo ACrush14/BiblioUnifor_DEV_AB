@@ -57,6 +57,22 @@
         </ScrollView>
     </com.google.android.material.card.MaterialCardView>
 
+    <!-- MENSAGEM DE INSTRUÇÃO PROFISSIONAL -->
+    <TextView
+        android:id="@+id/textAvisoScroll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="Por favor, role até o final dos termos para habilitar o aceite."
+        android:textColor="#999999"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:fontFamily="sans-serif-medium"
+        app:layout_constraintBottom_toTopOf="@id/layoutCheckTelaTermos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <LinearLayout
         android:id="@+id/layoutCheckTelaTermos"
         android:layout_width="0dp"

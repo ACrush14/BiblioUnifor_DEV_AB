@@ -9,6 +9,7 @@ import android.view.Window
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
@@ -36,6 +37,7 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
         val scrollView   = findViewById<ScrollView>(R.id.scrollTermos)
         val checkBox     = findViewById<CheckBox>(R.id.checkTelaAceitarTermos)
         val btnConfirmar = findViewById<Button>(R.id.buttonConfirmarTermosTela)
+        val textAviso    = findViewById<TextView>(R.id.textAvisoScroll)
 
         // Bloqueados até o usuário rolar o scroll até o fim dos termos
         checkBox.isEnabled     = false
@@ -46,7 +48,10 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
         scrollView.viewTreeObserver.addOnScrollChangedListener {
             val child = scrollView.getChildAt(scrollView.childCount - 1)
             val diff  = child.bottom - (scrollView.height + scrollView.scrollY)
-            if (diff <= 0) checkBox.isEnabled = true
+            if (diff <= 0) {
+                checkBox.isEnabled = true
+                textAviso.visibility = android.view.View.GONE
+            }
         }
 
         // ─── CHECKBOX → HABILITA BOTÃO ────────────────────────────────────────

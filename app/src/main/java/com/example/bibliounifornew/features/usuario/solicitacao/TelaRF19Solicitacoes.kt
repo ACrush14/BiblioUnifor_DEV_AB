@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class TelaRF19Solicitacoes : AppCompatActivity() {
 
     private val db = FirebaseFirestore.getInstance()
+    private var tituloAtual: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +79,7 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
                 if (!doc.exists() || isFinishing || isDestroyed) return@addOnSuccessListener
 
                 val titulo   = doc.getString("title")       ?: doc.getString("titulo")    ?: ""
+                tituloAtual = titulo
                 val autor    = doc.getString("author")      ?: doc.getString("autor")     ?: ""
                 val genero   = doc.getString("category")    ?: doc.getString("categoria") ?: ""
                 val coverUrl = doc.getString("coverUrl")    ?: ""
@@ -106,6 +108,9 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_setor_localizado)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        // Injeta o nome do livro atual no popup
+        dialog.findViewById<TextView>(R.id.textLivroSetor)?.text = "Livro: $tituloAtual"
 
         dialog.findViewById<Button>(R.id.buttonVoltarSetor)
             ?.setOnClickListener { dialog.dismiss() }
