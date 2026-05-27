@@ -416,7 +416,9 @@
     <string name="popup_pendentes_btn_confirmar">Confirmar aluguel</string>
     <string name="popup_pendentes_btn_remover">Remover registro\n(Ação irreversível)</string>
     <string name="fmt_info_pendencia">Livro: %1$s\nUsuário: %2$s\nPrazo: %3$s\nAtraso: %4$d dia(s)\nMulta est.: R$ %5$s</string>
+    <string name="notif_atraso_titulo">⚠️ Devolução em atraso</string>
     <string name="notif_atraso_mensagem">Seu aluguel está atrasado. Regularize para evitar bloqueios.</string>
+    <string name="notif_multa_titulo">💰 Multa por atraso</string>
     <string name="notif_multa_mensagem">Existe valor pendente referente ao seu aluguel.</string>
     <string name="fmt_item_atraso">Atraso: %d dia(s)</string>
     <string name="fmt_item_multa">Multa est.: R$ %s</string>
@@ -457,6 +459,8 @@
     <string name="msg_nenhum_aluguel_ativo">Nenhum aluguel ativo no momento.</string>
     <string name="msg_historico_vazio">Seu histórico de leituras está vazio.</string>
     <string name="msg_desejos_vazios">Sua lista de desejos está vazia.</string>
+    <string name="msg_sem_notificacoes">Você não tem notificações no momento.</string>
+    <string name="content_desc_foto_perfil">Foto de perfil do usuário</string>
     <string name="erro_carregar_alugueis">Erro ao carregar aluguéis.</string>
     <string name="placeholder_usuario">Usuário</string>
 
