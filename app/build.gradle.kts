@@ -1,4 +1,11 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+
+// Lê local.properties de forma segura — nunca expõe segredos no código-fonte
+val localProperties = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
 
 plugins {
     alias(libs.plugins.android.application)
@@ -19,6 +26,18 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Injeta a chave como constante de build — acessível via BuildConfig.GOOGLE_BOOKS_API_KEY
+        // O valor vem de local.properties e NUNCA é commitado.
+        buildConfigField(
+            "String",
+            "GOOGLE_BOOKS_API_KEY",
+            "\"${localProperties.getProperty("GOOGLE_BOOKS_API_KEY", "CHAVE_NAO_CONFIGURADA")}\""
+        )
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {

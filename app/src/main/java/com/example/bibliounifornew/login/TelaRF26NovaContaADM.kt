@@ -250,62 +250,81 @@ class TelaRF26NovaContaADM : AppCompatActivity() {
             val sSenha = senha.text.toString()
             val sConfirma = confirma.text.toString()
 
+            // ── Validações síncronas (sem I/O) ───────────────────────────────
             when {
                 sNome.isEmpty() || sUsuario.isEmpty() || sEmail.isEmpty() || sCredencial.isEmpty() -> {
                     Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
                 }
-
                 !android.util.Patterns.EMAIL_ADDRESS.matcher(sEmail).matches() -> {
                     erroEmail.visibility = View.VISIBLE
+                    return@setOnClickListener
                 }
-
-                !sCredencial.equals("DevsAB", ignoreCase = true) -> { // Credencial master inválida
-                    erroCredencial.visibility = View.VISIBLE
-                }
-
                 sSenha.isEmpty() -> {
                     erroSenha1.text = "Campo obrigatório"
                     erroSenha1.visibility = View.VISIBLE
+                    return@setOnClickListener
                 }
-
                 sConfirma.isEmpty() -> {
                     erroSenha2.text = "Campo obrigatório"
                     erroSenha2.visibility = View.VISIBLE
+                    return@setOnClickListener
                 }
-
                 sSenha.length < 8 -> {
                     erroSenha.text = "A senha deve conter pelo menos 8 caracteres"
                     erroSenha.visibility = View.VISIBLE
+                    return@setOnClickListener
                 }
-
                 !sSenha.any { it.isDigit() } -> {
                     erroSenha.text = "Um número"
                     erroSenha.visibility = View.VISIBLE
+                    return@setOnClickListener
                 }
-
                 !sSenha.any { it.isUpperCase() } -> {
                     erroSenha.text = "Uma letra maiúscula"
                     erroSenha.visibility = View.VISIBLE
+                    return@setOnClickListener
                 }
-
                 sSenha != sConfirma -> {
                     erroSenhaDiferente.visibility = View.VISIBLE
+                    return@setOnClickListener
                 }
+            }
 
-                else -> {
-                    criar.isEnabled = false
+            // ── Validação assíncrona do código de convite ─────────────────────
+            // O código vive em Firestore (configuracoes/adm → codigoConvite).
+            // Pode ser rotacionado pelo time sem rebuild do APK.
+            // Para criar o documento pela primeira vez:
+            //   Firebase Console > Firestore > configuracoes > adm > codigoConvite: "SuaSenhaForte"
+            criar.isEnabled = false
+            criar.text = "Verificando credencial..."
+            erroCredencial.visibility = View.GONE
+
+            db.collection("configuracoes").document("adm")
+                .get()
+                .addOnSuccessListener { doc ->
+                    val codigoValido = doc.getString("codigoConvite") ?: ""
+
+                    if (codigoValido.isEmpty() || !sCredencial.equals(codigoValido, ignoreCase = false)) {
+                        // Código errado ou documento inexistente no Firestore
+                        criar.isEnabled = true
+                        criar.text = "Criar Conta ADM"
+                        erroCredencial.visibility = View.VISIBLE
+                        return@addOnSuccessListener
+                    }
+
+                    // Código válido — prossegue com criação de conta
                     criar.text = "Criando..."
                     authRepository.registrarUsuario(sEmail, sSenha) { sucesso, uidOuErro ->
                         runOnUiThread {
                             if (sucesso && uidOuErro != null) {
-                                // Salva perfil ADM no Firestore
                                 val perfil = hashMapOf(
-                                    "nome"                to sNome,
-                                    "usuario"             to sUsuario,
-                                    "email"               to sEmail,
-                                    "role"                to "adm",
-                                    "cadastroConfirmado"  to false,
-                                    "criadoEm"            to System.currentTimeMillis()
+                                    "nome"               to sNome,
+                                    "usuario"            to sUsuario,
+                                    "email"              to sEmail,
+                                    "role"               to "adm",
+                                    "cadastroConfirmado" to false,
+                                    "criadoEm"           to System.currentTimeMillis()
                                 )
                                 db.collection("administradores").document(uidOuErro)
                                     .set(perfil, SetOptions.merge())
@@ -323,13 +342,16 @@ class TelaRF26NovaContaADM : AppCompatActivity() {
                             } else {
                                 criar.isEnabled = true
                                 criar.text = "Criar Conta ADM"
-                                val mensagem = traduzirErroFirebase(uidOuErro)
-                                Toast.makeText(this, mensagem, Toast.LENGTH_LONG).show()
+                                Toast.makeText(this, traduzirErroFirebase(uidOuErro), Toast.LENGTH_LONG).show()
                             }
                         }
                     }
                 }
-            }
+                .addOnFailureListener {
+                    criar.isEnabled = true
+                    criar.text = "Criar Conta ADM"
+                    Toast.makeText(this, "Não foi possível verificar a credencial. Verifique sua conexão.", Toast.LENGTH_SHORT).show()
+                }
         }
 
 

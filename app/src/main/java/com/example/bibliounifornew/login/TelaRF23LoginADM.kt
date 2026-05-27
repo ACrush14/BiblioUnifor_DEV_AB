@@ -80,12 +80,10 @@ class TelaRF23LoginADM : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 2) Credencial master — ignoreCase + trim já aplicados
-            if (!sCredencial.equals("DevsAB", ignoreCase = true)) {
-                erro.text       = "Credencial de administrador inválida"
-                erro.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
+            // 2) A segurança de acesso ADM é garantida pelo RBAC no passo 5 (role == "adm"
+            //    verificado no Firestore). Não há mais senha mestra local — qualquer string
+            //    hardcoded no APK pode ser lida após decompilação (apktool).
+            //    O campo editCredencialAdm permanece no XML por compatibilidade de UI.
 
             // 3) Loading state
             botaoEntrar.isEnabled = false

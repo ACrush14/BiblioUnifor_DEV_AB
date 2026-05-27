@@ -3,11 +3,11 @@ package com.example.bibliounifornew.features.adm.gerenciamento
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -19,6 +19,10 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import coil.load
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.UsuarioRepository
@@ -143,34 +147,65 @@ class TelaRF38ConfigADM : AppCompatActivity() {
     // ─── UPLOAD DE FOTO ───────────────────────────────────────────────────────
 
     private fun processarESubirFoto(uri: Uri) {
-        val uid = auth.currentUser?.uid ?: return
+        val uid       = auth.currentUser?.uid ?: return
         val imageFoto = findViewById<ImageView>(R.id.imageFotoAdm)
 
-        try {
-            @Suppress("DEPRECATION")
-            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-            val redimensionado = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
-            val baos = ByteArrayOutputStream()
-            redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
-            val bytes = baos.toByteArray()
+        // Feedback imediato: escurece a foto enquanto processa
+        imageFoto?.alpha = 0.5f
 
-            imageFoto?.alpha = 0.5f
+        // Todo o I/O (leitura do arquivo + compressão) em Dispatchers.IO.
+        // API moderna: contentResolver.openInputStream() substitui o
+        // MediaStore.Images.Media.getBitmap() deprecado desde API 29.
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val inputStream = contentResolver.openInputStream(uri)
+                val original    = BitmapFactory.decodeStream(inputStream)
+                inputStream?.close()
 
-            usuarioRepository.uploadFotoPerfil(uid, bytes, "administradores") { sucesso, url, erro ->
-                if (isFinishing || isDestroyed) return@uploadFotoPerfil
-                imageFoto?.alpha = 1.0f
-                if (sucesso && url != null) {
-                    imageFoto?.load(url) {
-                        placeholder(R.drawable.user_placeholder)
-                        error(R.drawable.user_placeholder)
+                if (original == null) {
+                    withContext(Dispatchers.Main) {
+                        imageFoto?.alpha = 1.0f
+                        Toast.makeText(this@TelaRF38ConfigADM,
+                            getString(R.string.erro_processar_imagem), Toast.LENGTH_SHORT).show()
                     }
-                    Toast.makeText(this, getString(R.string.msg_foto_atualizada), Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, getString(R.string.erro_salvar_perfil), Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                // Redimensionamento e compressão — CPU intensivo, permanece em IO
+                val redimensionado = Bitmap.createScaledBitmap(original, 400, 400, true)
+                original.recycle()          // libera memória do bitmap original imediatamente
+                val baos = java.io.ByteArrayOutputStream()
+                redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                redimensionado.recycle()    // libera após compressão
+                val bytes = baos.toByteArray()
+
+                // Volta à Main Thread apenas para atualizar a UI e disparar o upload
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+
+                    usuarioRepository.uploadFotoPerfil(uid, bytes, "administradores") { sucesso, url, _ ->
+                        if (isFinishing || isDestroyed) return@uploadFotoPerfil
+                        imageFoto?.alpha = 1.0f
+                        if (sucesso && url != null) {
+                            imageFoto?.load(url) {
+                                placeholder(R.drawable.user_placeholder)
+                                error(R.drawable.user_placeholder)
+                            }
+                            Toast.makeText(this@TelaRF38ConfigADM,
+                                getString(R.string.msg_foto_atualizada), Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@TelaRF38ConfigADM,
+                                getString(R.string.erro_salvar_perfil), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    imageFoto?.alpha = 1.0f
+                    Toast.makeText(this@TelaRF38ConfigADM,
+                        getString(R.string.erro_processar_imagem), Toast.LENGTH_SHORT).show()
                 }
             }
-        } catch (e: Exception) {
-            Toast.makeText(this, getString(R.string.erro_processar_imagem), Toast.LENGTH_SHORT).show()
         }
     }
 

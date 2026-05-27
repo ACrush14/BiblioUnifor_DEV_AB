@@ -1,5 +1,6 @@
 package com.example.bibliounifornew.data
 
+import com.example.bibliounifornew.BuildConfig
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -20,8 +21,8 @@ class BibliotecaOnlineRepository {
     suspend fun buscarEImportarLivro(termoDeBusca: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         withContext(Dispatchers.IO) {
             try {
-                val minhaChaveApi = "AIzaSyAEojGm94sofbQ2ZRnlPjVPiKtrQKeqDE4"
-                val resposta = googleBooksService.buscarLivros(termoDeBusca, minhaChaveApi)
+                // Chave lida de BuildConfig — origem: local.properties (nunca commitado)
+                val resposta = googleBooksService.buscarLivros(termoDeBusca, BuildConfig.GOOGLE_BOOKS_API_KEY)
                 val listaLivrosApi = resposta.items?.take(5)
 
                 if (!listaLivrosApi.isNullOrEmpty()) {

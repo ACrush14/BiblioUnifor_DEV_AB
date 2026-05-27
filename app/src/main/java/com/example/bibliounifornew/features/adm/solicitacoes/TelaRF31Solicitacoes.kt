@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.features.adm.gerenciamento.NavigationHelperADM
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
@@ -235,20 +237,42 @@ class TelaRF31Solicitacoes : AppCompatActivity() {
 
         btnConfirm?.setOnClickListener {
             val senha = editSenha?.text.toString()
-            if (senha != "DevsAB") {
-                Toast.makeText(this, "Credencial incorreta.", Toast.LENGTH_SHORT).show()
+
+            if (senha.isEmpty()) {
+                Toast.makeText(this, "Informe sua senha para confirmar.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            db.collection("solicitacoes_midia").document(item.docId)
-                .delete()
+
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            val adminEmail  = currentUser?.email
+
+            if (currentUser == null || adminEmail.isNullOrEmpty()) {
+                Toast.makeText(this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Reautentica o admin com a senha dele — mesmo padrão de RF30 e RF38.
+            // Substitui a senha mestra hardcoded ("DevsAB") que era legível após decompilação.
+            btnConfirm.isEnabled = false
+            val credential = EmailAuthProvider.getCredential(adminEmail, senha)
+            currentUser.reauthenticate(credential)
                 .addOnSuccessListener {
-                    adapter.removerItem(position)
-                    Toast.makeText(this, "Solicitação excluída.", Toast.LENGTH_SHORT).show()
+                    db.collection("solicitacoes_midia").document(item.docId)
+                        .delete()
+                        .addOnSuccessListener {
+                            adapter.removerItem(position)
+                            Toast.makeText(this, "Solicitação excluída.", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener { e ->
+                            btnConfirm.isEnabled = true
+                            Toast.makeText(this, "Erro ao excluir: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    dialog.dismiss()
                 }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Erro ao excluir: ${e.message}", Toast.LENGTH_SHORT).show()
+                .addOnFailureListener {
+                    btnConfirm.isEnabled = true
+                    Toast.makeText(this, getString(R.string.erro_senha_incorreta), Toast.LENGTH_SHORT).show()
                 }
-            dialog.dismiss()
         }
 
         btnCancel?.setOnClickListener { dialog.dismiss() }
