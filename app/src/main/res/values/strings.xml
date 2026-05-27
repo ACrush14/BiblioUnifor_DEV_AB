@@ -308,6 +308,8 @@
     <string name="erro_nao_pode_excluir_proprio">Você não pode remover sua própria conta por aqui.</string>
     <string name="msg_verificando">Verificando…</string>
     <string name="msg_buscando_dados">Buscando dados no banco…</string>
+    <string name="carregando_dados">Carregando dados…</string>
+    <string name="erro_carregar_usuario">Erro ao carregar usuário</string>
 
     <!-- RF28.5 / RF28.13 — Popup Solicitações -->
     <string name="popup_solicitacoes_label_usuario">USUÁRIO: %s</string>
@@ -391,10 +393,8 @@
          RF32 — Financeiro / Controle de Atrasos (Anderson V04)
          ═══════════════════════════════════════════════════════════════ -->
     <string name="titulo_livros_vencidos">Livros Vencidos</string>
-    <string name="label_bem_vindo">Bem-vindo</string>
     <string name="btn_ver_pendentes">Ver pendentes / retirada</string>
     <string name="msg_nenhum_vencido">Nenhum livro vencido.</string>
-    <string name="btn_renovar_aluguel">Renovar</string>
     <string name="btn_renovar_aluguel_selecionado">Renovar Aluguel Selecionado</string>
     <string name="msg_lista_vencidos_vazia">Não há livros vencidos no momento.</string>
     <string name="msg_aviso_atraso_enviado">Aviso de atraso enviado.</string>
@@ -435,7 +435,7 @@
          RF34 — Lista de Aluguéis ADM (Anderson V04)
          ═══════════════════════════════════════════════════════════════ -->
     <string name="titulo_lista_alugueis">Aluguéis</string>
-    <string name="label_alugado">Alugado:</string>
+    <string name="label_alugado_adm">Alugado:</string>
     <string name="btn_ver_livro">Ver livro</string>
     <string name="btn_ver_usuario">Ver usuário</string>
     <string name="desc_avatar_usuario_aluguel">Avatar do usuário</string>
@@ -452,10 +452,9 @@
     <string name="label_usuario_adm">Usuário</string>
     <string name="hint_usuario_adm">Nome de usuário</string>
     <string name="label_senha_atual_adm">Senha atual</string>
-    <string name="btn_salvar_alteracoes">Salvar Alterações</string>
     <string name="btn_redefinir_senha_adm">Redefinir Senha</string>
     <string name="btn_apagar_conta">Apagar conta</string>
-    <string name="desc_editar_campo">Editar campo</string>
+
     <string name="alert_foto_titulo">Foto de Perfil</string>
     <string name="alert_foto_mensagem">Deseja mudar sua foto de perfil?</string>
     <string name="alert_foto_galeria">Escolher da Galeria</string>
@@ -473,14 +472,14 @@
          ═══════════════════════════════════════════════════════════════ -->
     <string name="desc_fechar_tela">Fechar</string>
     <string name="label_nova_senha">Nova senha</string>
-    <string name="hint_nova_senha">Digite a nova senha</string>
+    <string name="hint_nova_senha_adm">Digite a nova senha</string>
     <string name="label_confirmacao_senha">Confirmação de senha</string>
     <string name="hint_confirmacao_senha">Confirme a nova senha</string>
     <string name="erro_senha_igual_anterior">A senha não pode ser igual à anterior</string>
     <string name="erro_min_8_caracteres">• Mínimo de 8 caracteres</string>
     <string name="erro_pelo_menos_numero">• Pelo menos 1 número</string>
     <string name="erro_pelo_menos_maiuscula">• Pelo menos 1 letra maiúscula</string>
-    <string name="erro_senhas_diferentes">As senhas estão diferentes</string>
+    <string name="erro_senhas_diferentes_adm">As senhas estão diferentes</string>
     <string name="msg_sessao_expirada_senha">Sessão expirada. Faça logout e login novamente antes de alterar a senha.</string>
     <string name="erro_alterar_senha">Erro ao alterar senha. Tente novamente.</string>
 

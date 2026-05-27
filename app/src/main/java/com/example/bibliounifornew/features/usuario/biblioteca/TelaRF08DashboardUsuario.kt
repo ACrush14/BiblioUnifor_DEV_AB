@@ -12,6 +12,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.scale
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.AuthRepository
@@ -28,6 +30,10 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 
 class TelaRF08DashboardUsuario : AppCompatActivity() {
@@ -37,8 +43,9 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
     private val db                = FirebaseFirestore.getInstance()
 
     private lateinit var imagePerfil: ShapeableImageView
+    private lateinit var textNomeUsuario: TextView
+    private var isFirstLoad = true
 
-    // Launcher para selecionar imagem da galeria
     private val getGalleryImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             processarESubirFoto(it)
@@ -49,13 +56,13 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf08_dashboardusuario)
 
-        val textNomeUsuario = findViewById<TextView>(R.id.textNomeUsuario)
-        imagePerfil         = findViewById(R.id.imagePerfilUsuario)
-        val uidAtual        = authRepository.getUsuarioAtual()?.uid
+        textNomeUsuario = findViewById(R.id.textNomeUsuario)
+        imagePerfil     = findViewById(R.id.imagePerfilUsuario)
+        val uidAtual    = authRepository.getUsuarioAtual()?.uid
 
         if (uidAtual != null) {
-            textNomeUsuario?.text = "Carregando..."
-            carregarDadosUsuario(uidAtual, textNomeUsuario)
+            textNomeUsuario.text = getString(R.string.carregando_dados)
+            carregarDadosUsuario(uidAtual)
             carregarDescobrir(uidAtual)
         } else {
             startActivity(Intent(this, com.example.bibliounifornew.login.TelaRF03LoginAluno::class.java))
@@ -63,50 +70,42 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
             return
         }
 
-        // ─── CLIQUE NA FOTO PARA TROCAR ────────────────────────────────────────
         imagePerfil.setOnClickListener {
             getGalleryImage.launch("image/*")
         }
 
-        // ─── NAVEGAÇÃO ────────────────────────────────────────────────────────
-        val btnConfig         = findViewById<ImageView>(R.id.btnConfig)
-        val btnNotificacao    = findViewById<ImageView>(R.id.btnNotificacao)
-        val btnPesquisarLivros        = findViewById<MaterialButton>(R.id.btnPesquisarLivros)
-        val btnMinhaLivrariaDashboard = findViewById<MaterialButton>(R.id.btnMinhaLivraria)
-        val btnListaDesejo            = findViewById<MaterialButton>(R.id.btnListaDesejos)
-        val btnAmigosDashboard        = findViewById<MaterialButton>(R.id.btnAmigos)
-        val btnHistoricoDashboard     = findViewById<MaterialButton>(R.id.btnHistorico)
-        val btnStatusAluguel          = findViewById<MaterialButton>(R.id.btnStatusAluguel)
-        val btnSair                   = findViewById<MaterialButton>(R.id.btnSairConta)
-
-        btnConfig.setOnClickListener         { startActivity(Intent(this, TelaRF09Configuracao::class.java)) }
-        btnNotificacao.setOnClickListener    { startActivity(Intent(this, TelaRF20Notificacoes::class.java)) }
-        btnPesquisarLivros.setOnClickListener        { startActivity(Intent(this, TelaRF11TelaDePesquisa::class.java)) }
-        btnMinhaLivrariaDashboard.setOnClickListener { startActivity(Intent(this, TelaRF15MinhaLivrariaActivity::class.java)) }
-        btnListaDesejo.setOnClickListener            { startActivity(Intent(this, TelaRF16ListaDesejosActivity::class.java)) }
-        btnAmigosDashboard.setOnClickListener        { startActivity(Intent(this, TelaRF17Amigos::class.java)) }
-        btnHistoricoDashboard.setOnClickListener     { startActivity(Intent(this, TelaRF21Historico::class.java)) }
-        btnStatusAluguel.setOnClickListener          { startActivity(Intent(this, TelaRF18StatusAluguel::class.java)) }
-        btnSair.setOnClickListener                   { showExitPopup() }
-
+        configurarBotoesNavegacao()
         NavigationHelper.configurarBarraNavegacao(this)
     }
 
     override fun onResume() {
         super.onResume()
-        val uidAtual = authRepository.getUsuarioAtual()?.uid
-        if (uidAtual != null) {
-            val textNomeUsuario = findViewById<TextView>(R.id.textNomeUsuario)
-            carregarDadosUsuario(uidAtual, textNomeUsuario)
+        if (!isFirstLoad) {
+            val uidAtual = authRepository.getUsuarioAtual()?.uid
+            if (uidAtual != null) {
+                carregarDadosUsuario(uidAtual)
+            }
         }
+        isFirstLoad = false
     }
 
-    private fun carregarDadosUsuario(uid: String, textView: TextView?) {
-        usuarioRepository.buscarPerfilUsuario(uid) { sucesso, dados, erro ->
-            if (sucesso && dados != null) {
-                textView?.text = dados["nome"] as? String ?: "Usuário"
+    private fun configurarBotoesNavegacao() {
+        findViewById<ImageView>(R.id.btnConfig).setOnClickListener { startActivity(Intent(this, TelaRF09Configuracao::class.java)) }
+        findViewById<ImageView>(R.id.btnNotificacao).setOnClickListener { startActivity(Intent(this, TelaRF20Notificacoes::class.java)) }
+        findViewById<MaterialButton>(R.id.btnPesquisarLivros).setOnClickListener { startActivity(Intent(this, TelaRF11TelaDePesquisa::class.java)) }
+        findViewById<MaterialButton>(R.id.btnMinhaLivraria).setOnClickListener { startActivity(Intent(this, TelaRF15MinhaLivrariaActivity::class.java)) }
+        findViewById<MaterialButton>(R.id.btnListaDesejos).setOnClickListener { startActivity(Intent(this, TelaRF16ListaDesejosActivity::class.java)) }
+        findViewById<MaterialButton>(R.id.btnAmigos).setOnClickListener { startActivity(Intent(this, TelaRF17Amigos::class.java)) }
+        findViewById<MaterialButton>(R.id.btnHistorico).setOnClickListener { startActivity(Intent(this, TelaRF21Historico::class.java)) }
+        findViewById<MaterialButton>(R.id.btnStatusAluguel).setOnClickListener { startActivity(Intent(this, TelaRF18StatusAluguel::class.java)) }
+        findViewById<MaterialButton>(R.id.btnSairConta).setOnClickListener { showExitPopup() }
+    }
 
-                // Carrega foto de perfil se disponível
+    private fun carregarDadosUsuario(uid: String) {
+        usuarioRepository.buscarPerfilUsuario(uid) { sucesso, dados, _ ->
+            if (sucesso && dados != null) {
+                textNomeUsuario.text = dados["nome"] as? String ?: "Usuário"
+
                 val fotoUrl = dados["fotoUrl"] as? String ?: ""
                 if (fotoUrl.isNotEmpty()) {
                     imagePerfil.load(fotoUrl) {
@@ -116,94 +115,109 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
                     }
                 }
             } else {
-                textView?.text = "Erro ao carregar"
+                textNomeUsuario.text = getString(R.string.erro_carregar_usuario)
             }
         }
     }
 
     private fun processarESubirFoto(uri: Uri) {
         val uid = authRepository.getUsuarioAtual()?.uid ?: return
+        imagePerfil.alpha = 0.5f
 
-        try {
-            // 1. ATUALIZAÇÃO IMEDIATA NA UI (Feedback instantâneo)
-            val inputStream = contentResolver.openInputStream(uri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            inputStream?.close()
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val inputStream = contentResolver.openInputStream(uri)
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                inputStream?.close()
 
-            if (bitmap != null) {
-                imagePerfil.setImageBitmap(bitmap)
-                imagePerfil.alpha = 0.5f // Indicador visual de "em progresso"
+                if (bitmap != null) {
+                    val redimensionado = bitmap.scale(400, 400)
+                    val baos = ByteArrayOutputStream()
+                    redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                    val bytes = baos.toByteArray()
 
-                // 2. Preparação dos bytes para upload
-                val redimensionado = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
-                val baos = ByteArrayOutputStream()
-                redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
-                val bytes = baos.toByteArray()
+                    withContext(Dispatchers.Main) {
+                        imagePerfil.setImageBitmap(bitmap)
 
-                // 3. Upload em segundo plano
-                usuarioRepository.uploadFotoPerfil(uid, bytes) { sucesso, url, erro ->
-                    if (isFinishing || isDestroyed) return@uploadFotoPerfil
-                    imagePerfil.alpha = 1.0f
-                    if (sucesso && url != null) {
-                        imagePerfil.load(url) {
-                            placeholder(R.drawable.user_placeholder)
-                            error(R.drawable.user_placeholder)
-                            crossfade(true)
+                        usuarioRepository.uploadFotoPerfil(uid, bytes) { sucesso, url, erro ->
+                            if (isFinishing || isDestroyed) return@uploadFotoPerfil
+                            imagePerfil.alpha = 1.0f
+
+                            if (sucesso && url != null) {
+                                imagePerfil.load(url) { crossfade(true) }
+                                Toast.makeText(this@TelaRF08DashboardUsuario, "Foto atualizada!", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(this@TelaRF08DashboardUsuario, "Erro: $erro", Toast.LENGTH_SHORT).show()
+                            }
                         }
-                        Toast.makeText(this, "Foto atualizada!", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(this, "Erro: $erro", Toast.LENGTH_SHORT).show()
                     }
                 }
+            } catch (_: Exception) {
+                withContext(Dispatchers.Main) {
+                    imagePerfil.alpha = 1.0f
+                    Toast.makeText(this@TelaRF08DashboardUsuario, "Erro ao processar imagem.", Toast.LENGTH_SHORT).show()
+                }
             }
-        } catch (e: Exception) {
-            Toast.makeText(this, "Erro ao processar imagem.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // ─── SEÇÃO DESCOBRIR ──────────────────────────────────────────────────────
-
     private fun carregarDescobrir(uid: String) {
-        db.collection("biblioteca_usuarios")
-            .whereEqualTo("usuarioId", uid)
-            .limit(20)
-            .get()
-            .addOnSuccessListener { snapshot ->
-                val livroIds = snapshot.documents.mapNotNull { it.getString("livroId") }.distinct()
-                if (livroIds.isEmpty()) {
-                    carregarLivrosDescobrir(null)
-                    return@addOnSuccessListener
+        // Lança uma corrotina para tirar o peso da Thread Principal
+        lifecycleScope.launch {
+            try {
+                // Vai para o processador de fundo (Background)
+                val categoria = withContext(Dispatchers.IO) {
+                    val snapshot = db.collection("biblioteca_usuarios")
+                        .whereEqualTo("usuarioId", uid)
+                        .limit(20)
+                        .get()
+                        .await()
+
+                    val livroIds = snapshot.documents.mapNotNull { it.getString("livroId") }.distinct()
+
+                    if (livroIds.isEmpty()) return@withContext null
+
+                    val livrosSnap = db.collection("livros")
+                        .whereIn(FieldPath.documentId(), livroIds.take(10))
+                        .get()
+                        .await()
+
+                    // Matemática pesada feita fora da tela principal!
+                    livrosSnap.documents
+                        .mapNotNull { it.getString("category") ?: it.getString("categoria") }
+                        .groupingBy { it }
+                        .eachCount()
+                        .maxByOrNull { it.value }?.key
                 }
-                db.collection("livros")
-                    .whereIn(FieldPath.documentId(), livroIds.take(10))
-                    .get()
-                    .addOnSuccessListener { livrosSnap ->
-                        val categoria = livrosSnap.documents
-                            .mapNotNull { it.getString("category") ?: it.getString("categoria") }
-                            .groupingBy { it }
-                            .eachCount()
-                            .maxByOrNull { it.value }
-                            ?.key
-                        carregarLivrosDescobrir(categoria)
-                    }
-                    .addOnFailureListener { carregarLivrosDescobrir(null) }
+
+                // De volta à thread principal apenas para chamar a UI
+                carregarLivrosDescobrir(categoria)
+
+            } catch (e: Exception) {
+                carregarLivrosDescobrir(null)
             }
-            .addOnFailureListener { carregarLivrosDescobrir(null) }
+        }
     }
 
     private fun carregarLivrosDescobrir(categoria: String?) {
         val container = findViewById<LinearLayout>(R.id.containerDescobrir) ?: return
         container.removeAllViews()
 
-        val query = if (!categoria.isNullOrEmpty()) {
-            db.collection("livros").whereEqualTo("category", categoria).limit(10)
-        } else {
-            db.collection("livros").limit(10)
-        }
+        lifecycleScope.launch {
+            try {
+                // Busca no banco de dados em Background
+                val snapshot = withContext(Dispatchers.IO) {
+                    val query = if (!categoria.isNullOrEmpty()) {
+                        db.collection("livros").whereEqualTo("category", categoria).limit(10)
+                    } else {
+                        db.collection("livros").limit(10)
+                    }
+                    query.get().await()
+                }
 
-        query.get()
-            .addOnSuccessListener { snapshot ->
-                if (snapshot.isEmpty) return@addOnSuccessListener
+                if (snapshot.isEmpty) return@launch
+
+                // Só processa a inflação visual se tiver dados
                 for (doc in snapshot.documents) {
                     val titulo   = doc.getString("title")    ?: doc.getString("titulo")  ?: "Sem título"
                     val autor    = doc.getString("author")   ?: doc.getString("autor")   ?: ""
@@ -217,25 +231,28 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
 
                     if (coverUrl.isNotEmpty()) {
                         imgCapa.load(coverUrl) {
-                            placeholder(R.drawable.osda)
-                            error(R.drawable.osda)
+                            placeholder(R.drawable.user_placeholder)
+                            error(R.drawable.user_placeholder)
                         }
                     } else {
-                        imgCapa.setImageResource(R.drawable.osda)
+                        imgCapa.setImageResource(R.drawable.user_placeholder)
                     }
+
                     txtTitulo.text = titulo
                     txtAutor.text  = autor
 
                     cardView.setOnClickListener {
                         startActivity(
-                            Intent(this, TelaRF12TelaDoLivro::class.java)
+                            Intent(this@TelaRF08DashboardUsuario, TelaRF12TelaDoLivro::class.java)
                                 .putExtra("LIVRO_ID", livroId)
                         )
                     }
                     container.addView(cardView)
                 }
+            } catch (e: Exception) {
+                // Tratamento de erro silencioso para não crashar a tela
             }
-            .addOnFailureListener { }
+        }
     }
 
     private fun showExitPopup() {
