@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/biblio_bg">
@@ -50,7 +51,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="joaobobo@gmail.com"
+            android:text=""
+            tools:text="admin@email.com"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold"
@@ -88,13 +90,13 @@
                 android:padding="4dp"
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
                 app:tint="@color/biblio_dark"
-                android:contentDescription="Fechar" />
+                android:contentDescription="@string/desc_fechar_tela" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Nova senha"
+                android:text="@string/label_nova_senha"
                 android:textColor="@color/biblio_dark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -109,7 +111,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_input"
-                    android:hint="Digite a nova senha"
+                    android:hint="@string/hint_nova_senha"
                     android:importantForAutofill="no"
                     android:inputType="textPassword"
                     android:paddingHorizontal="20dp"
@@ -140,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginBottom="16dp"
-                android:text="A senha não pode ser igual à anterior"
+                android:text="@string/erro_senha_igual_anterior"
                 android:textColor="@color/biblio_red"
                 android:textSize="12sp"
                 android:visibility="gone"/>
@@ -156,7 +158,7 @@
                     android:id="@+id/tvErroMinCaracteres"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="• Mínimo de 8 caracteres"
+                    android:text="@string/erro_min_8_caracteres"
                     android:textColor="@color/biblio_red"
                     android:textSize="12sp"
                     android:visibility="gone"/>
@@ -164,7 +166,7 @@
                     android:id="@+id/tvErroNumero"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="• Pelo menos 1 número"
+                    android:text="@string/erro_pelo_menos_numero"
                     android:textColor="@color/biblio_red"
                     android:textSize="12sp"
                     android:visibility="gone"/>
@@ -172,7 +174,7 @@
                     android:id="@+id/tvErroMaiuscula"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="• Pelo menos 1 letra maiúscula"
+                    android:text="@string/erro_pelo_menos_maiuscula"
                     android:textColor="@color/biblio_red"
                     android:textSize="12sp"
                     android:visibility="gone"/>
@@ -182,7 +184,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Confirmação de senha"
+                android:text="@string/label_confirmacao_senha"
                 android:textColor="@color/biblio_dark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -197,7 +199,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_input"
-                    android:hint="Confirme a nova senha"
+                    android:hint="@string/hint_confirmacao_senha"
                     android:importantForAutofill="no"
                     android:inputType="textPassword"
                     android:paddingHorizontal="20dp"
@@ -227,7 +229,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="As senhas estão diferentes"
+                android:text="@string/erro_senhas_diferentes"
                 android:textColor="@color/biblio_red"
                 android:textSize="12sp"
                 android:visibility="gone" />
@@ -240,7 +242,7 @@
                 android:id="@+id/buttonSalvar"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Salvar Alterações"
+                android:text="@string/btn_salvar_alteracoes"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"

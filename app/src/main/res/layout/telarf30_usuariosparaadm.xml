@@ -56,7 +56,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/user_placeholder" />
+                android:src="@drawable/user_placeholder"
+                android:contentDescription="@string/desc_foto_usuario_item" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -75,7 +76,8 @@
                 android:id="@+id/textNomeUsuario"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ronaldo Alves"
+                android:text=""
+                tools:text="Ronaldo Alves"
                 android:textColor="@color/white"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -85,7 +87,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="r.alves.profissional@email.com"
+                android:text=""
+                tools:text="r.alves.profissional@email.com"
                 android:textColor="@color/white"
                 android:alpha="0.9"
                 android:textSize="14sp" />
@@ -99,7 +102,8 @@
                 android:backgroundTint="#80000000"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="4dp"
-                android:text="USUÁRIO COMUM"
+                android:text=""
+                tools:text="ALUNO"
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -142,7 +146,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Gestão do Usuário"
+                        android:text="@string/label_gestao_usuario"
                         android:textColor="@color/biblio_blue"
                         android:textSize="16sp"
                         android:textStyle="bold"

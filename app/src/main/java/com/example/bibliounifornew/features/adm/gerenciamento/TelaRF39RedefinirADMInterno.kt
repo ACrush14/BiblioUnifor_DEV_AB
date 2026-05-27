@@ -32,27 +32,32 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf39_redefinir_adm_interno)
 
-        val etSenha             = findViewById<EditText>(R.id.editTextTextPassword)
-        val etSenhaConfirmacao  = findViewById<EditText>(R.id.editTextTextPasswordConfirmacao)
-        val btnX                = findViewById<TextView>(R.id.buttonX)
-        val btnSalvar           = findViewById<MaterialButton>(R.id.buttonSalvar)
+        val etSenha            = findViewById<EditText>(R.id.editTextTextPassword)
+        val etSenhaConfirmacao = findViewById<EditText>(R.id.editTextTextPasswordConfirmacao)
+        // BUG-D1 FIX: XML declara <ImageView>, não <TextView> — cast corrigido
+        val btnX               = findViewById<ImageView>(R.id.buttonX)
+        val btnSalvar          = findViewById<MaterialButton>(R.id.buttonSalvar)
 
-        val iconOlhoSenha             = findViewById<ImageView>(R.id.iconOlhoSenha)
-        val iconOlhoSenhaConfirmacao  = findViewById<ImageView>(R.id.iconOlhoSenhaConfirmacao)
+        val iconOlhoSenha            = findViewById<ImageView>(R.id.iconOlhoSenha)
+        val iconOlhoSenhaConfirmacao = findViewById<ImageView>(R.id.iconOlhoSenhaConfirmacao)
+
+        // BUG-D2 FIX: email real do admin — nunca hardcoded
+        val textViewUserEmail = findViewById<TextView>(R.id.textViewUserEmail)
+        textViewUserEmail?.text = auth.currentUser?.email ?: ""
 
         // TextViews de validação dinâmica
         val tvErroMin       = findViewById<TextView>(R.id.tvErroMinCaracteres)
         val tvErroNum       = findViewById<TextView>(R.id.tvErroNumero)
         val tvErroMaiusc    = findViewById<TextView>(R.id.tvErroMaiuscula)
-        val tvErroIgual     = findViewById<TextView>(R.id.tvErroIgualAntiga)   // reaproveitado
+        val tvErroIgual     = findViewById<TextView>(R.id.tvErroIgualAntiga)
         val tvErroDiferente = findViewById<TextView>(R.id.textErroDiferente)
 
         // Esconde erro "igual à antiga" — não temos senha atual para comparar aqui
-        tvErroIgual.visibility = View.GONE
+        tvErroIgual?.visibility = View.GONE
 
         // ── Olhos ─────────────────────────────────────────────────────────────
         var senhaVisivel = false
-        iconOlhoSenha.setOnClickListener {
+        iconOlhoSenha?.setOnClickListener {
             senhaVisivel = !senhaVisivel
             if (senhaVisivel) {
                 etSenha.transformationMethod = HideReturnsTransformationMethod.getInstance()
@@ -65,7 +70,7 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
         }
 
         var senhaConfirmacaoVisivel = false
-        iconOlhoSenhaConfirmacao.setOnClickListener {
+        iconOlhoSenhaConfirmacao?.setOnClickListener {
             senhaConfirmacaoVisivel = !senhaConfirmacaoVisivel
             if (senhaConfirmacaoVisivel) {
                 etSenhaConfirmacao.transformationMethod = HideReturnsTransformationMethod.getInstance()
@@ -89,10 +94,10 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
                 val temMaiuscula = pass.any { it.isUpperCase() }
                 val coincidem    = pass == confirm && pass.isNotEmpty()
 
-                tvErroMin.visibility    = if (!temMinimo    && pass.isNotEmpty()) View.VISIBLE else View.GONE
-                tvErroNum.visibility    = if (!temNumero    && pass.isNotEmpty()) View.VISIBLE else View.GONE
-                tvErroMaiusc.visibility = if (!temMaiuscula && pass.isNotEmpty()) View.VISIBLE else View.GONE
-                tvErroDiferente.visibility = if (!coincidem && confirm.isNotEmpty()) View.VISIBLE else View.GONE
+                tvErroMin?.visibility    = if (!temMinimo    && pass.isNotEmpty()) View.VISIBLE else View.GONE
+                tvErroNum?.visibility    = if (!temNumero    && pass.isNotEmpty()) View.VISIBLE else View.GONE
+                tvErroMaiusc?.visibility = if (!temMaiuscula && pass.isNotEmpty()) View.VISIBLE else View.GONE
+                tvErroDiferente?.visibility = if (!coincidem && confirm.isNotEmpty()) View.VISIBLE else View.GONE
 
                 val isValid = temMinimo && temNumero && temMaiuscula && coincidem
                 btnSalvar.isEnabled = isValid
@@ -105,7 +110,7 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
         etSenhaConfirmacao.addTextChangedListener(watcher)
 
         // ── Botão X (fechar) ──────────────────────────────────────────────────
-        btnX.setOnClickListener { finish() }
+        btnX?.setOnClickListener { finish() }
 
         // ── Salvar — chama updatePassword() real ──────────────────────────────
         btnSalvar.setOnClickListener {
@@ -113,7 +118,7 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
             val currentUser = auth.currentUser
 
             if (currentUser == null) {
-                Toast.makeText(this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.erro_sessao_expirada), Toast.LENGTH_SHORT).show()
                 finish()
                 return@setOnClickListener
             }
@@ -128,14 +133,14 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
                 .addOnFailureListener { e ->
                     btnSalvar.isEnabled = true
                     if (e is FirebaseAuthRecentLoginRequiredException) {
-                        Toast.makeText(this, "Sessão expirada. Faça login novamente para alterar a senha.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, getString(R.string.msg_sessao_expirada_senha), Toast.LENGTH_LONG).show()
                         auth.signOut()
                         val intent = Intent(this, TelaRF23LoginADM::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
                         finish()
                     } else {
-                        Toast.makeText(this, "Erro ao alterar senha: ${e.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, getString(R.string.erro_alterar_senha), Toast.LENGTH_LONG).show()
                     }
                 }
         }

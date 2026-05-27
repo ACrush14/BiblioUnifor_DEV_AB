@@ -56,18 +56,18 @@ class TelaRF33CadastroLivro : AppCompatActivity() {
             // ── Validação ────────────────────────────────────────────────────
             if (titulo.isEmpty() || autor.isEmpty() || isbn.isEmpty() || data.isEmpty() || qtdStr.isEmpty()) {
                 tvErro.visibility = View.VISIBLE
-                tvErro.text = "Preencha todas as informações do livro."
+                tvErro.text = getString(R.string.erro_preencha_infos_livro)
                 return@setOnClickListener
             }
             if (!validarFormatoData(data)) {
                 tvErro.visibility = View.VISIBLE
-                tvErro.text = "Data inválida (dd/mm/aaaa)."
+                tvErro.text = getString(R.string.erro_data_invalida)
                 return@setOnClickListener
             }
             val quantidade = qtdStr.toLongOrNull()
             if (quantidade == null || quantidade < 1) {
                 tvErro.visibility = View.VISIBLE
-                tvErro.text = "Quantidade deve ser um número maior que zero."
+                tvErro.text = getString(R.string.erro_quantidade_invalida)
                 return@setOnClickListener
             }
 
@@ -92,7 +92,7 @@ class TelaRF33CadastroLivro : AppCompatActivity() {
                 .add(dados)
                 .addOnSuccessListener { docRef ->
                     btnAvancar.isEnabled = true
-                    Toast.makeText(this, "Livro cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.msg_livro_cadastrado_sucesso), Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, TelaRF33AdicionarMidiasExtras::class.java)
                     intent.putExtra("LIVRO_ID", docRef.id)
                     startActivity(intent)
@@ -101,8 +101,8 @@ class TelaRF33CadastroLivro : AppCompatActivity() {
                 .addOnFailureListener { e ->
                     btnAvancar.isEnabled = true
                     tvErro.visibility    = View.VISIBLE
-                    tvErro.text          = "Erro ao salvar: ${e.message}"
-                    Toast.makeText(this, "Falha ao cadastrar livro.", Toast.LENGTH_SHORT).show()
+                    tvErro.text          = getString(R.string.erro_conexao_banco)
+                    Toast.makeText(this, getString(R.string.erro_falha_cadastrar_livro), Toast.LENGTH_SHORT).show()
                 }
         }
     }

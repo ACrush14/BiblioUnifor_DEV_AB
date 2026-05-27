@@ -69,7 +69,7 @@ class TelaRF35ConfirmarCadastroADM : AppCompatActivity() {
                 filtrarLista("")
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Não foi possível carregar os cadastros pendentes. Verifique sua conexão.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.erro_carregar_pendentes), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -102,13 +102,13 @@ class TelaRF35ConfirmarCadastroADM : AppCompatActivity() {
                 .set(mapOf("cadastroConfirmado" to true), SetOptions.merge())
                 .addOnSuccessListener {
                     dialog.dismiss()
-                    Toast.makeText(this, "Cadastro de ${item.nome} confirmado!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.fmt_cadastro_confirmado, item.nome), Toast.LENGTH_SHORT).show()
                     listaCompleta.removeAll { it.uid == item.uid }
                     adapter.removerItem(position)
                 }
                 .addOnFailureListener {
                     btnConfirmar.isEnabled = true
-                    Toast.makeText(this, "Não foi possível confirmar o cadastro. Tente novamente.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.erro_confirmar_cadastro), Toast.LENGTH_SHORT).show()
                 }
         }
 

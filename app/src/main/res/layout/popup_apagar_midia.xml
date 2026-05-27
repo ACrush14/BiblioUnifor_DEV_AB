@@ -9,10 +9,6 @@
     app:cardCornerRadius="28dp"
     app:cardElevation="12dp">
 
-    <!-- ====================================================== -->
-    <!-- CONTEÚDO -->
-    <!-- ====================================================== -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,24 +19,18 @@
         android:paddingEnd="24dp"
         android:paddingBottom="32dp">
 
-        <!-- ================================================== -->
         <!-- TÍTULO -->
-        <!-- ================================================== -->
-
         <TextView
             android:id="@+id/textTituloApagar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Apagar mídia?"
+            android:text="@string/popup_apagar_midia_titulo"
             android:textColor="@color/biblio_blue"
             android:textSize="26sp"
             android:fontFamily="sans-serif-black"
             android:textStyle="bold" />
 
-        <!-- ================================================== -->
         <!-- SUBTÍTULO -->
-        <!-- ================================================== -->
-
         <TextView
             android:id="@+id/textDescricaoApagar"
             android:layout_width="match_parent"
@@ -48,102 +38,75 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:lineSpacingExtra="4dp"
-            android:text="Essa ação não poderá ser desfeita.\nDigite sua senha atual:"
+            android:text="@string/popup_apagar_midia_descricao"
             android:textAlignment="center"
             android:textColor="#555555"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:fontFamily="sans-serif-medium" />
 
-        <!-- ================================================== -->
-        <!-- AVISO -->
-        <!-- ================================================== -->
-
+        <!-- ERRO -->
         <TextView
             android:id="@+id/textErroSenha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:gravity="center"
-            android:text="Digite sua senha atual!"
+            android:text="@string/popup_apagar_midia_erro_senha"
             android:textColor="@color/biblio_red"
             android:textSize="14sp"
-            android:visibility="gone"
-            tools:visibility="visible"
-            xmlns:tools="http://schemas.android.com/tools" />
+            android:visibility="gone" />
 
-        <!-- ================================================== -->
-        <!-- INPUT SENHA (PILL-SHAPE REFINADO) -->
-        <!-- ================================================== -->
-
-        <com.google.android.material.card.MaterialCardView
+        <!-- INPUT SENHA — TextInputLayout com toggle nativo -->
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginTop="8dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="32dp"
-            app:cardElevation="2dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="#E0E0E0">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/popup_apagar_midia_hint_senha"
+            app:endIconMode="password_toggle"
+            app:endIconContentDescription="@string/desc_ver_senha"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editSenhaAtual"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="24dp"
-                android:paddingEnd="20dp">
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textColor="@color/black"
+                android:textColorHint="#A0A0A0"
+                android:textSize="16sp" />
 
-                <EditText
-                    android:id="@+id/editSenhaAtual"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:hint="Sua senha"
-                    android:inputType="textPassword"
-                    android:textColor="@color/black"
-                    android:textColorHint="#A0A0A0"
-                    android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <ImageView
-                    android:id="@+id/iconMostrarSenha"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/ic_eye_open"
-                    android:alpha="0.6"
-                    app:tint="@color/biblio_blue" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- ================================================== -->
-        <!-- BOTÃO (PILL-SHAPE PREMIUM) -->
-        <!-- ================================================== -->
-
+        <!-- BOTÃO CONFIRMAR -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnConfirmarApagar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginTop="32dp"
-            android:text="Confirmar"
+            android:layout_marginTop="24dp"
+            android:text="@string/btn_confirmar"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:fontFamily="sans-serif-black"
-            android:letterSpacing="0.02"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             app:backgroundTint="@color/biblio_blue"
             app:cornerRadius="28dp"
             app:elevation="6dp"
             app:rippleColor="#40FFFFFF" />
 
+        <!-- BOTÃO CANCELAR -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCancelarApagar"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:text="Cancelar"
+            android:text="@string/btn_cancelar"
             android:textAllCaps="false"
             android:textColor="@color/biblio_blue"
             android:textSize="16sp"

@@ -42,7 +42,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/user_placeholder"
-                android:contentDescription="Foto do Administrador" />
+                android:contentDescription="@string/desc_foto_adm_header" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Informações Extras"
+            android:text="@string/titulo_midia_extras"
             android:textColor="@color/white"
             android:textSize="26sp"
             android:textStyle="bold"

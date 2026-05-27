@@ -33,6 +33,8 @@ class ConfirmacaoAdapter(
         val item = lista[position]
         holder.txtNome.text  = item.nome
         holder.txtEmail.text = item.email
+        // BUG-B1 FIX: listener ausente tornava clique no item completamente inoperante
+        holder.itemView.setOnClickListener { onClick(item, holder.adapterPosition) }
     }
 
     override fun getItemCount(): Int = lista.size

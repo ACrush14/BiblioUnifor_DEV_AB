@@ -53,7 +53,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/user_placeholder"
-                android:contentDescription="Foto do Administrador" />
+                android:contentDescription="@string/desc_foto_adm_header" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Arquivos e Mídia"
+            android:text="@string/titulo_midia_arquivos"
             android:textColor="@color/white"
             android:textSize="26sp"
             android:textStyle="bold"
@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Arquivo PDF:"
+                android:text="@string/label_arquivo_pdf"
                 android:textColor="@color/biblio_dark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -102,7 +102,7 @@
                 android:layout_height="56dp"
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/bg_input"
-                android:hint="Caminho ou link do PDF..."
+                android:hint="@string/hint_arquivo_pdf"
                 android:inputType="textUri"
                 android:paddingHorizontal="20dp"
                 android:textColor="@color/black"
@@ -113,7 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Arquivo Audiobook:"
+                android:text="@string/label_arquivo_audiobook"
                 android:textColor="@color/biblio_dark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -124,7 +124,7 @@
                 android:layout_height="56dp"
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/bg_input"
-                android:hint="Caminho ou link do Audiobook..."
+                android:hint="@string/hint_arquivo_audiobook"
                 android:inputType="textUri"
                 android:paddingHorizontal="20dp"
                 android:textColor="@color/black"
@@ -148,7 +148,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Disponível em Braille"
+                    android:text="@string/label_disponivel_braille"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -165,7 +165,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="32dp"
-                android:text="Salvar novo livro"
+                android:text="@string/btn_salvar_novo_livro"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"

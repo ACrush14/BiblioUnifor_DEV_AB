@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
@@ -35,7 +36,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/user_placeholder" />
+                    android:src="@drawable/user_placeholder"
+                    android:contentDescription="@string/desc_capa_livro_crud" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -52,7 +54,8 @@
                     android:id="@+id/txtTituloLivroCrud"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Título do Livro"
+                    android:text=""
+                    tools:text="Título do Livro"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -64,7 +67,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Autor"
+                    android:text=""
+                    tools:text="Autor"
                     android:textColor="#555555"
                     android:textSize="14sp"
                     android:maxLines="1"
@@ -75,7 +79,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="ISBN: —"
+                    android:text=""
+                    tools:text="ISBN: —"
                     android:textColor="@color/biblio_blue"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -85,7 +90,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Exemplares: —"
+                    android:text=""
+                    tools:text="Exemplares: —"
                     android:textColor="#777777"
                     android:textSize="12sp" />
 
@@ -99,7 +105,7 @@
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:layout_marginTop="14dp"
-            android:text="Editar Informações"
+            android:text="@string/btn_editar_informacoes"
             android:textAllCaps="false"
             android:textColor="@color/biblio_blue"
             android:textSize="14sp"

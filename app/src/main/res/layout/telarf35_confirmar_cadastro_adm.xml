@@ -42,7 +42,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/user_placeholder"
-                android:contentDescription="Foto do Administrador" />
+                android:contentDescription="@string/desc_foto_adm_header" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Confirmação"
+            android:text="@string/titulo_confirmacao_cadastros"
             android:textColor="@color/white"
             android:textSize="26sp"
             android:textStyle="bold"
@@ -88,7 +88,7 @@
                 android:layout_marginEnd="12dp"
                 android:src="@drawable/ic_search_minimal"
                 app:tint="@color/biblio_detalhes"
-                android:contentDescription="Ícone de busca" />
+                android:contentDescription="@string/desc_icone_busca_usuario" />
 
             <EditText
                 android:id="@+id/editPesquisarUsuario"
@@ -96,7 +96,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:hint="Procure um usuário..."
+                android:hint="@string/hint_procurar_usuario"
                 android:singleLine="true"
                 android:textColor="@color/black"
                 android:textColorHint="#8A8A8A"

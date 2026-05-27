@@ -39,10 +39,12 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:id="@+id/imgCapaLivroDetalhe"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/o_alienista_capa" />
+                android:src="@drawable/o_alienista_capa"
+                android:contentDescription="@string/desc_capa_livro_crud" />
 
         </com.google.android.material.card.MaterialCardView>
 

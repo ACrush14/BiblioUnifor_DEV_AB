@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/biblio_bg">
@@ -51,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Configurações ADM"
+            android:text="@string/titulo_config_adm"
             android:textColor="@color/white"
             android:textSize="26sp"
             android:textStyle="bold"
@@ -81,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Nome"
+                android:text="@string/label_nome_adm"
                 android:textColor="@color/biblio_dark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -98,7 +99,7 @@
                     android:background="@drawable/bg_input"
                     android:paddingStart="20dp"
                     android:paddingEnd="48dp"
-                    android:hint="Seu nome"
+                    android:hint="@string/hint_nome_adm"
                     android:textColor="@color/black"
                     android:textColorHint="#9E9E9E"
                     android:textSize="16sp"
@@ -111,6 +112,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="16dp"
                     android:src="@drawable/ic_edit_pencil"
+                    android:contentDescription="@string/desc_editar_campo"
                     app:tint="@color/biblio_dark" />
             </RelativeLayout>
 
@@ -118,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Usuário"
+                android:text="@string/label_usuario_adm"
                 android:textColor="@color/biblio_dark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -135,7 +137,7 @@
                     android:background="@drawable/bg_input"
                     android:paddingStart="20dp"
                     android:paddingEnd="48dp"
-                    android:hint="Nome de usuário"
+                    android:hint="@string/hint_usuario_adm"
                     android:textColor="@color/black"
                     android:textColorHint="#9E9E9E"
                     android:textSize="16sp"
@@ -148,6 +150,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="16dp"
                     android:src="@drawable/ic_edit_pencil"
+                    android:contentDescription="@string/desc_editar_campo"
                     app:tint="@color/biblio_dark" />
             </RelativeLayout>
 
@@ -155,7 +158,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Senha atual"
+                android:text="@string/label_senha_atual_adm"
                 android:textColor="@color/biblio_dark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -174,7 +177,8 @@
                     android:importantForAutofill="no"
                     android:paddingStart="20dp"
                     android:paddingEnd="56dp"
-                    android:text="**********"
+                    android:text=""
+                    tools:text="**********"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -199,7 +203,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginBottom="16dp"
-                android:text="Salvar Alterações"
+                android:text="@string/btn_salvar_alteracoes"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -213,7 +217,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginBottom="16dp"
-                android:text="Redefinir Senha"
+                android:text="@string/btn_redefinir_senha_adm"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -226,7 +230,7 @@
                 android:id="@+id/btnApagarConta"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Apagar conta"
+                android:text="@string/btn_apagar_conta"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 android:textStyle="bold"

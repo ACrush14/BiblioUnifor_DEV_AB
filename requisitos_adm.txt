@@ -1,0 +1,211 @@
+RF22	Acesso ao login administrativo	O sistema deve apresentar a tela de autenticação administrativa quando selecionada a opção "Administrador".	Alta	Tela Intermediária		Feito	
+RF22.1	Autenticação do administrador	O sistema deve permitir login utilizando e-mail	Alta	Tela Login Administrador		Feito	
+RF22.2	Validação das credenciais	O sistema deve verificar existência da conta e validade da credencial administrativa.	Alta	Tela Login Administrador		Feito	
+RF22.3	Campos obrigatórios	O sistema deve validar preenchimento obrigatório dos campos antes da autenticação.	Alta	Tela Login Administrador	Ele verifica	Feito	
+RF22.4	Visualização da senha	O sistema deve permitir visualizar ou ocultar senha digitada.	Média	Tela Login Administrador	Botão funciona	Feito	
+RF22.5	Mensagens de erro	O sistema deve informar quando e-mail estiver errado	Alta	Tela Login Administrador		Feito	
+RF22.6	Recuperação de senha	O sistema deve permitir acesso ao processo de recuperação da senha administrativa.	Média	Tela Login Administrador	Tem botão Esqueceu a senha	Feito	
+RF22.7	Criação de conta administrativa	O sistema deve permitir acesso ao cadastro de nova conta administrativa.	Média	Tela Login Administrador	Tem botão Crie aqui	Feito	
+RF22.8	Redirecionamento pós-login	O sistema deve encaminhar o administrador para o painel administrativo após autenticação válida.	Alta	Tela ADM	Após criar, volta	Feito	
+RF22.9	Controle de acesso	O sistema deve restringir funcionalidades administrativas apenas a usuários autenticados.	Alta	Geral	Não tem autenticação, tirar função?	Não feito	
+RF22.10	Persistência da sessão	O sistema deve manter sessão administrativa ativa até encerramento ou logout.	Média	Geral	Tem isso	Feito	
+RF22.11	Interface intuitiva	O sistema deve apresentar autenticação administrativa organizada e clara ao usuário.	Média	Login	É claro	Feito	
+RF22.12	Desempenho	O login administrativo deve ocorrer rapidamente após validação das credenciais.	Média	Geral		Feito	
+RF23	Campo de e-mail administrativo	O sistema deve permitir informar e-mail vinculado à conta administrativa.	Alta	Login		Feito	
+RF23.1	Verificação do e-mail	O sistema deve validar se o e-mail informado pertence a administrador cadastrado	Alta	Tela Recuperação Senha de ADM	Dá pra informar. Com o Anderson Não deu certo	Feito	Não feito
+RF23.2	Mensagem de erro	O sistema deve informar falha quando o e-mail administrativo não existir.	Alta	Tela Recuperação Senha de ADM	Não verifica, ele sempre passa	Feito	
+RF23.3	Envio de link de recuperação	O sistema deve enviar link seguro para redefinição de senha administrativa via Firebase Authentication.	Alta	Tela Recuperação Senha de ADM	Não informa	Feito	
+RF23.4	Confirmação do envio	O sistema deve apresentar tela orientando administrador a verificar e-mail recebido.	Alta	Tela Recuperação Senha de ADM	Diz que envia, mas não envia de fato	Feito	
+RF23.5	Retorno ao login	O sistema deve permitir retorno à autenticação administrativa após recuperação.	Média	Tela Recuperação Senha de ADM	Ele avisa, mesmo quando não envia	Feito	
+RF23.6	Segurança da recuperação	O sistema deve restringir redefinição apenas para contas administrativas existentes.	Média	Tela Recuperação Senha de ADM	Retorna a tela administrativa	Feito	
+RF23.7	Persistência do processo	O processo permanece válido até redefinição via link externo enviado por e-mail.	Alta	Tela Recuperação Senha de ADM	não verifica, ele sempre passa	Feito	
+RF23.8	Interface intuitiva	O sistema deve apresentar instruções claras para recuperação administrativa.	Média	Tela Recuperação Senha de ADM		Feito	
+RF23.9	Desempenho	O envio do link deve ocorrer rapidamente após solicitação.	Média	Tela Recuperação Senha de ADM		Feito	
+RF26	Acesso ao cadastro administrativo	O sistema deve apresentar tela para criação de nova conta administrativa.	Alta	Tela Login Administrador	Botão Existe	Feito	
+RF26.1	Campos do cadastro	O sistema deve permitir preenchimento de nome completo	Alta	Tela Criar Conta Adm		Feito	
+RF26.2	Validação do e-mail	O sistema deve verificar se o e-mail administrativo informado já está cadastrado.	Alta	Tela Criar Conta Adm		Feito	
+RF26.3	Validação da credencial	O sistema deve verificar validade da credencial administrativa antes da criação da conta.	Alta	Tela Criar Conta Adm	Credencial: DevsAB	Feito	
+RF26.4	Visualização da senha	O sistema deve permitir visualizar ou ocultar senha digitada.	Média	Tela Criar Conta Adm		Feito	
+RF26.5	Critérios da senha	O sistema deve exigir senha contendo critérios mínimos de segurança definidos pelo sistema.	Alta	Tela Criar Conta Adm		Feito	
+RF26.6	Confirmação da senha	O sistema deve validar correspondência entre senha e confirmação digitada.	Alta	Tela Criar Conta Adm		Feito	
+RF26.7	Campos obrigatórios	O sistema deve validar preenchimento obrigatório dos dados antes do cadastro.	Alta	Tela Criar Conta Adm		Feito	
+RF26.8	Criação da conta	O sistema deve permitir criação da conta administrativa após validações concluídas.	Alta	Tela Criar Conta Adm		Feito	
+RF26.9	Confirmação do cadastro	O sistema deve informar quando a conta administrativa for criada com sucesso.	Alta	Tela Criar Conta Adm		Feito	
+RF26.10	Retorno ao login	O sistema deve permitir retorno à tela de autenticação após cadastro concluído.	Média	Tela Criar Conta Adm		Feito	
+RF26.11	Redirecionamento para login existente	O sistema deve permitir acesso ao login administrativo através da opção "Já tem uma conta?".	Média	Tela Criar Conta Adm	Botão Entre Aqui	Feito	
+RF26.12	Persistência dos dados	O sistema deve manter informações administrativas cadastradas após reinicialização do sistema.	Alta	Tela Criar Conta Adm		Feito	
+RF26.13	Interface intuitiva	O sistema deve apresentar cadastro administrativo claro e organizado.	Média	Tela Criar Conta Adm		Feito	
+RF26.14	Desempenho	O processo de cadastro deve ocorrer rapidamente após confirmação.	Média	Tela Criar Conta Adm		Feito	
+RF27	Acesso ao dashboard administrativo	O sistema deve apresentar a tela inicial administrativa após autenticação válida do administrador.	Alta	Tela Dashboard ADM	??????	Não feito	
+RF27.-6	Acesso ao dashboard administrativo	O sistema deve apresentar a tela inicial administrativa após autenticação válida do administrador.	Alta	Tela Dashboard ADM	??????	Não feito	
+RF27.-5	Acesso ao dashboard administrativo	O sistema deve apresentar a tela inicial administrativa após autenticação válida do administrador.	Alta	Tela Dashboard ADM	??????	Não feito	
+RF27.-4	Acesso ao dashboard administrativo	O sistema deve apresentar a tela inicial administrativa após autenticação válida do administrador.	Alta	Tela Dashboard ADM	??????	Não feito	
+RF27.-3	Acesso ao dashboard administrativo	O sistema deve apresentar a tela inicial administrativa após autenticação válida do administrador.	Alta	Tela Dashboard ADM	??????	Não feito	
+RF27.-2	Acesso ao dashboard administrativo	O sistema deve apresentar a tela inicial administrativa após autenticação válida do administrador.	Alta	Tela Dashboard ADM	??????	Não feito	
+RF27.-1	Acesso ao dashboard administrativo	O sistema deve apresentar a tela inicial administrativa após autenticação válida do administrador.	Alta	Tela Dashboard ADM	??????	Não feito	
+RF27	Acesso ao dashboard administrativo	O sistema deve apresentar a tela inicial administrativa após autenticação válida do administrador.	Alta	Tela Dashboard ADM	??????	Não feito	
+RF27.1	Boas-vindas administrativas	O sistema deve apresentar mensagem de boas-vindas ao administrador autenticado.	Média	Tela Dashboard ADM	Mostra	Feito	
+RF27.2	Informações resumidas	O sistema deve exibir indicadores resumidos do sistema, incluindo quantidade de usuários e aluguéis.	Alta	Tela Dashboard ADM	Mostra	Feito	
+RF27.3	Acesso ao gerenciamento CRUD	O sistema deve permitir acesso ao gerenciamento de livros através do painel administrativo.	Alta	Tela Dashboard ADM	Mostra tela de Crud	Feito	
+RF27.4	Análise de aluguéis	O sistema deve apresentar informações relacionadas aos aluguéis realizados no sistema.	Alta	Tela Dashboard ADM	Botão Ver Aluguei	Feito	
+RF27.5	Controle de atrasos	O sistema deve informar usuários com atrasos em devoluções e quantidade de dias em atraso.	Alta	Tela Dashboard ADM	Botão Gerenciar Atrasos. Não existe no Figma	Não feito	
+RF27.6	Gerenciamento de atrasos	O sistema deve permitir acesso ao módulo de gerenciamento de atrasos.	Média	Tela Dashboard ADM	Botão Gerenciar Atrasos. Não existe no Figma	Não feito	
+RF27.7	Validação de cadastros	O sistema deve apresentar usuários aguardando confirmação administrativa.	Alta	Tela Dashboard ADM	Apresenta	Feito	
+RF27.8	Aprovação de usuários	O sistema deve permitir acesso ao módulo de confirmação dos cadastros pendentes.	Alta	Tela Dashboard ADM	Impossivel Confirmar	Não feito	
+MISTURAR 27 E 28. Eles são os mesmos	MISTURAR 27 E 28. Eles são os mesmos	MISTURAR 27 E 28. Eles são os mesmos		MISTURAR 27 E 28. Eles são os mesmos	MISTURAR 27 E 28. Eles são os mesmos		
+RF28	Acesso à gestão de usuários	O sistema deve apresentar a tela de gerenciamento de usuários após seleção da opção correspondente no CRUD administrativo.	Alta	Tela Crud	Da pra chegar ao Gerenciar Dados Crud > Gerenciar Usuários > Gestão de Usuários	Feito	
+RF28.1	Lista de usuários	O sistema deve exibir usuários cadastrados no aplicativo.	Alta	Tela Gerenciar Usuários		Feito	
+RF28.2	Pesquisa de usuários	O sistema deve permitir busca de usuários pelo nome.	Média	Tela Gerenciar Usuários		Feito	
+RF28.3	Seleção do usuário	O sistema deve permitir acesso aos detalhes do usuário selecionado.	Alta	Tela Gerenciar Usuários	Da pra ver Solicitações, Livros Alugados, Atrasos de Aluguéis e Alterar Permissões, e Remover conta	Não feito	
+RF28.4	Informações do perfil	O sistema deve exibir informações do usuário	Alta	Tela Gerenciar Usuários	Exibe nome hardcoded, email hardcoded e tipo de usuário	Feito	
+RF28.5	Solicitações do usuário	O sistema deve permitir visualização das solicitações realizadas pelo usuário.	Alta	Tela Gerenciar Usuários	Aparece, mas solicitações está Hardcoded	Não feito	
+RF28.6	Livros alugados	O sistema deve apresentar livros atualmente alugados pelo usuário.	Alta	Tela Gerenciar Usuários	Impossivel Testar	Não feito	
+RF28.7	Controle de atrasos	O sistema deve informar atrasos em devoluções associados ao usuário.	Alta	Tela Gerenciar Usuários	Aparece, mas Atrasos está Hardcoded	Não feito	
+RF28.8	Multas por atraso	O sistema deve informar valores de multa relacionados aos atrasos do usuário.	Média	Tela Gerenciar Usuários	Multa hardcoded, mas mostra	Feito	
+RF28.9	Alteração de permissões	O sistema deve permitir alteração do perfil do usuário para administrador quando autorizado.	Alta	Tela Gerenciar Usuários	Tem como mudar, mas funciona?	Não feito	
+RF28.10	Confirmação de alteração	O sistema deve solicitar confirmação antes da alteração de permissões administrativas.	Média	Tela Gerenciar Usuários	Pede Senha	Feito	
+RF28.11	Remoção da conta	O sistema deve permitir exclusão de contas de usuários.	Alta	Tela Gerenciar Usuários	Ao excluir, eu volto para o Login ADM ??????? e Conta não é apagada	Não feito	
+RF28.12	Confirmação da exclusão	O sistema deve solicitar senha administrativa antes da remoção definitiva da conta.	Alta	Tela Gerenciar Usuários	Pede senha	Feito	
+RF28.13	Histórico do usuário	O sistema deve manter informações históricas relacionadas ao uso da biblioteca pelo usuário.	Média	Tela Gerenciar Usuários	Solicitações do Anderson não aparece. Está tudo Hardcoded. Sei que Anderson pediu N Solicitações	Não feito	
+RF28.14	Persistência dos dados	O sistema deve manter alterações administrativas após reinicialização do aplicativo.	Alta	Tela Gerenciar Usuários	Impossivel Testar	Não feito	
+RF28.15	Interface intuitiva	O sistema deve organizar dados dos usuários de forma clara para administração.	Média	Tela Gerenciar Usuários		Feito	
+RF28.16	Desempenho	O carregamento das informações do usuário deve ocorrer rapidamente após seleção.	Média	Tela Gerenciar Usuários		Feito	
+RF29	Acesso às solicitações administrativas	O sistema deve apresentar a tela de solicitações quando o administrador acessar o módulo de verificação de mídia.	Alta	Tela Dashboard ADM	Tem botão Tela de Solicitações	Feito	
+RF29.1	Lista de solicitações	O sistema deve exibir solicitações realizadas pelos usuários.	Alta	Tela Verificar Midia? Deveria ser Ver Solicitações	Aparece: Tituli, Autor, Quem pediu, Tipo de solicitação, Ver solicitaçõs do Usuásio, Audiobook, Enviar PDF, Notificar Braille e Excluir solicitação	Feito	
+RF29.2	Pesquisa de solicitações	O sistema deve permitir pesquisar solicitações.	Média	Tela Verificar Midia? Deveria ser Ver Solicitações	Aba existe, não filtra nada	Não feito	
+RF29.3	Filtragem por tipo	O sistema deve permitir filtrar solicitações por PDF	Alta	Tela Verificar Midia? Deveria ser Ver Solicitações	Filtro existe, mas não filtra	Não feito	
+RF29.4	Filtragem por usuário	O sistema deve permitir pesquisa das solicitações utilizando nome do usuário.	Média	Tela Verificar Midia? Deveria ser Ver Solicitações	Filtro existe, mas não filtra de verdade	Não feito	
+RF29.5	Informações da solicitação	O sistema deve exibir informações do livro solicitado e usuário responsável pela solicitação.	Alta	Tela Verificar Midia? Deveria ser Ver Solicitações		Feito	
+RF29.6	Consulta do histórico do usuário	O sistema deve permitir visualizar solicitações realizadas pelo usuário selecionado.	Média	Tela Verificar Midia? Deveria ser Ver Solicitações	Está Hardcoded, precisa ser mudado	Não feito	
+RF29.7	Envio de PDF	O sistema deve permitir envio do material PDF solicitado ao usuário.	Alta	Tela Verificar Midia? Deveria ser Ver Solicitações	Precisa ver o histórico do drive ou do celular, mas não dá pra testar	Não feito	
+RF29.8	Envio de Audiobook	O sistema deve permitir envio do material em áudio solicitado.	Alta	Tela Verificar Midia? Deveria ser Ver Solicitações	Precisa ver o histórico do drive ou do celular, mas não dá pra testar	Não feito	
+RF29.9	Confirmação de Braille	O sistema deve permitir informar conclusão da produção do material em braille.	Alta	Tela Verificar Midia? Deveria ser Ver Solicitações	Precisa ver o histórico do drive ou do celular, mas não dá pra testar	Não feito	
+RF29.10	Notificação ao usuário	O sistema deve informar ao usuário quando o material solicitado estiver disponível.	Alta	Tela Verificar Midia? Deveria ser Ver Solicitações	Precisa ser testado mais...	Não feito	
+RF29.11	Confirmação de envio	O sistema deve exibir mensagem de sucesso após envio ou conclusão da solicitação.	Média	Tela Verificar Midia? Deveria ser Ver Solicitações	Ele diz que teve sucesso... será?	Não feito	
+RF29.12	Exclusão da solicitação	O sistema deve permitir exclusão das solicitações administrativas.	Média	Tela Verificar Midia? Deveria ser Ver Solicitações	Consegue excluir, com as credenciais e não a senha, como é pedido	Não feito	
+RF29.13	Confirmação da exclusão	O sistema deve exigir confirmação e senha administrativa antes da exclusão.	Alta	Tela Verificar Midia? Deveria ser Ver Solicitações	Pede senha, mas só aceita credenciais	Não feito	
+RF29.14	Persistência das solicitações	O sistema deve manter histórico das solicitações realizadas.	Alta	Tela Verificar Midia? Deveria ser Ver Solicitações	É guardado e salvo	Feito	
+RF29.15	Interface intuitiva	O sistema deve organizar solicitações e filtros de forma clara ao administrador.	Média	Tela Verificar Midia? Deveria ser Ver Solicitações		Feito	
+RF29.16	Desempenho	O processamento das solicitações deve ocorrer rapidamente após confirmação.	Média	Tela Verificar Midia? Deveria ser Ver Solicitações		Feito	
+RF30	Acesso ao gerenciamento de mídias	O sistema deve apresentar a tela de gestão de mídias quando o administrador acessar o módulo CRUD.	Alta	Tela Admin	Gerenciar Dados > Tela de Crud	Feito	
+RF30.1	Lista de mídias	O sistema deve exibir livros cadastrados na biblioteca.	Alta	Tela CRUD	Ele mostra os livros do banco de dados	Feito	
+RF30.2	Pesquisa de mídia	O sistema deve permitir pesquisar livros pelo nome.	Média	Tela Gerenciar Midias		Feito	
+RF30.3	Filtragem de mídia	O sistema deve permitir pesquisa utilizando título	Média	Tela Gerenciar Midias		Feito	
+RF30.4	Informações resumidas	O sistema deve exibir capa	Alta	Tela Gerenciar Midias	Tá exibindo apenas o icone	Não feito	
+RF30.5	Consulta detalhada	O sistema deve permitir visualizar informações completas da mídia selecionada.	Alta	Tela Gerenciar Midias	Ao clicar no livro, a tela ver mais de O Alienista aparece	Não feito	
+RF30.6	Dados bibliográficos	O sistema deve apresentar informações como editora	Alta	Tela Gerenciar Midias	Ao clicar no livro, a tela ver mais de O Alienista aparece	Não feito	
+RF30.7	Quantidade em estoque	O sistema deve exibir quantidade de exemplares disponíveis.	Alta	Tela Gerenciar Midias	Exibe, mas aparece no livro O Alienista	Feito	
+RF30.8	Controle de disponibilidade	O sistema deve apresentar quantidade de livros alugados e disponíveis.	Alta	Tela Gerenciar Midias	Exibe, mas aparece no livro O Alienista	Feito	
+RF30.9	Controle de formatos	O sistema deve informar disponibilidade em PDF	Média	Tela Gerenciar Midias	Não diz	Não feito	
+RF30.10	Adicionar mídia	O sistema deve permitir cadastro de novas mídias na biblioteca.	Alta	Tela Gerenciar Midias	Permite	Feito	
+RF30.11	Editar informações	O sistema deve permitir alteração dos dados cadastrados do livro.	Alta	Tela Gerenciar Midias	Permite, mas está com o Alienista	Não feito	
+RF30.12	Atualização do acervo	O sistema deve atualizar informações da mídia após edição.	Alta	Tela Gerenciar Midias	Ao clicar no livro, a tela ver mais de O Alienista aparece	Não feito	
+RF30.13	Exclusão da mídia	O sistema deve permitir remoção de livros do acervo.	Alta	Tela Gerenciar Midias	Aparece toast, mas livro não parece ser apagado	Não feito	
+RF30.14	Confirmação da exclusão	O sistema deve exigir senha administrativa antes da exclusão definitiva.	Alta	Tela Gerenciar Midias	Pede senha	Feito	
+RF30.15	Persistência do acervo	O sistema deve manter alterações realizadas no acervo após reinicialização.	Alta	Tela Gerenciar Midias	Não está atualizando	Não feito	
+RF30.16	Interface intuitiva	O sistema deve organizar gerenciamento do acervo de forma clara ao administrador.	Média	Tela Gerenciar Midias		Feito	
+RF30.17	Desempenho	O carregamento das mídias deve ocorrer rapidamente após consulta.	Média	Tela Gerenciar Midias		Feito	
+RF31	Acesso ao cadastro de mídia	O sistema deve apresentar tela para cadastro de nova mídia quando o administrador selecionar a opção correspondente.	Alta	Tela Admin	Botão Criar midia funciona	Feito	
+RF31.1	Informações básicas	O sistema deve permitir informar título, autor e ISBN da mídia.	Alta	Tela Criar Midia		Feito	
+RF31.2	Data de publicação	O sistema deve permitir seleção da data de publicação através de calendário.	Média	Tela Criar Midia		Feito	
+RF31.3	Quantidade de exemplares	O sistema deve permitir informar quantidade disponível de exemplares físicos.	Alta	Tela Criar Midia		Feito	
+RF31.4	Categoria da mídia	O sistema deve permitir informar categoria relacionada ao livro.	Média	Tela Criar Midia		Feito	
+RF31.5	Dados complementares	O sistema deve permitir informar editora, páginas e sinopse.	Alta	Tela Criar Midia		Feito	
+RF31.6	Imagem da capa	O sistema deve permitir adicionar imagem ou link da capa do livro.	Média	Tela Criar Midia		Feito	
+RF31.7	Arquivo PDF	O sistema deve permitir cadastrar arquivo ou link em PDF quando disponível.	Média	Tela Criar Midia		Feito	
+RF31.8	Arquivo Audiobook	O sistema deve permitir cadastrar versão em audiobook quando disponível.	Média	Tela Criar Midia		Feito	
+RF31.9	Disponibilidade em Braille	O sistema deve permitir indicar disponibilidade da versão em braille.	Média	Tela Criar Midia		Não feito	
+RF31.10	Campos obrigatórios	O sistema deve validar preenchimento dos campos obrigatórios antes do cadastro.	Alta	Tela Criar Midia	Não testado	Não feito	
+RF31.11	Salvamento da mídia	O sistema deve permitir registrar nova mídia no acervo da biblioteca.	Alta	Tela Criar Midia		Feito	
+RF31.12	Confirmação do cadastro	O sistema deve informar quando o cadastro da mídia for concluído com sucesso.	Alta	Tela Criar Midia		Feito	
+RF31.13	Persistência do cadastro	O sistema deve manter mídia cadastrada após reinicialização do sistema.	Alta	Tela Criar Midia		Feito	
+RF31.14	Interface intuitiva	O sistema deve apresentar processo de cadastro organizado ao administrador.	Média	Tela Criar Midia		Não feito	
+RF31.15	Desempenho	O cadastro da mídia deve ocorrer rapidamente após confirmação.	Média	Tela Criar Midia	System UI Isn't responding	Não feito	
+Livro não abre com o Link do PDF ou do Audiobook	Livro não abre com o Link do PDF ou do Audiobook	Livro não abre com o Link do PDF ou do Audiobook				Não feito	
+RF32	Acesso ao financeiro	O sistema deve apresentar a tela financeira quando o administrador acessar o módulo de atrasos ou financeiro.	Alta	Tela Admin	???????	Não feito	
+RF32	Acesso ao financeiro	O sistema deve apresentar a tela financeira quando o administrador acessar o módulo de atrasos ou financeiro.	Alta	Tela Gerenciar Atrasos	???????	Não feito	
+RF32	Acesso ao financeiro	O sistema deve apresentar a tela financeira quando o administrador acessar o módulo de atrasos ou financeiro.	Alta	Tela Gerenciar Atrasos	???????	Não feito	
+RF32	Acesso ao financeiro	O sistema deve apresentar a tela financeira quando o administrador acessar o módulo de atrasos ou financeiro.	Alta	Tela Gerenciar Atrasos	???????	Não feito	
+RF32	Acesso ao financeiro	O sistema deve apresentar a tela financeira quando o administrador acessar o módulo de atrasos ou financeiro.	Alta	Tela Gerenciar Atrasos	???????	Não feito	
+RF32	Acesso ao financeiro	O sistema deve apresentar a tela financeira quando o administrador acessar o módulo de atrasos ou financeiro.	Alta	Tela Gerenciar Atrasos	???????	Não feito	
+RF32.1	Lista de pendências	O sistema deve exibir usuários com livros vencidos ou atrasados.	Alta	Tela Gerenciar Atrasos	Impossivel testar	Não feito	
+RF32.2	Informações do atraso	O sistema deve apresentar usuário responsável, livro alugado e quantidade de dias em atraso.	Alta	Tela Gerenciar Atrasos	Impossivel testar	Não feito	
+RF32.3	Cálculo automático de multa	O sistema deve calcular automaticamente multa relacionada ao atraso.	Alta	Tela Gerenciar Atrasos	Impossivel testar	Não feito	
+RF32.4	Exibição da multa	O sistema deve informar valor acumulado referente ao atraso do aluguel.	Alta	Tela Gerenciar Atrasos	Impossivel testar	Não feito	
+RF32.5	Notificação de atraso	O sistema deve permitir notificar usuário sobre atraso na devolução.	Alta	Tela Gerenciar Atrasos	Impossivel testar	Não feito	
+RF32.6	Notificação de valor	O sistema deve permitir informar valor da multa ao usuário.	Média	Tela Gerenciar Atrasos	Impossivel testar	Não feito	
+RF32.7	Confirmação de devolução	O sistema deve permitir confirmar devolução do material alugado.	Alta	Tela Gerenciar Atrasos	Impossivel testar	Não feito	
+RF32.8	Remoção do registro	O sistema deve permitir excluir registro do atraso após regularização.	Média	Tela Gerenciar Atrasos	Impossivel testar	Não feito	
+RF32.9	Confirmação da exclusão	O sistema deve exigir senha administrativa antes da remoção do registro.	Alta	Tela Gerenciar Atrasos	Impossivel testar	Não feito	
+RF32.10	Renovação do aluguel	O sistema deve permitir renovação do período de empréstimo.	Alta	Tela Gerenciar Atrasos	Impossivel testar	Não feito	
+RF33	Acesso à confirmação de cadastro	O sistema deve apresentar a tela de confirmação quando o administrador acessar solicitações pendentes de novos usuários.	Alta	Tela admin	Botão Validar Cadastros	Feito	
+RF33.1	Lista de usuários pendentes	O sistema deve exibir usuários aguardando aprovação do cadastro.	Alta	Tela Validar Cadastros	Exibe	Feito	
+RF33.2	Pesquisa de usuários	O sistema deve permitir pesquisar usuários pendentes por nome.	Média	Tela Validar Cadastros		Feito	
+RF33.3	Informações resumidas do usuário	O sistema deve exibir foto de perfil e nome do usuário aguardando confirmação.	Alta	Tela Validar Cadastros	Não sei se exibe foto	Não feito	
+RF33.4	Seleção do usuário	O sistema deve permitir selecionar usuário para visualizar confirmação do cadastro.	Alta	Tela Validar Cadastros	Clicar não faz nada	Não feito	
+RF33.5	Confirmação do cadastro	O sistema deve permitir que o administrador aprove o cadastro do usuário.	Alta	Tela Validar Cadastros	Clicar não faz nada	Não feito	
+RF33.6	Mensagem de confirmação	O sistema deve solicitar confirmação antes de liberar definitivamente o acesso do usuário.	Alta	Tela Validar Cadastros	Clicar não faz nada	Não feito	
+RF33.7	Aprovação concluída	O sistema deve informar quando o cadastro for confirmado com sucesso.	Alta	Tela Validar Cadastros	Clicar não faz nada	Não feito	
+RF33.8	Cancelamento da ação	O sistema deve permitir cancelar confirmação e retornar à lista de usuários pendentes.	Média	Tela Validar Cadastros	Clicar não faz nada	Não feito	
+RF33.9	Atualização automática	O sistema deve remover da lista usuários já aprovados.	Média	Tela Validar Cadastros	Clicar não faz nada	Não feito	
+RF33.10	Persistência dos dados	O sistema deve manter registros das aprovações realizadas após reinicialização do sistema.	Alta	Tela Validar Cadastros	Clicar não faz nada	Não feito	
+RF33.11	Interface intuitiva	O sistema deve organizar aprovações pendentes de forma clara ao administrador.	Média	Tela Validar Cadastros		Feito	
+RF33.12	Desempenho	O processamento das confirmações deve ocorrer rapidamente após aprovação.	Média	Tela Validar Cadastros		Feito	
+RF34	Acesso aos aluguéis	O sistema deve apresentar a tela de aluguéis quando o administrador selecionar a opção "Aluguéis".	Alta	Tela admin		Feito	
+RF34.1	Lista de aluguéis	O sistema deve exibir registros recentes de livros alugados pelos usuários.	Alta	Tela Aluguéis	Tela não carrega	Não feito	
+RF34.2	Informações do aluguel	O sistema deve mostrar nome do usuário, capa do livro, título, data e horário do aluguel.	Alta	Tela Aluguéis	Tela não carrega	Não feito	
+RF34.3	Exibição cronológica	O sistema deve organizar aluguéis por ordem de registro.	Média	Tela Aluguéis	Tela não carrega	Não feito	
+RF34.4	Seleção do livro	O sistema deve permitir acessar informações completas do livro alugado.	Alta	Tela Aluguéis	Tela não carrega	Não feito	
+RF34.5	Botão "Ver livro"	O sistema deve permitir que o administrador visualize detalhes do livro selecionado.	Alta	Tela Aluguéis	Tela não carrega	Não feito	
+RF34.6	Botão "Ver usuário"	O sistema deve permitir visualizar informações do usuário responsável pelo aluguel.	Alta	Tela Aluguéis	Tela não carrega	Não feito	
+RF34.7	Navegação para usuário	O sistema deve abrir a tela de gerenciamento do usuário após seleção.	Média	Tela Aluguéis	Tela não carrega	Não feito	
+RF34.8	Navegação para livro	O sistema deve abrir informações completas da mídia selecionada.	Média	Tela Aluguéis	Tela não carrega	Não feito	
+RF34.9	Atualização automática	O sistema deve atualizar novos aluguéis registrados sem perda de dados.	Média	Tela Aluguéis	Tela não carrega	Não feito	
+RF34.10	Persistência dos dados	O sistema deve manter histórico dos aluguéis após reinicialização do sistema.	Alta	Tela Aluguéis	Tela não carrega	Não feito	
+RF34.11	Interface intuitiva	O sistema deve organizar informações de aluguel de forma clara ao administrador.	Média	Tela Aluguéis		Não feito	
+RF34.12	Desempenho	O carregamento da lista de aluguéis deve ocorrer rapidamente após acesso.	Média	Tela Aluguéis		Feito	
+RF35	Acesso à edição da mídia	O sistema deve apresentar a tela de edição quando o administrador selecionar "Editar informações" da mídia.	Alta	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.1	Alteração de capa	O sistema deve permitir alterar imagem da capa do livro cadastrado.	Alta	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.2	Alteração de informações básicas	O sistema deve permitir editar título	Alta	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.3	Alteração de informações detalhadas	O sistema deve permitir editar idioma	Alta	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.4	Alteração da sinopse	O sistema deve permitir editar descrição ou sinopse do livro.	Alta	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.5	Atualização da quantidade	O sistema deve permitir alterar quantidade disponível de exemplares físicos.	Média	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.6	Alteração da disponibilidade	O sistema deve permitir atualizar disponibilidade dos exemplares cadastrados.	Média	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.7	Exibição de avaliações	O sistema deve apresentar avaliações realizadas pelos usuários sobre a mídia.	Média	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.8	Botão apagar mídia	O sistema deve disponibilizar opção para exclusão permanente da mídia cadastrada.	Alta	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.9	Confirmação da exclusão	O sistema deve solicitar confirmação antes da remoção definitiva da mídia.	Alta	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.10	Validação por senha	O sistema deve exigir senha administrativa antes da exclusão da mídia.	Alta	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.11	Mensagem de erro	O sistema deve informar quando a senha digitada estiver incorreta.	Média	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.12	Exclusão concluída	O sistema deve remover a mídia após confirmação válida do administrador.	Alta	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.13	Persistência dos dados	O sistema deve manter alterações realizadas após reinicialização do sistema.	Alta	Geral	Edição de midia vai para o Alienista	Não feito	
+RF35.14	Interface intuitiva	O sistema deve organizar edição de mídias de forma clara ao administrador.	Média	Tela admin	Edição de midia vai para o Alienista	Não feito	
+RF35.15	Desempenho	O processamento das alterações deve ocorrer rapidamente após confirmação.	Média	Geral	Edição de midia vai para o Alienista	Não feito	
+RF36	Acesso às configurações ADM	O sistema deve apresentar a tela de configurações quando o administrador selecionar o ícone de engrenagem.	Alta	Tela admin		Não feito	
+RF36.1	Informações do administrador	O sistema deve exibir foto, nome e usuário do administrador logado.	Alta			Não feito	
+RF36.2	Alteração do nome	O sistema deve permitir editar nome do administrador.	Média	Tela Configurações ADMIN		Não feito	
+RF36.3	Alteração do usuário	O sistema deve permitir alterar nome de usuário administrativo.	Média	Tela Configurações ADMIN		Não feito	
+RF36.4	Alteração da foto	O sistema deve permitir alterar foto do perfil administrativo.	Média	Tela Configurações ADMIN		Não feito	
+RF36.5	Exibição da senha	O sistema deve exibir senha atual ocultada e permitir visualização temporária através de ícone.	Alta	Tela Configurações ADMIN		Não feito	
+RF36.6	Acesso à redefinição de senha	O sistema deve permitir acessar tela de alteração da senha administrativa.	Alta	Tela Configurações ADMIN		Não feito	
+RF36.7	Botão apagar conta	O sistema deve disponibilizar opção para exclusão da conta administrativa.	Alta	Tela Configurações ADMIN		Não feito	
+RF36.8	Confirmação de exclusão	O sistema deve solicitar confirmação antes da exclusão da conta.	Alta	Tela Configurações ADMIN		Não feito	
+RF36.9	Validação da senha	O sistema deve exigir senha atual do administrador antes de apagar a conta.	Alta	Tela Configurações ADMIN		Não feito	
+RF36.10	Mensagem de erro	O sistema deve informar quando a senha digitada estiver incorreta.	Média	Tela Configurações ADMIN		Não feito	
+RF36.11	Exclusão concluída	O sistema deve remover conta após confirmação válida do administrador.	Alta	Tela Configurações ADMIN		Não feito	
+RF36.12	Persistência dos dados	O sistema deve manter alterações salvas após reinicialização do sistema.	Alta	Tela Configurações ADMIN		Não feito	
+RF36.13	Interface intuitiva	O sistema deve organizar configurações administrativas de forma clara ao usuário administrador.	Média	Tela Configurações ADMIN		Não feito	
+RF36.14	Desempenho	O carregamento das configurações deve ocorrer rapidamente após acesso.	Média	Tela Configurações ADMIN		Não feito	
+RF37	Acesso à redefinição da senha	O sistema deve apresentar a tela de alteração de senha quando o administrador selecionar "Redefinir senha".	Alta	Tela Configurações ADMIN		Não feito	
+RF37.1	Nova senha	O sistema deve permitir inserir uma nova senha administrativa.	Alta	Tela admin		Não feito	
+RF37.2	Confirmação da senha	O sistema deve permitir confirmar a nova senha digitada.	Alta	Tela admin		Não feito	
+RF37.3	Visualização da senha	O sistema deve permitir visualizar ou ocultar senha nos campos através de ícone.	Média	Tela admin		Não feito	
+RF37.4	Correspondência das senhas	O sistema deve verificar se senha e confirmação são idênticas.	Alta	Tela admin		Não feito	
+RF37.5	Validação da senha	O sistema deve exigir senha contendo critérios mínimos de segurança definidos pelo sistema.	Alta	Tela admin		Não feito	
+RF37.6	Bloqueio da senha anterior	O sistema deve impedir reutilização da senha administrativa atual.	Alta	Tela admin		Não feito	
+RF37.7	Campos obrigatórios	O sistema deve validar preenchimento obrigatório antes da alteração.	Alta	Tela admin		Não feito	
+RF37.8	Salvar alterações	O sistema deve permitir salvar nova senha administrativa.	Alta	Tela admin		Não feito	
+RF37.9	Confirmação da alteração	O sistema deve informar quando a senha for redefinida com sucesso.	Alta	Tela admin		Não feito	
+RF37.10	Retorno às configurações	O sistema deve permitir retorno à tela anterior após alteração concluída.	Média	Tela admin		Não feito	
+RF37.11	Persistência dos dados	O sistema deve manter nova senha válida após reinicialização do sistema.	Alta	Geral		Não feito	
+RF37.12	Interface intuitiva	O sistema deve apresentar processo de redefinição claro ao administrador.	Média	Tela admin		Não feito	
+RF37.13	Desempenho	O processo de alteração da senha deve ocorrer rapidamente após confirmação.	Média	Geral		Não feito	

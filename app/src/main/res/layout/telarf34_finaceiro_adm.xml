@@ -53,7 +53,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/user_placeholder"
-                android:contentDescription="Foto do Administrador" />
+                android:contentDescription="@string/desc_foto_adm_header" />
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Bem-vindo"
+            android:text="@string/label_bem_vindo"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:alpha="0.9"
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Livros Vencidos"
+            android:text="@string/titulo_livros_vencidos"
             android:textColor="@color/white"
             android:textSize="28sp"
             android:textStyle="bold"
@@ -105,7 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginBottom="24dp"
-                android:text="Ver pendentes / retirada"
+                android:text="@string/btn_ver_pendentes"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"
@@ -127,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="32dp"
-                android:text="Nenhum livro vencido."
+                android:text="@string/msg_nenhum_vencido"
                 android:textColor="#8A8A8A"
                 android:textSize="16sp"
                 android:visibility="gone" />
@@ -137,7 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="24dp"
-                android:text="Renovar Aluguel Selecionado"
+                android:text="@string/btn_renovar_aluguel_selecionado"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"

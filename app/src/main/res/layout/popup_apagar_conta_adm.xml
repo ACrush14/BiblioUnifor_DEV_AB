@@ -64,6 +64,17 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- MENSAGEM DE ERRO (oculta por padrão) -->
+            <TextView
+                android:id="@+id/textErroApagarContaADM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text=""
+                android:textColor="@color/biblio_red"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -85,7 +96,7 @@
                     android:layout_width="0dp"
                     android:layout_height="54dp"
                     android:layout_weight="1.2"
-                    android:text="Apagar"
+                    android:text="@string/btn_apagar"
                     android:textAllCaps="false"
                     app:backgroundTint="@color/biblio_red"
                     app:cornerRadius="27dp" />

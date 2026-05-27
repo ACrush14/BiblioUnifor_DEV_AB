@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/biblio_bg">
+
+    <!-- PREMIUM HEADER STANDARD (240dp) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerPesquisaResultado"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:background="@color/biblio_detalhes"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="-100dp"
+            android:layout_marginTop="-100dp"
+            android:alpha="0.16"
+            android:background="@drawable/bg_circle"
+            android:backgroundTint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardPerfil"
+            android:layout_width="82dp"
+            android:layout_height="82dp"
+            android:layout_marginTop="32dp"
+            app:cardCornerRadius="41dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imagePerfilPesquisaResultado"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user_placeholder" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/textTituloPesquisaResultado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Busca de Livros"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardPerfil" />
+
+        <TextView
+            android:id="@+id/textBemVindoPesquisaResultado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Encontre sua próxima leitura"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textTituloPesquisaResultado" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- RESULT LABEL -->
+    <TextView
+        android:id="@+id/textResultadoTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
+        android:text="Resultado: "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerPesquisaResultado" />
+
+    <!-- RECYCLER VIEW FOR RESULTS -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewResultados"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:paddingHorizontal="16dp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textResultadoTitulo"
+        tools:listitem="@layout/item_livro" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

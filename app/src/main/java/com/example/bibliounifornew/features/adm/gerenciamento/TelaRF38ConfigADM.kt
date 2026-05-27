@@ -93,12 +93,12 @@ class TelaRF38ConfigADM : AppCompatActivity() {
         // ── Clique na foto de perfil ──────────────────────────────────────────
         imageFoto?.setOnClickListener {
             AlertDialog.Builder(this)
-                .setTitle("Foto de Perfil")
-                .setMessage("Deseja mudar sua foto?")
-                .setPositiveButton("Escolher da Galeria") { _, _ ->
+                .setTitle(getString(R.string.alert_foto_titulo))
+                .setMessage(getString(R.string.alert_foto_mensagem))
+                .setPositiveButton(getString(R.string.alert_foto_galeria)) { _, _ ->
                     galeria.launch("image/*")
                 }
-                .setNegativeButton("Cancelar", null)
+                .setNegativeButton(getString(R.string.btn_cancelar), null)
                 .show()
         }
 
@@ -108,11 +108,11 @@ class TelaRF38ConfigADM : AppCompatActivity() {
             val novoUsuario = editUsuario.text.toString().trim()
 
             if (novoNome.isEmpty() || novoUsuario.isEmpty()) {
-                Toast.makeText(this, "Preencha nome e usuário.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.erro_preencha_nome_usuario), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (uid == null) {
-                Toast.makeText(this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.erro_sessao_expirada), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -121,11 +121,11 @@ class TelaRF38ConfigADM : AppCompatActivity() {
                 .set(mapOf("nome" to novoNome, "usuario" to novoUsuario), SetOptions.merge())
                 .addOnSuccessListener {
                     btnSalvar.isEnabled = true
-                    Toast.makeText(this, "Alterações salvas com sucesso!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.msg_alteracoes_salvas), Toast.LENGTH_SHORT).show()
                 }
-                .addOnFailureListener { e ->
+                .addOnFailureListener {
                     btnSalvar.isEnabled = true
-                    Toast.makeText(this, "Erro ao salvar: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.erro_salvar_perfil), Toast.LENGTH_SHORT).show()
                 }
         }
 
@@ -164,13 +164,13 @@ class TelaRF38ConfigADM : AppCompatActivity() {
                         placeholder(R.drawable.user_placeholder)
                         error(R.drawable.user_placeholder)
                     }
-                    Toast.makeText(this, "Foto atualizada com sucesso!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.msg_foto_atualizada), Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "Erro: $erro", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.erro_salvar_perfil), Toast.LENGTH_SHORT).show()
                 }
             }
         } catch (e: Exception) {
-            Toast.makeText(this, "Erro ao processar imagem.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.erro_processar_imagem), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -191,7 +191,7 @@ class TelaRF38ConfigADM : AppCompatActivity() {
         btnConfirmar.setOnClickListener {
             val senha = editSenha.text.toString()
             if (senha.isEmpty()) {
-                Toast.makeText(this, "Digite sua senha para confirmar.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.erro_senha_vazia_apagar), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -199,7 +199,7 @@ class TelaRF38ConfigADM : AppCompatActivity() {
             val email       = currentUser?.email
 
             if (currentUser == null || email.isNullOrEmpty()) {
-                Toast.makeText(this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.erro_sessao_expirada), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 return@setOnClickListener
             }
@@ -217,19 +217,19 @@ class TelaRF38ConfigADM : AppCompatActivity() {
                         .addOnSuccessListener {
                             firestoreDelete?.addOnFailureListener { /* silencia erro de limpeza */ }
                             dialog.dismiss()
-                            Toast.makeText(this, "Conta apagada com sucesso.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, getString(R.string.msg_conta_apagada_sucesso), Toast.LENGTH_SHORT).show()
                             val intent = Intent(this, com.example.bibliounifornew.login.TelaRF01BemVindo::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
                         }
-                        .addOnFailureListener { e ->
+                        .addOnFailureListener {
                             btnConfirmar.isEnabled = true
-                            Toast.makeText(this, "Erro ao apagar conta: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, getString(R.string.erro_apagar_conta), Toast.LENGTH_SHORT).show()
                         }
                 }
                 .addOnFailureListener {
                     btnConfirmar.isEnabled = true
-                    Toast.makeText(this, "Senha incorreta ou sessão expirada.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.erro_senha_incorreta), Toast.LENGTH_SHORT).show()
                 }
         }
 

@@ -63,8 +63,16 @@ class TelaRF32LivrosCRUD : AppCompatActivity() {
             abrirPopupFiltro()
         }
 
-        carregarLivros()
         NavigationHelperADM.configurarBarraNavegacao(this)
+    }
+
+    /**
+     * Recarrega a lista ao retornar de cadastro ou edição,
+     * garantindo que novos livros e alterações apareçam sem reiniciar o app.
+     */
+    override fun onResume() {
+        super.onResume()
+        carregarLivros()
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -98,8 +106,8 @@ class TelaRF32LivrosCRUD : AppCompatActivity() {
                     adapter.atualizarLista(listaCompleta)
                 }
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Erro ao carregar livros: ${e.message}", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener {
+                Toast.makeText(this, getString(R.string.erro_conexao_banco), Toast.LENGTH_SHORT).show()
                 txtVazio?.visibility = View.VISIBLE
             }
     }
@@ -151,7 +159,7 @@ class TelaRF32LivrosCRUD : AppCompatActivity() {
             adapter.atualizarLista(filtrado)
             txtVazio?.visibility = if (filtrado.isEmpty()) View.VISIBLE else View.GONE
 
-            Toast.makeText(this, "Filtro aplicado.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.msg_filtro_aplicado), Toast.LENGTH_SHORT).show()
             dialog.dismiss()
         }
 
@@ -161,7 +169,7 @@ class TelaRF32LivrosCRUD : AppCompatActivity() {
             editIsbn?.setText("")
             adapter.atualizarLista(listaCompleta)
             findViewById<TextView>(R.id.txtAcervoVazio)?.visibility = View.GONE
-            Toast.makeText(this, "Filtros limpos.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.msg_filtros_limpos), Toast.LENGTH_SHORT).show()
             dialog.dismiss()
         }
 

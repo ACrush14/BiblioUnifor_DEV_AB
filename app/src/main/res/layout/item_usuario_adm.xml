@@ -28,7 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/user_placeholder" />
+                android:src="@drawable/user_placeholder"
+                android:contentDescription="@string/desc_foto_usuario_item" />
 
         </com.google.android.material.card.MaterialCardView>
 

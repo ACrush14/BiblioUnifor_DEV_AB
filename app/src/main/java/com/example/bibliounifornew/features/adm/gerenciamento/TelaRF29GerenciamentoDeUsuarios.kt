@@ -45,8 +45,18 @@ class TelaRF29GerenciamentoDeUsuarios : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        carregarUsuarios()
         NavigationHelperADM.configurarBarraNavegacao(this)
+    }
+
+    /**
+     * Recarrega a lista ao retornar de TelaRF30UsuariosParaADM.
+     * Garante que usuários removidos/alterados desapareçam sem precisar
+     * de startActivityForResult — o onResume é chamado automaticamente
+     * ao empilhar de volta após finish().
+     */
+    override fun onResume() {
+        super.onResume()
+        carregarUsuarios()
     }
 
     /**

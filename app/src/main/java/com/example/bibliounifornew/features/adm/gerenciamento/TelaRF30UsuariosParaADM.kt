@@ -15,34 +15,47 @@ import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.SolicitacaoRepository
-import com.example.bibliounifornew.login.TelaRF23LoginADM
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class TelaRF30UsuariosParaADM : AppCompatActivity() {
 
-    private val db = FirebaseFirestore.getInstance()
+    private val db   = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
     private val solicitacaoRepository = SolicitacaoRepository()
 
-    private var usuarioId: String = ""
-    private var usuarioNome: String = ""
-    private var usuarioEmail: String = ""
+    /**
+     * RF28.5 / RF28.13 — Mantido aqui para ser cancelado em onDestroy(),
+     * evitando memory leak. Criado em exibirPopupSolicitacoes(), um por vez.
+     */
+    private var solicitacoesListener: ListenerRegistration? = null
+
+    private var usuarioId    : String = ""
+    private var usuarioNome  : String = ""
+    private var usuarioEmail : String = ""
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CICLO DE VIDA
+    // ─────────────────────────────────────────────────────────────────────────
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf30_usuariosparaadm)
 
-        // 1) Pegar dados vindos da tela anterior (TelaRF29)
         usuarioId    = intent.getStringExtra("USUARIO_ID")    ?: ""
         usuarioNome  = intent.getStringExtra("USUARIO_NOME")  ?: "Usuário"
         usuarioEmail = intent.getStringExtra("USUARIO_EMAIL") ?: ""
 
-        // 2) Atualizar o Header com as informações REAIS do usuário
         val textNome  = findViewById<TextView>(R.id.textNomeUsuario)
         val textEmail = findViewById<TextView>(R.id.textEmailUsuario)
         val textTipo  = findViewById<TextView>(R.id.textTipoUsuario)
@@ -50,40 +63,59 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
         textNome?.text  = usuarioNome
         textEmail?.text = usuarioEmail
 
-        // Buscar role real no firestore
         buscarDadosCompletosUsuario(textTipo)
 
-        // 3) Configurar botões
-        findViewById<MaterialButton>(R.id.buttonSolicitacoes)?.setOnClickListener { exibirPopupSolicitacoes() }
-        
-        findViewById<MaterialButton>(R.id.buttonLivrosAlugados)?.setOnClickListener {
-            val intent = Intent(this, TelaRFAdmUsuarioAlugados::class.java)
-            intent.putExtra("USUARIO_ID", usuarioId)
-            startActivity(intent)
+        findViewById<MaterialButton>(R.id.buttonSolicitacoes)?.setOnClickListener {
+            exibirPopupSolicitacoes()
         }
-
-        findViewById<MaterialButton>(R.id.buttonAtrasos)?.setOnClickListener { exibirPopupAtraso() }
-        findViewById<MaterialButton>(R.id.buttonPermissao)?.setOnClickListener { exibirPopupPermissao(textTipo) }
-        findViewById<MaterialButton>(R.id.buttonExcluirConta)?.setOnClickListener { exibirPopupExcluirConta() }
+        findViewById<MaterialButton>(R.id.buttonLivrosAlugados)?.setOnClickListener {
+            val i = Intent(this, TelaRFAdmUsuarioAlugados::class.java)
+            i.putExtra("USUARIO_ID",   usuarioId)
+            i.putExtra("USUARIO_NOME", usuarioNome)
+            startActivity(i)
+        }
+        findViewById<MaterialButton>(R.id.buttonAtrasos)?.setOnClickListener {
+            exibirPopupAtraso()
+        }
+        findViewById<MaterialButton>(R.id.buttonPermissao)?.setOnClickListener {
+            exibirPopupPermissao(textTipo)
+        }
+        findViewById<MaterialButton>(R.id.buttonExcluirConta)?.setOnClickListener {
+            exibirPopupExcluirConta()
+        }
     }
+
+    /**
+     * RF28.5 / RF28.13 FIX — cancela o SnapshotListener antes de destruir a Activity,
+     * evitando callbacks órfãos e consumo desnecessário de rede/memória.
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        solicitacoesListener?.remove()
+        solicitacoesListener = null
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // DADOS DO PERFIL
+    // ─────────────────────────────────────────────────────────────────────────
 
     private fun buscarDadosCompletosUsuario(textTipo: TextView?) {
         if (usuarioId.isEmpty()) return
         db.collection("usuarios").document(usuarioId).get()
             .addOnSuccessListener { doc ->
-                if (doc.exists()) {
-                    val role = doc.getString("role") ?: doc.getString("tipoPerfil") ?: "aluno"
-                    textTipo?.text = role.uppercase()
-                    
-                    // Se o nome não veio pelo intent, pegamos do firestore
-                    if (usuarioNome == "Usuário") {
-                        findViewById<TextView>(R.id.textNomeUsuario)?.text = doc.getString("nome") ?: "Usuário"
-                    }
+                if (!doc.exists()) return@addOnSuccessListener
+                val role = doc.getString("role") ?: doc.getString("tipoPerfil") ?: "aluno"
+                textTipo?.text = role.uppercase()
+                if (usuarioNome == "Usuário") {
+                    usuarioNome = doc.getString("nome") ?: "Usuário"
+                    findViewById<TextView>(R.id.textNomeUsuario)?.text = usuarioNome
                 }
             }
     }
 
-    // ─── POPUPS ───────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // RF28.5 / RF28.13 — SOLICITAÇÕES
+    // ─────────────────────────────────────────────────────────────────────────
 
     private fun exibirPopupSolicitacoes() {
         val dialog = Dialog(this)
@@ -95,74 +127,98 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
         val txtLista  = dialog.findViewById<TextView>(R.id.textPopupListaSolicitacoes)
         val txtStatus = dialog.findViewById<TextView>(R.id.textPopupStatus)
         val cardLivro = dialog.findViewById<MaterialCardView>(R.id.cardSolicitacaoLivro)
-
         val txtTitulo = dialog.findViewById<TextView>(R.id.textTituloLivroSolicitado)
         val txtAutor  = dialog.findViewById<TextView>(R.id.textAutorLivroSolicitado)
         val txtData   = dialog.findViewById<TextView>(R.id.textDataLivroSolicitado)
         val imgCapa   = dialog.findViewById<ImageView>(R.id.imageLivroSolicitado)
 
-        // 1. Limpeza agressiva imediata (Zera tudo do XML)
-        txtNome?.text = "USUÁRIO: ${usuarioNome.uppercase()}"
-        txtLista?.text = "Buscando dados no banco..."
-        txtStatus?.text = "STATUS: --"
+        // Zera o estado antes de buscar para não piscar dados antigos
+        txtNome?.text  = getString(R.string.popup_solicitacoes_label_usuario, usuarioNome.uppercase())
+        txtLista?.text = getString(R.string.msg_buscando_dados)
+        txtStatus?.text = ""
         cardLivro?.visibility = View.GONE
-        
-        // Zera o conteúdo interno do card para não "piscar" o Ceifador
         txtTitulo?.text = ""
-        txtAutor?.text = ""
-        txtData?.text = ""
+        txtAutor?.text  = ""
+        txtData?.text   = ""
         imgCapa?.setImageDrawable(null)
 
+        // RF28.5 FIX: cancela qualquer listener anterior antes de criar um novo
+        solicitacoesListener?.remove()
+
         if (usuarioId.isNotEmpty()) {
-            solicitacaoRepository.escutarSolicitacoesDoUsuario(usuarioId) { lista ->
-                if (lista.isNullOrEmpty()) {
-                    txtLista?.text = "Nenhuma solicitação encontrada."
-                    txtStatus?.text = "STATUS: VAZIO"
-                    cardLivro?.visibility = View.GONE
-                } else {
-                    val ultima = lista.first()
-                    val tipoTexto = if (ultima.tipos.isNotEmpty()) ultima.tipos else "Geral"
-                    
-                    // Texto alterado para confirmar que o código NOVO está rodando
-                    txtLista?.text  = "MÍDIA PEDIDA: ${tipoTexto.uppercase()}"
-                    txtStatus?.text = "STATUS ATUAL: ${ultima.status.uppercase()}"
+            solicitacoesListener = solicitacaoRepository
+                .escutarSolicitacoesDoUsuario(usuarioId) { lista ->
+                    if (!isFinishing && !isDestroyed) {
+                        if (lista.isNullOrEmpty()) {
+                            txtLista?.text  = getString(R.string.popup_solicitacoes_sem_dados)
+                            txtStatus?.text = getString(R.string.popup_status_vazio)
+                            cardLivro?.visibility = View.GONE
+                        } else {
+                            // RF28.13 FIX: exibe total + mais recente (não apenas a primeira)
+                            val ultima    = lista.first()
+                            val tipoTexto = ultima.tipos.ifEmpty { "Geral" }
+                            txtLista?.text  = getString(
+                                R.string.popup_solicitacoes_total,
+                                lista.size,
+                                tipoTexto.uppercase()
+                            )
+                            txtStatus?.text = getString(
+                                R.string.popup_status_label,
+                                ultima.status.uppercase()
+                            )
 
-                    // Busca detalhes reais do livro
-                    db.collection("livros").document(ultima.idLivro).get()
-                        .addOnSuccessListener { doc ->
-                            if (doc.exists()) {
-                                cardLivro?.visibility = View.VISIBLE
-                                
-                                txtTitulo?.text = doc.getString("title") ?: doc.getString("titulo") ?: "Sem Título"
-                                txtAutor?.text  = doc.getString("author") ?: doc.getString("autor") ?: "Sem Autor"
-                                
-                                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
-                                val dataFormatada = if (ultima.dataSolicitacao > 0) sdf.format(Date(ultima.dataSolicitacao)) else "N/A"
-                                txtData?.text = "Data do Pedido: $dataFormatada"
-
-                                val coverUrl = doc.getString("coverUrl") ?: ""
-                                imgCapa?.load(coverUrl.ifEmpty { R.drawable.osda }) {
-                                    placeholder(R.drawable.osda)
-                                    error(R.drawable.osda)
-                                }
-                            } else {
-                                txtLista?.text = "Livro não encontrado no sistema."
-                                cardLivro?.visibility = View.GONE
+                            // Join assíncrono: busca dados do livro mais recente
+                            if (ultima.idLivro.isNotEmpty()) {
+                                db.collection("livros").document(ultima.idLivro).get()
+                                    .addOnSuccessListener { doc ->
+                                        if (!doc.exists()) {
+                                            txtLista?.text = getString(R.string.popup_livro_nao_encontrado)
+                                            cardLivro?.visibility = View.GONE
+                                            return@addOnSuccessListener
+                                        }
+                                        cardLivro?.visibility = View.VISIBLE
+                                        txtTitulo?.text = doc.getString("title")
+                                            ?: doc.getString("titulo")
+                                            ?: getString(R.string.sem_titulo)
+                                        txtAutor?.text  = doc.getString("author")
+                                            ?: doc.getString("autor")
+                                            ?: getString(R.string.sem_autor)
+                                        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
+                                        val dataFmt = if (ultima.dataSolicitacao > 0)
+                                            sdf.format(Date(ultima.dataSolicitacao)) else "N/A"
+                                        txtData?.text = getString(R.string.popup_data_pedido, dataFmt)
+                                        val coverUrl = doc.getString("coverUrl") ?: ""
+                                        imgCapa?.load(coverUrl.ifEmpty { R.drawable.osda }) {
+                                            placeholder(R.drawable.osda)
+                                            error(R.drawable.osda)
+                                        }
+                                    }
+                                    .addOnFailureListener {
+                                        txtLista?.text = getString(R.string.erro_conexao_banco)
+                                        cardLivro?.visibility = View.GONE
+                                    }
                             }
                         }
-                        .addOnFailureListener {
-                            txtLista?.text = "Erro na conexão com o banco."
-                            cardLivro?.visibility = View.GONE
-                        }
+                    }
                 }
-            }
         }
 
-        dialog.findViewById<Button>(R.id.btnFecharSolicitacoes)?.setOnClickListener { dialog.dismiss() }
+        dialog.findViewById<Button>(R.id.btnFecharSolicitacoes)?.setOnClickListener {
+            dialog.dismiss()
+            // O listener NÃO é cancelado aqui — permanece ativo até onDestroy(),
+            // para que atualizações em tempo real continuem funcionando se o popup
+            // for reaberto sem reiniciar a Activity.
+        }
         dialog.show()
-        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
-        dialog.window?.setLayout(width, android.view.ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.90).toInt(),
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // RF28.7 — ATRASOS (query real no Firestore)
+    // ─────────────────────────────────────────────────────────────────────────
 
     private fun exibirPopupAtraso() {
         val dialog = Dialog(this)
@@ -173,17 +229,132 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
         val txtMensagem = dialog.findViewById<TextView>(R.id.textNomeLivroAtrasado)
         val txtMulta    = dialog.findViewById<TextView>(R.id.textValorMulta)
 
-        // Por enquanto limpamos os textos genéricos do XML
-        txtMensagem?.text = "Verificando atrasos para $usuarioNome..."
-        txtMulta?.text    = "Multa: R$ 0,00"
+        txtMensagem?.text = getString(R.string.msg_verificando_atrasos)
+        txtMulta?.text    = "--"
 
-        // TODO: Implementar busca na coleção 'alugueis' filtrando por usuarioId e dataDevolucao < agora
-        
-        dialog.findViewById<Button>(R.id.buttonFecharAtraso)?.setOnClickListener { dialog.dismiss() }
+        if (usuarioId.isNotEmpty()) {
+            buscarAtrasosNaColecao("alugueis", txtMensagem, txtMulta) {
+                // Fallback para a coleção alternativa
+                buscarAtrasosNaColecao("solicitacoes_emprestimo", txtMensagem, txtMulta, null)
+            }
+        }
+
+        dialog.findViewById<Button>(R.id.buttonFecharAtraso)?.setOnClickListener {
+            dialog.dismiss()
+        }
         dialog.show()
-        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
-        dialog.window?.setLayout(width, android.view.ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.90).toInt(),
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
+
+    /**
+     * Busca aluguéis atrasados de [colecao] para [usuarioId].
+     * Um aluguel é considerado atrasado quando:
+     *   - status == "atrasado"  OU
+     *   - dataDevolucaoMs (ou campos equivalentes) < agora
+     *
+     * Multa calculada a R$ 1,00 por dia de atraso (mínimo R$ 1,00).
+     */
+    private fun buscarAtrasosNaColecao(
+        colecao   : String,
+        txtMsg    : TextView?,
+        txtMulta  : TextView?,
+        onVazio   : (() -> Unit)?
+    ) {
+        val agora = System.currentTimeMillis()
+
+        db.collection(colecao)
+            .whereEqualTo("uidAluno", usuarioId)
+            .get()
+            .addOnSuccessListener { result ->
+                if (result.isEmpty) {
+                    onVazio?.invoke() ?: run {
+                        txtMsg?.text   = getString(R.string.popup_atraso_sem_pendencias)
+                        txtMulta?.text = getString(R.string.popup_multa_zero)
+                    }
+                    return@addOnSuccessListener
+                }
+
+                // Filtra apenas os documentos efetivamente atrasados
+                val atrasados = result.documents.filter { doc ->
+                    val status = doc.getString("status") ?: ""
+                    val dataDev = doc.getLong("dataDevolucaoMs")
+                        ?: doc.getLong("dataVencimentoMs")
+                        ?: doc.getLong("dataFimMs")
+                        ?: -1L
+                    status == "atrasado" || (dataDev in 1 until agora)
+                }
+
+                if (atrasados.isEmpty()) {
+                    txtMsg?.text   = getString(R.string.popup_atraso_sem_pendencias)
+                    txtMulta?.text = getString(R.string.popup_multa_zero)
+                    return@addOnSuccessListener
+                }
+
+                // Calcula a multa total acumulada (R$ 1,00 / dia)
+                val totalMultaReais = atrasados.sumOf { doc ->
+                    val dataDev = doc.getLong("dataDevolucaoMs")
+                        ?: doc.getLong("dataVencimentoMs")
+                        ?: doc.getLong("dataFimMs")
+                        ?: 0L
+                    if (dataDev in 1 until agora) {
+                        TimeUnit.MILLISECONDS.toDays(agora - dataDev).coerceAtLeast(1).toDouble()
+                    } else {
+                        1.0 // status == "atrasado" sem data: multa mínima
+                    }
+                }
+
+                val brl = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
+                txtMulta?.text = brl.format(totalMultaReais)
+
+                // Busca o título do livro mais atrasado para exibir na mensagem
+                val maisAtrasado = atrasados.maxByOrNull { doc ->
+                    val dataDev = doc.getLong("dataDevolucaoMs")
+                        ?: doc.getLong("dataVencimentoMs")
+                        ?: doc.getLong("dataFimMs") ?: 0L
+                    agora - dataDev
+                }
+                val idLivro = maisAtrasado?.getString("idLivro")
+                    ?: maisAtrasado?.getString("livroId") ?: ""
+
+                if (idLivro.isNotEmpty()) {
+                    db.collection("livros").document(idLivro).get()
+                        .addOnSuccessListener { livroDoc ->
+                            val titulo = livroDoc.getString("title")
+                                ?: livroDoc.getString("titulo")
+                                ?: getString(R.string.sem_titulo)
+                            txtMsg?.text = getString(
+                                R.string.popup_atraso_mensagem,
+                                atrasados.size,
+                                titulo
+                            )
+                        }
+                        .addOnFailureListener {
+                            txtMsg?.text = getString(
+                                R.string.popup_atraso_sem_titulo,
+                                atrasados.size
+                            )
+                        }
+                } else {
+                    txtMsg?.text = getString(
+                        R.string.popup_atraso_sem_titulo,
+                        atrasados.size
+                    )
+                }
+            }
+            .addOnFailureListener {
+                onVazio?.invoke() ?: run {
+                    txtMsg?.text   = getString(R.string.erro_conexao_banco)
+                    txtMulta?.text = "--"
+                }
+            }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // RF28.9 / RF28.10 — ALTERAR PERMISSÃO (com reauthenticate)
+    // ─────────────────────────────────────────────────────────────────────────
 
     private fun exibirPopupPermissao(textTipo: TextView?) {
         val dialog = Dialog(this)
@@ -191,45 +362,177 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
         dialog.setContentView(R.layout.popup_mudar_permissao_adm)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+        val editSenha   = dialog.findViewById<TextInputEditText>(R.id.editSenhaPermissao)
+        val txtErro     = dialog.findViewById<TextView>(R.id.textErroPermissao)
         val btnMudar    = dialog.findViewById<Button>(R.id.buttonMudarPermissao)
         val btnCancelar = dialog.findViewById<TextView>(R.id.textCancelarPermissao)
 
         btnMudar?.setOnClickListener {
-            if (usuarioId.isEmpty()) return@setOnClickListener
-            db.collection("usuarios").document(usuarioId).update("role", "adm")
+            val senha = editSenha?.text?.toString()?.trim() ?: ""
+
+            if (senha.isEmpty()) {
+                txtErro?.text = getString(R.string.erro_campo)
+                txtErro?.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
+            val currentUser = auth.currentUser
+            val adminEmail  = currentUser?.email
+            if (currentUser == null || adminEmail.isNullOrEmpty()) {
+                txtErro?.text = getString(R.string.erro_sessao_expirada)
+                txtErro?.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
+            // Feedback visual: desabilita botão durante a verificação
+            btnMudar.isEnabled = false
+            btnMudar.text      = getString(R.string.msg_verificando)
+            txtErro?.visibility = View.GONE
+
+            // RF28.10 FIX: reautentica o admin antes de alterar permissões
+            val credential = EmailAuthProvider.getCredential(adminEmail, senha)
+            currentUser.reauthenticate(credential)
                 .addOnSuccessListener {
-                    textTipo?.text = "ADMINISTRADOR"
-                    Toast.makeText(this, "Permissão alterada com sucesso!", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
+                    if (usuarioId.isEmpty()) {
+                        reativarBotaoPermissao(btnMudar, txtErro, getString(R.string.erro_generico))
+                        return@addOnSuccessListener
+                    }
+                    db.collection("usuarios").document(usuarioId)
+                        .update("role", "adm")
+                        .addOnSuccessListener {
+                            textTipo?.text = "ADM"
+                            Toast.makeText(
+                                this,
+                                getString(R.string.msg_permissao_alterada),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            dialog.dismiss()
+                        }
+                        .addOnFailureListener { e ->
+                            reativarBotaoPermissao(
+                                btnMudar, txtErro,
+                                e.message ?: getString(R.string.erro_generico)
+                            )
+                        }
+                }
+                .addOnFailureListener {
+                    // RF28.10: senha incorreta → erro específico, botão reativado
+                    reativarBotaoPermissao(
+                        btnMudar, txtErro,
+                        getString(R.string.erro_senha_incorreta)
+                    )
                 }
         }
 
         btnCancelar?.setOnClickListener { dialog.dismiss() }
         dialog.show()
-        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
-        dialog.window?.setLayout(width, android.view.ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.90).toInt(),
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
+    private fun reativarBotaoPermissao(btn: Button?, txtErro: TextView?, msg: String) {
+        btn?.isEnabled = true
+        btn?.text      = getString(R.string.popup_permissao_btn_confirmar)
+        txtErro?.text  = msg
+        txtErro?.visibility = View.VISIBLE
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // RF28.11 / RF28.12 — EXCLUIR CONTA (com reauthenticate + guard)
+    // ─────────────────────────────────────────────────────────────────────────
+
     private fun exibirPopupExcluirConta() {
+        // Guard RF28.11: impede que o admin exclua a própria conta por aqui,
+        // prevenindo o bug "volta ao Login ADM" — que ocorria porque o admin
+        // selecionava seu próprio UID na lista e deletava o próprio documento,
+        // disparando o check RBAC "!doc.exists() → signOut()" no próximo login.
+        if (usuarioId == auth.currentUser?.uid) {
+            Toast.makeText(
+                this,
+                getString(R.string.erro_nao_pode_excluir_proprio),
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_apagar_conta_adm)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        dialog.findViewById<Button>(R.id.buttonConfirmarApagarContaADM)?.setOnClickListener {
-            val editSenha = dialog.findViewById<TextInputEditText>(R.id.editSenhaApagarContaADM)
-            if (editSenha?.text.isNullOrEmpty()) {
-                Toast.makeText(this, "Confirme com sua senha de administrador", Toast.LENGTH_SHORT).show()
-            } else {
-                db.collection("usuarios").document(usuarioId).delete().addOnSuccessListener {
-                    Toast.makeText(this, "Usuário removido", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                    finish()
-                }
+        val editSenha    = dialog.findViewById<TextInputEditText>(R.id.editSenhaApagarContaADM)
+        val txtErro      = dialog.findViewById<TextView>(R.id.textErroApagarContaADM)
+        val btnConfirmar = dialog.findViewById<Button>(R.id.buttonConfirmarApagarContaADM)
+        val btnCancelar  = dialog.findViewById<Button>(R.id.buttonCancelarApagarContaADM)
+
+        btnConfirmar?.setOnClickListener {
+            val senha = editSenha?.text?.toString()?.trim() ?: ""
+
+            if (senha.isEmpty()) {
+                txtErro?.text = getString(R.string.erro_campo)
+                txtErro?.visibility = View.VISIBLE
+                return@setOnClickListener
             }
+
+            val currentUser = auth.currentUser
+            val adminEmail  = currentUser?.email
+            if (currentUser == null || adminEmail.isNullOrEmpty()) {
+                txtErro?.text = getString(R.string.erro_sessao_expirada)
+                txtErro?.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
+            btnConfirmar.isEnabled = false
+            btnConfirmar.text      = getString(R.string.msg_verificando)
+            txtErro?.visibility    = View.GONE
+
+            // RF28.12 FIX: valida a senha do admin via reauthenticate antes de excluir
+            val credential = EmailAuthProvider.getCredential(adminEmail, senha)
+            currentUser.reauthenticate(credential)
+                .addOnSuccessListener {
+                    // RF28.11 FIX: deleta o documento Firestore do usuário.
+                    // O registro no Firebase Authentication persiste (limitação do SDK
+                    // cliente — deleção de Auth de terceiros exige Cloud Function com
+                    // Admin SDK). Com o documento ausente, o RBAC de TelaRF03LoginAluno
+                    // bloqueia o acesso: "!doc.exists() → acesso negado".
+                    db.collection("usuarios").document(usuarioId)
+                        .delete()
+                        .addOnSuccessListener {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.msg_conta_removida),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            dialog.dismiss()
+                            // finish() retorna para TelaRF29GerenciamentoDeUsuarios,
+                            // que recarrega a lista em onResume().
+                            finish()
+                        }
+                        .addOnFailureListener { e ->
+                            reativarBotaoExcluir(
+                                btnConfirmar, txtErro,
+                                e.message ?: getString(R.string.erro_generico)
+                            )
+                        }
+                }
+                .addOnFailureListener {
+                    reativarBotaoExcluir(
+                        btnConfirmar, txtErro,
+                        getString(R.string.erro_senha_incorreta)
+                    )
+                }
         }
 
-        dialog.findViewById<Button>(R.id.buttonCancelarApagarContaADM)?.setOnClickListener { dialog.dismiss() }
+        btnCancelar?.setOnClickListener { dialog.dismiss() }
         dialog.show()
+    }
+
+    private fun reativarBotaoExcluir(btn: Button?, txtErro: TextView?, msg: String) {
+        btn?.isEnabled = true
+        btn?.text      = getString(R.string.btn_apagar)
+        txtErro?.text  = msg
+        txtErro?.visibility = View.VISIBLE
     }
 }

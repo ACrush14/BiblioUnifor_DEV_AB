@@ -54,7 +54,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/user_placeholder"
-                android:contentDescription="Foto do Administrador" />
+                android:contentDescription="@string/desc_foto_adm_header" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Gestão de Mídias"
+            android:text="@string/titulo_gestao_midias"
             android:textColor="@color/white"
             android:textSize="26sp"
             android:textStyle="bold"
@@ -99,7 +99,7 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_search_minimal"
                 app:tint="@color/biblio_detalhes"
-                android:contentDescription="Ícone de Pesquisa" />
+                android:contentDescription="@string/desc_icone_pesquisa_midia" />
 
             <EditText
                 android:id="@+id/etProcurarMidia"
@@ -108,7 +108,7 @@
                 android:layout_weight="1"
                 android:layout_marginStart="12dp"
                 android:background="@android:color/transparent"
-                android:hint="Pesquisar mídia..."
+                android:hint="@string/hint_pesquisar_midia"
                 android:inputType="text"
                 android:importantForAutofill="no"
                 android:singleLine="true"
@@ -126,7 +126,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_sort_by_size"
                 app:tint="@color/biblio_blue"
-                android:contentDescription="Filtro" />
+                android:contentDescription="@string/desc_filtro_lista" />
 
         </LinearLayout>
 
@@ -151,7 +151,7 @@
                 android:id="@+id/btnAdicionarMidia"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Adicionar Nova Mídia"
+                android:text="@string/btn_adicionar_midia"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"
@@ -169,7 +169,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="16dp"
-                android:text="Acervo de Mídias"
+                android:text="@string/label_acervo_midias"
                 android:textColor="@color/biblio_dark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -180,7 +180,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="32dp"
-                android:text="Nenhuma mídia encontrada."
+                android:text="@string/msg_nenhuma_midia"
                 android:textColor="#8A8A8A"
                 android:textSize="16sp"
                 android:visibility="gone" />

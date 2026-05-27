@@ -67,7 +67,7 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 android.util.Log.e("FirestoreError", "Erro ao carregar alugueis: ${e.message}")
-                Toast.makeText(this, "Erro: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.erro_carregar_alugueis), Toast.LENGTH_SHORT).show()
                 buscarNaColecaoAlternativa()
             }
     }
@@ -79,7 +79,7 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
                 if (!result.isEmpty) {
                     processarDocumentos(result.documents)
                 } else {
-                    Toast.makeText(this, "Nenhum aluguel encontrado em nenhuma coleção.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.msg_nenhum_aluguel_colecao), Toast.LENGTH_SHORT).show()
                 }
             }
     }

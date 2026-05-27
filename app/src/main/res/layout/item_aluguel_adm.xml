@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -28,7 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/user_placeholder" />
+                android:src="@drawable/user_placeholder"
+                android:contentDescription="@string/desc_avatar_usuario_aluguel" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -38,7 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:text="Usuário"
+            android:text=""
+            tools:text="Usuário"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -65,7 +68,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/user_placeholder" />
+                android:src="@drawable/user_placeholder"
+                android:contentDescription="@string/desc_capa_livro_aluguel" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -81,7 +85,8 @@
                 android:id="@+id/txtTituloAluguel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Título"
+                android:text=""
+                tools:text="Título"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -91,7 +96,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Autor"
+                android:text=""
+                tools:text="Autor"
                 android:textColor="#6F6F6F"
                 android:textSize="13sp" />
 
@@ -105,7 +111,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Alugado:"
+                    android:text="@string/label_alugado"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -115,7 +121,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="--/--/----"
+                    android:text=""
+                tools:text="--/--/----"
                     android:textColor="@color/black"
                     android:textSize="13sp" />
 
@@ -126,7 +133,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:layout_marginTop="12dp"
-                android:text="Ver livro"
+                android:text="@string/btn_ver_livro"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="14sp"
@@ -142,7 +149,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:layout_marginTop="8dp"
-                android:text="Ver usuário"
+                android:text="@string/btn_ver_usuario"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="14sp"

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
 
@@ -45,11 +46,20 @@ class LivrosCrudAdapter(
 
         holder.txtTitulo.text = item.titulo
         holder.txtAutor.text  = item.autor
-        holder.txtIsbn.text   = if (item.isbn.isNotEmpty()) "ISBN: ${item.isbn}" else "ISBN: —"
-        holder.txtQtd.text    = "Exemplares: ${if (item.quantidade > 0) item.quantidade.toString() else "—"}"
+        val ctx = holder.itemView.context
+        holder.txtIsbn.text = if (item.isbn.isNotEmpty())
+            ctx.getString(R.string.fmt_isbn, item.isbn)
+            else ctx.getString(R.string.fmt_isbn_vazio)
+        holder.txtQtd.text = if (item.quantidade > 0)
+            ctx.getString(R.string.fmt_exemplares, item.quantidade)
+            else ctx.getString(R.string.fmt_exemplares_vazio)
 
-        // Capa (placeholder por padrão; pode ser substituído por Coil se coverUrl estiver disponível)
-        holder.imgCapa.setImageResource(R.drawable.user_placeholder)
+        // Capa via Coil — usa coverUrl pré-carregada; fallback para placeholder
+        holder.imgCapa.load(item.coverUrl.ifEmpty { null }) {
+            placeholder(R.drawable.user_placeholder)
+            error(R.drawable.user_placeholder)
+            fallback(R.drawable.user_placeholder)
+        }
 
         holder.btnEditar.setOnClickListener { onEditar(item) }
     }

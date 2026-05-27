@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <!-- CAPA (placeholder genérico — Coil carregará se tiver URL futuramente) -->
+        <ImageView
+            android:id="@+id/imgCapaLivraria"
+            android:layout_width="80dp"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/osda"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- TÍTULO -->
+        <TextView
+            android:id="@+id/txtTituloLivraria"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Título"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/btnMenuLivraria"
+            app:layout_constraintStart_toEndOf="@+id/imgCapaLivraria"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- AUTOR -->
+        <TextView
+            android:id="@+id/txtAutorLivraria"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Autor"
+            android:textColor="@color/biblio_dark"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/txtTituloLivraria"
+            app:layout_constraintStart_toStartOf="@+id/txtTituloLivraria"
+            app:layout_constraintTop_toBottomOf="@+id/txtTituloLivraria" />
+
+        <!-- STATUS DE LEITURA -->
+        <TextView
+            android:id="@+id/txtStatusLivraria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="Não Lido"
+            android:textColor="@color/biblio_dark"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/btnRemoverLivraria"
+            app:layout_constraintStart_toStartOf="@+id/txtTituloLivraria" />
+
+        <!-- MENU 3 PONTOS — abre RF12 com o ID correto -->
+        <ImageView
+            android:id="@+id/btnMenuLivraria"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:src="@drawable/ic_menu_more"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/biblio_dark" />
+
+        <!-- BOTÃO REMOVER -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRemoverLivraria"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:text="Remover"
+            android:textAllCaps="false"
+            android:textSize="13sp"
+            app:backgroundTint="@color/biblio_blue"
+            app:cornerRadius="8dp"
+            app:elevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -6,7 +6,11 @@
       "Bash(echo \"ADM files deleted: $?\")",
       "Bash(rm D:/UNIFOR/CienciaComputacao/2026.01_Semestre03/T197-12_DesenvPlatMoveis/BiblioUniforGrupo4/BiblioUnifor_DEV_AB/app/src/main/java/com/example/bibliounifornew/usuario/*.kt)",
       "Bash(echo \"Usuario files deleted: $?\")",
-      "Bash(echo \"LivroAdapter.kt deleted: $?\")"
+      "Bash(echo \"LivroAdapter.kt deleted: $?\")",
+      "Bash(Get-Content \"D:\\\\UNIFOR\\\\CienciaComputacao\\\\2026.01_Semestre03\\\\T197-12_DesenvPlatMoveis\\\\BiblioUniforGrupo4\\\\BiblioUnifor_DEV_AB\\\\app\\\\src\\\\main\\\\res\\\\values\\\\strings.xml\")",
+      "Bash(Measure-Object -Line)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'feat\\(adm\\): RF30/RF31/RF35 — Gestão de Mídias e Acervo CRUD *)"
     ]
   }
 }
