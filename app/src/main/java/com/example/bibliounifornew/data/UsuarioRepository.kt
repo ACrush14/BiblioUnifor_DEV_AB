@@ -266,7 +266,7 @@ class UsuarioRepository {
             .addOnSuccessListener { downloadUri ->
                 val url = downloadUri.toString()
                 db.collection(colecao).document(uid)
-                    .update("fotoUrl", url)
+                    .set(mapOf("fotoUrl" to url), SetOptions.merge())
                     .addOnSuccessListener {
                         onComplete(true, url, null)
                     }

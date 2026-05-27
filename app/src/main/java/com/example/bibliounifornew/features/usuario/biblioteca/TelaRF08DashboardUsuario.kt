@@ -2,9 +2,9 @@ package com.example.bibliounifornew.features.usuario.biblioteca
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -13,7 +13,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
-import com.example.bibliounifornew.MainActivity
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.AuthRepository
 import com.example.bibliounifornew.data.UsuarioRepository
@@ -56,26 +55,7 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
 
         if (uidAtual != null) {
             textNomeUsuario?.text = "Carregando..."
-
-            usuarioRepository.buscarPerfilUsuario(uidAtual) { sucesso, dados, erro ->
-                if (sucesso && dados != null) {
-                    textNomeUsuario?.text = dados["nome"] as? String ?: "Usuário"
-
-                    // Carrega foto de perfil se disponível
-                    val fotoUrl = dados["fotoUrl"] as? String ?: ""
-                    if (fotoUrl.isNotEmpty()) {
-                        imagePerfil.load(fotoUrl) {
-                            placeholder(R.drawable.user_placeholder)
-                            error(R.drawable.user_placeholder)
-                            crossfade(true)
-                        }
-                    }
-                } else {
-                    Toast.makeText(this, "Erro ao carregar perfil: $erro", Toast.LENGTH_SHORT).show()
-                    textNomeUsuario?.text = "Erro ao carregar"
-                }
-            }
-
+            carregarDadosUsuario(uidAtual, textNomeUsuario)
             carregarDescobrir(uidAtual)
         } else {
             startActivity(Intent(this, com.example.bibliounifornew.login.TelaRF03LoginAluno::class.java))
@@ -112,31 +92,68 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
         NavigationHelper.configurarBarraNavegacao(this)
     }
 
-    private fun processarESubirFoto(uri: Uri) {
-        val uid = authRepository.getUsuarioAtual()?.uid ?: return
-        Toast.makeText(this, "Processando imagem...", Toast.LENGTH_SHORT).show()
+    override fun onResume() {
+        super.onResume()
+        val uidAtual = authRepository.getUsuarioAtual()?.uid
+        if (uidAtual != null) {
+            val textNomeUsuario = findViewById<TextView>(R.id.textNomeUsuario)
+            carregarDadosUsuario(uidAtual, textNomeUsuario)
+        }
+    }
 
-        try {
-            @Suppress("DEPRECATION")
-            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-            val redimensionado = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
-            val baos = ByteArrayOutputStream()
-            redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
-            val bytes = baos.toByteArray()
+    private fun carregarDadosUsuario(uid: String, textView: TextView?) {
+        usuarioRepository.buscarPerfilUsuario(uid) { sucesso, dados, erro ->
+            if (sucesso && dados != null) {
+                textView?.text = dados["nome"] as? String ?: "Usuário"
 
-            imagePerfil.alpha = 0.5f
-
-            usuarioRepository.uploadFotoPerfil(uid, bytes) { sucesso, url, erro ->
-                imagePerfil.alpha = 1.0f
-                if (sucesso && url != null) {
-                    imagePerfil.load(url) {
+                // Carrega foto de perfil se disponível
+                val fotoUrl = dados["fotoUrl"] as? String ?: ""
+                if (fotoUrl.isNotEmpty()) {
+                    imagePerfil.load(fotoUrl) {
                         placeholder(R.drawable.user_placeholder)
                         error(R.drawable.user_placeholder)
                         crossfade(true)
                     }
-                    Toast.makeText(this, "Foto atualizada!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "Erro: $erro", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                textView?.text = "Erro ao carregar"
+            }
+        }
+    }
+
+    private fun processarESubirFoto(uri: Uri) {
+        val uid = authRepository.getUsuarioAtual()?.uid ?: return
+
+        try {
+            // 1. ATUALIZAÇÃO IMEDIATA NA UI (Feedback instantâneo)
+            val inputStream = contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+
+            if (bitmap != null) {
+                imagePerfil.setImageBitmap(bitmap)
+                imagePerfil.alpha = 0.5f // Indicador visual de "em progresso"
+
+                // 2. Preparação dos bytes para upload
+                val redimensionado = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
+                val baos = ByteArrayOutputStream()
+                redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                val bytes = baos.toByteArray()
+
+                // 3. Upload em segundo plano
+                usuarioRepository.uploadFotoPerfil(uid, bytes) { sucesso, url, erro ->
+                    if (isFinishing || isDestroyed) return@uploadFotoPerfil
+                    imagePerfil.alpha = 1.0f
+                    if (sucesso && url != null) {
+                        imagePerfil.load(url) {
+                            placeholder(R.drawable.user_placeholder)
+                            error(R.drawable.user_placeholder)
+                            crossfade(true)
+                        }
+                        Toast.makeText(this, "Foto atualizada!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Erro: $erro", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -146,10 +163,6 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
 
     // ─── SEÇÃO DESCOBRIR ──────────────────────────────────────────────────────
 
-    /**
-     * Passo 1: busca livros que o usuário já tem na biblioteca para descobrir a categoria favorita.
-     * Se não houver histórico, carrega livros sem filtro de categoria.
-     */
     private fun carregarDescobrir(uid: String) {
         db.collection("biblioteca_usuarios")
             .whereEqualTo("usuarioId", uid)
@@ -161,7 +174,6 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
                     carregarLivrosDescobrir(null)
                     return@addOnSuccessListener
                 }
-                // Passo 2: descobre categorias dos livros do usuário
                 db.collection("livros")
                     .whereIn(FieldPath.documentId(), livroIds.take(10))
                     .get()
@@ -179,10 +191,6 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
             .addOnFailureListener { carregarLivrosDescobrir(null) }
     }
 
-    /**
-     * Passo 2: monta os cards dinâmicos no containerDescobrir.
-     * Se categoria for null, exibe qualquer livro do Firestore.
-     */
     private fun carregarLivrosDescobrir(categoria: String?) {
         val container = findViewById<LinearLayout>(R.id.containerDescobrir) ?: return
         container.removeAllViews()
@@ -227,10 +235,8 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
                     container.addView(cardView)
                 }
             }
-            .addOnFailureListener { /* ignora silenciosamente */ }
+            .addOnFailureListener { }
     }
-
-    // ─── POPUP SAIR ───────────────────────────────────────────────────────────
 
     private fun showExitPopup() {
         val dialogView = layoutInflater.inflate(R.layout.popup_sair_conta, null)

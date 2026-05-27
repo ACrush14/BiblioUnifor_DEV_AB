@@ -14,6 +14,7 @@ import com.example.bibliounifornew.features.adm.gerenciamento.TelaRF35ConfirmarC
 import com.example.bibliounifornew.features.adm.gerenciamento.TelaRF38ConfigADM
 import com.example.bibliounifornew.features.adm.solicitacoes.TelaRF31Solicitacoes
 import com.example.bibliounifornew.features.adm.solicitacoes.TelaRF36ListaAlugueisADM
+import coil.load
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.FirebaseFirestore
@@ -57,6 +58,36 @@ class TelaRF28DashboardADM : AppCompatActivity() {
         carregarAnaliseAlugueis()
 
         NavigationHelperADM.configurarBarraNavegacao(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        carregarDadosPerfil()
+        carregarEstatisticas()
+        carregarAtrasosCriticos()
+        carregarAnaliseAlugueis()
+    }
+
+    private fun carregarDadosPerfil() {
+        val uid = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid
+        val txtBemVindo = findViewById<TextView>(R.id.textBemVindoAdm)
+        val imageFoto   = findViewById<ImageView>(R.id.cardFotoAdm)?.findViewById<ImageView>(R.id.imageFotoAdmInterna)
+
+        if (uid != null) {
+            db.collection("administradores").document(uid).get()
+                .addOnSuccessListener { doc ->
+                    val nome = doc.getString("nome") ?: "Administrador"
+                    txtBemVindo.text = "Bem-vindo, $nome"
+                    
+                    val fotoUrl = doc.getString("fotoUrl") ?: ""
+                    if (fotoUrl.isNotEmpty()) {
+                        imageFoto?.load(fotoUrl) {
+                            placeholder(R.drawable.user_placeholder)
+                            error(R.drawable.user_placeholder)
+                        }
+                    }
+                }
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────

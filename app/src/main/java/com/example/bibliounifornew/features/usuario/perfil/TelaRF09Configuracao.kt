@@ -2,9 +2,11 @@ package com.example.bibliounifornew.features.usuario.perfil
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -146,6 +148,25 @@ class TelaRF09Configuracao : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Força sincronização ao voltar para a tela (Ex: se mudou foto no Dashboard)
+        usuarioAtual?.uid?.let { uid ->
+            usuarioRepository.buscarPerfilUsuario(uid) { sucesso, dados, _ ->
+                if (sucesso && dados != null) {
+                    val imagePerfil = findViewById<ShapeableImageView>(R.id.imagePerfilUsuario)
+                    val fotoUrl = dados["fotoUrl"] as? String ?: ""
+                    if (fotoUrl.isNotEmpty()) {
+                        imagePerfil?.load(fotoUrl) {
+                            placeholder(R.drawable.user_placeholder)
+                            error(R.drawable.user_placeholder)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         snapshotListener?.remove()
@@ -158,26 +179,35 @@ class TelaRF09Configuracao : AppCompatActivity() {
         val imagePerfil = findViewById<ShapeableImageView>(R.id.imagePerfilUsuario)
 
         try {
-            @Suppress("DEPRECATION")
-            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-            val redimensionado = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
-            val baos = ByteArrayOutputStream()
-            redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
-            val bytes = baos.toByteArray()
+            // 1. ATUALIZAÇÃO IMEDIATA NA UI (Feedback instantâneo)
+            val inputStream = contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
 
-            imagePerfil?.alpha = 0.5f
+            if (bitmap != null) {
+                imagePerfil?.setImageBitmap(bitmap)
+                imagePerfil?.alpha = 0.5f // Indicador visual de "em progresso"
 
-            usuarioRepository.uploadFotoPerfil(uid, bytes) { sucesso, url, erro ->
-                if (isFinishing || isDestroyed) return@uploadFotoPerfil
-                imagePerfil?.alpha = 1.0f
-                if (sucesso && url != null) {
-                    imagePerfil?.load(url) {
-                        placeholder(R.drawable.user_placeholder)
-                        error(R.drawable.user_placeholder)
+                // 2. Preparação dos bytes para upload
+                val redimensionado = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
+                val baos = ByteArrayOutputStream()
+                redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                val bytes = baos.toByteArray()
+
+                // 3. Upload em segundo plano
+                usuarioRepository.uploadFotoPerfil(uid, bytes) { sucesso, url, erro ->
+                    if (isFinishing || isDestroyed) return@uploadFotoPerfil
+                    imagePerfil?.alpha = 1.0f
+                    if (sucesso && url != null) {
+                        // Recarrega via Coil para garantir que o cache seja atualizado
+                        imagePerfil?.load(url) {
+                            placeholder(R.drawable.user_placeholder)
+                            error(R.drawable.user_placeholder)
+                        }
+                        Toast.makeText(this, "Foto atualizada com sucesso!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Erro: $erro", Toast.LENGTH_SHORT).show()
                     }
-                    Toast.makeText(this, "Foto atualizada com sucesso!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "Erro: $erro", Toast.LENGTH_SHORT).show()
                 }
             }
         } catch (e: Exception) {
@@ -209,14 +239,16 @@ class TelaRF09Configuracao : AppCompatActivity() {
         val editSenha    = dialogView.findViewById<EditText>(R.id.editSenhaPopup)
         val iconOlho     = dialogView.findViewById<ImageView>(R.id.iconOlhoSenhaPopup)
 
-        var senhaVisivel = false
+        var senhaVisivelPopup = false
         iconOlho.setOnClickListener {
-            senhaVisivel = !senhaVisivel
-            editSenha.inputType = if (senhaVisivel)
-                android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            else
-                android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
-            iconOlho.setImageResource(if (senhaVisivel) R.drawable.ic_eye_open else R.drawable.ic_eye_closed)
+            senhaVisivelPopup = !senhaVisivelPopup
+            if (senhaVisivelPopup) {
+                editSenha.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                iconOlho.setImageResource(R.drawable.ic_eye_open)
+            } else {
+                editSenha.transformationMethod = PasswordTransformationMethod.getInstance()
+                iconOlho.setImageResource(R.drawable.ic_eye_closed)
+            }
             editSenha.setSelection(editSenha.text.length)
         }
 

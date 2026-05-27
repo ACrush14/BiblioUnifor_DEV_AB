@@ -9,6 +9,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputType
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
@@ -60,11 +62,13 @@ class TelaRF38ConfigADM : AppCompatActivity() {
         var senhaVisivel = false
         iconOlhoSenha.setOnClickListener {
             senhaVisivel = !senhaVisivel
-            editSenhaAtual.inputType = if (senhaVisivel)
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            else
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            iconOlhoSenha.setImageResource(if (senhaVisivel) R.drawable.ic_eye_open else R.drawable.ic_eye_closed)
+            if (senhaVisivel) {
+                editSenhaAtual.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                iconOlhoSenha.setImageResource(R.drawable.ic_eye_open)
+            } else {
+                editSenhaAtual.transformationMethod = PasswordTransformationMethod.getInstance()
+                iconOlhoSenha.setImageResource(R.drawable.ic_eye_closed)
+            }
             editSenhaAtual.setSelection(editSenhaAtual.text.length)
         }
 

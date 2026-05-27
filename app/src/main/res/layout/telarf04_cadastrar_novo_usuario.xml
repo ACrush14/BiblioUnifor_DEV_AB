@@ -272,6 +272,7 @@
                     android:id="@+id/textEntreAqui"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:text="@string/link_entre_aqui"
                     android:textColor="@color/biblio_blue"
                     android:textSize="15sp"
