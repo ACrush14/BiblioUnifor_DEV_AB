@@ -61,7 +61,11 @@
             android:layout_height="85dp"
             android:src="@drawable/user_placeholder"
             android:layout_marginTop="-40dp"
-            android:contentDescription="@string/label_perfil"/>
+            android:contentDescription="@string/label_perfil"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"/>
 
         <TextView
             android:id="@+id/textNomeUsuario"

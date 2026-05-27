@@ -23,7 +23,6 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 
 class TelaRF09Configuracao : AppCompatActivity() {
@@ -38,7 +37,7 @@ class TelaRF09Configuracao : AppCompatActivity() {
 
     // Launcher de galeria — registrado antes de onCreate
     private val galeria = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let { fazerUploadFoto(it) }
+        uri?.let { processarESubirFoto(it) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -154,53 +153,33 @@ class TelaRF09Configuracao : AppCompatActivity() {
 
     // ─── UPLOAD DE FOTO ───────────────────────────────────────────────────────
 
-    private fun fazerUploadFoto(uri: Uri) {
-        val uid         = usuarioAtual?.uid ?: return
+    private fun processarESubirFoto(uri: Uri) {
+        val uid = usuarioAtual?.uid ?: return
         val imagePerfil = findViewById<ShapeableImageView>(R.id.imagePerfilUsuario)
 
         try {
             @Suppress("DEPRECATION")
-            val bitmap        = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-            val redimensionado = Bitmap.createScaledBitmap(bitmap, 200, 200, true)
-            val baos           = ByteArrayOutputStream()
-            redimensionado.compress(Bitmap.CompressFormat.JPEG, 85, baos)
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+            val redimensionado = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
+            val baos = ByteArrayOutputStream()
+            redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
             val bytes = baos.toByteArray()
-
-            val storageRef = FirebaseStorage.getInstance().reference
-                .child("fotos_perfil/$uid.jpg")
 
             imagePerfil?.alpha = 0.5f
 
-            storageRef.putBytes(bytes)
-                .continueWithTask { task ->
-                    if (!task.isSuccessful) throw task.exception!!
-                    storageRef.downloadUrl
+            usuarioRepository.uploadFotoPerfil(uid, bytes) { sucesso, url, erro ->
+                if (isFinishing || isDestroyed) return@uploadFotoPerfil
+                imagePerfil?.alpha = 1.0f
+                if (sucesso && url != null) {
+                    imagePerfil?.load(url) {
+                        placeholder(R.drawable.user_placeholder)
+                        error(R.drawable.user_placeholder)
+                    }
+                    Toast.makeText(this, "Foto atualizada com sucesso!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Erro: $erro", Toast.LENGTH_SHORT).show()
                 }
-                .addOnSuccessListener { downloadUri ->
-                    if (isFinishing || isDestroyed) return@addOnSuccessListener
-                    val fotoUrl = downloadUri.toString()
-                    db.collection("usuarios").document(uid)
-                        .update("fotoUrl", fotoUrl)
-                        .addOnSuccessListener {
-                            if (isFinishing || isDestroyed) return@addOnSuccessListener
-                            imagePerfil?.alpha = 1f
-                            imagePerfil?.load(fotoUrl) {
-                                placeholder(R.drawable.user_placeholder)
-                                error(R.drawable.user_placeholder)
-                            }
-                            Toast.makeText(this, "Foto atualizada com sucesso!", Toast.LENGTH_SHORT).show()
-                        }
-                        .addOnFailureListener {
-                            if (isFinishing || isDestroyed) return@addOnFailureListener
-                            imagePerfil?.alpha = 1f
-                            Toast.makeText(this, "Erro ao salvar URL da foto.", Toast.LENGTH_SHORT).show()
-                        }
-                }
-                .addOnFailureListener { e ->
-                    if (isFinishing || isDestroyed) return@addOnFailureListener
-                    imagePerfil?.alpha = 1f
-                    Toast.makeText(this, "Erro no upload: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+            }
         } catch (e: Exception) {
             Toast.makeText(this, "Erro ao processar imagem.", Toast.LENGTH_SHORT).show()
         }

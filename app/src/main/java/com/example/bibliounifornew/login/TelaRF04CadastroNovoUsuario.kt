@@ -39,8 +39,13 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
         val senha = findViewById<EditText>(R.id.editTextSenha)
         val confirmaSenha = findViewById<EditText>(R.id.editTextConfirmaSenha)
 
+        val erroNome = findViewById<TextView>(R.id.tvErroNome)
+        val erroUsuario = findViewById<TextView>(R.id.tvErroUsuario)
         val erroEmail = findViewById<TextView>(R.id.tvErroEmail)
         val erroSenha = findViewById<TextView>(R.id.tvErroSenha)
+        val erroSenha1 = findViewById<TextView>(R.id.tvErroSenha1)
+        val erroSenha2 = findViewById<TextView>(R.id.tvErroSenha2)
+        val erroSenhaDiferente = findViewById<TextView>(R.id.tvErroSenhaDiferente)
 
         val btnCriar = findViewById<Button>(R.id.btnCriar)
 
@@ -90,8 +95,14 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
         //-----------------------------------
         btnCriar.setOnClickListener {
 
+            // Resetar visibilidade dos erros
+            erroNome.visibility = View.GONE
+            erroUsuario.visibility = View.GONE
             erroEmail.visibility = View.GONE
             erroSenha.visibility = View.GONE
+            erroSenha1.visibility = View.GONE
+            erroSenha2.visibility = View.GONE
+            erroSenhaDiferente.visibility = View.GONE
 
             val nomeTexto = nome.text.toString().trim()
             val usuarioTexto = usuario.text.toString().trim()
@@ -99,29 +110,48 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
             val senhaTexto = senha.text.toString()
             val confirmaTexto = confirmaSenha.text.toString()
 
-            // CAMPOS VAZIOS
-            if (nomeTexto.isEmpty() || usuarioTexto.isEmpty() || emailTexto.isEmpty() || senhaTexto.isEmpty() || confirmaTexto.isEmpty()) {
-                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            var temErro = false
 
-            // EMAIL
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailTexto).matches()) {
+            // Validação individual para mostrar os erros na tela
+            if (nomeTexto.isEmpty()) {
+                erroNome.visibility = View.VISIBLE
+                temErro = true
+            }
+            if (usuarioTexto.isEmpty()) {
+                erroUsuario.visibility = View.VISIBLE
+                temErro = true
+            }
+            if (emailTexto.isEmpty()) {
+                erroEmail.text = "Campo obrigatório"
                 erroEmail.visibility = View.VISIBLE
-                return@setOnClickListener
+                temErro = true
+            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailTexto).matches()) {
+                erroEmail.text = "E-mail inválido"
+                erroEmail.visibility = View.VISIBLE
+                temErro = true
             }
 
-            // SENHA FORTE
-            val senhaValida = senhaTexto.length >= 8 && senhaTexto.any { it.isDigit() } && senhaTexto.any { it.isUpperCase() }
-            if (!senhaValida) {
-                erroSenha.visibility = View.VISIBLE
-                return@setOnClickListener
+            if (senhaTexto.isEmpty()) {
+                erroSenha1.visibility = View.VISIBLE
+                temErro = true
+            } else {
+                val senhaValida = senhaTexto.length >= 8 && senhaTexto.any { it.isDigit() } && senhaTexto.any { it.isUpperCase() }
+                if (!senhaValida) {
+                    erroSenha.visibility = View.VISIBLE
+                    temErro = true
+                }
             }
 
-            // SENHAS DIFERENTES
-            if (senhaTexto != confirmaTexto) {
-                erroSenha.text = "As senhas não coincidem"
-                erroSenha.visibility = View.VISIBLE
+            if (confirmaTexto.isEmpty()) {
+                erroSenha2.visibility = View.VISIBLE
+                temErro = true
+            } else if (senhaTexto != confirmaTexto) {
+                erroSenhaDiferente.visibility = View.VISIBLE
+                temErro = true
+            }
+
+            if (temErro) {
+                Toast.makeText(this, "Verifique os campos marcados", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -137,11 +167,16 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
                     btnCriar.text = "Criar Conta"
 
                     if (sucesso) {
-                        com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
-                            ?.sendEmailVerification()
                         mostrarPopupSucesso()
                     } else {
-                        Toast.makeText(this@TelaRF04CadastroNovoUsuario, traduzirErroFirebase(mensagem), Toast.LENGTH_LONG).show()
+                        val erroTraduzido = traduzirErroFirebase(mensagem)
+                        if (erroTraduzido.contains("e-mail já está cadastrado", ignoreCase = true)) {
+                            erroEmail.text = erroTraduzido
+                            erroEmail.visibility = View.VISIBLE
+                            email.requestFocus()
+                        } else {
+                            Toast.makeText(this@TelaRF04CadastroNovoUsuario, erroTraduzido, Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
             }

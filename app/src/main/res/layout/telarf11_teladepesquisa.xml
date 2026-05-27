@@ -105,7 +105,9 @@
                     android:background="@android:color/transparent"
                     android:hint="Título ou ISBN..."
                     android:importantForAutofill="no"
+                    android:importantForContentCapture="no"
                     android:inputType="text"
+                    android:imeOptions="actionSearch"
                     android:textColor="#444444"
                     android:textColorHint="#999999"
                     android:textSize="16sp" />

@@ -4,6 +4,7 @@
 
     <!-- Rede -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Galeria de fotos: API 33+ (Android 13+) -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -40,6 +41,10 @@
         android:theme="@style/Theme.BiblioUnifor"
         android:largeHeap="true">
 
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value=".features.usuario.livro.TelaRF11TelaDePesquisa" />
+
         <service
             android:name=".services.MeuFirebaseMessagingService"
             android:exported="true">
@@ -51,9 +56,6 @@
         <activity
             android:name=".login.TelaRF25RedefinirSenhaADM"
             android:exported="false" />
-        <activity
-            android:name=".Appnavigation00Activity"
-            android:exported="false" /> <!-- TELAS DE RECUPERAÇÃO DE SENHA -->
         <activity
             android:name=".login.TelaRF06ValidacaoCodigo"
             android:exported="false" />
@@ -101,9 +103,6 @@
             android:exported="false" />
         <activity
             android:name=".features.adm.gerenciamento.TelaRF30UsuariosParaADM"
-            android:exported="false" />
-        <activity
-            android:name=".TelaRF35_1Data"
             android:exported="false" />
         <activity
             android:name=".features.adm.gerenciamento.TelaRF33AdicionarMidiasExtras"
@@ -175,8 +174,22 @@
             android:name=".login.TelaRF05RecuperacaoSenha"
             android:exported="false" />
         <activity
-            android:name=".features.usuario.livro.TelaRF11TelaDePesquisa"
+            android:name=".login.TelaRF05EmailEnviado"
             android:exported="false" />
+        <activity
+            android:name=".login.TelaRF24EmailEnviadoADM"
+            android:exported="false" />
+        <activity
+            android:name=".features.usuario.livro.TelaRF11TelaDePesquisa"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
         <activity
             android:name=".features.usuario.perfil.TelaCalendario"
             android:exported="false" />
@@ -205,32 +218,8 @@
             android:name=".features.usuario.livro.TelaLivroActivity"
             android:exported="false" />
         <activity
-            android:name=".TelaLivroBtnPdf"
-            android:exported="false" />
-        <activity
-            android:name=".TelaLivroBtnAudiobook"
-            android:exported="false" />
-        <activity
             android:name=".features.adm.gerenciamento.TelaRF39RedefinirADMInterno"
             android:exported="false" />
-        <activity
-            android:name=".TelaRF42VerificarMidia"
-            android:exported="false" /> <!-- TELAS RF33 -->
-        <activity
-            android:name=".TelaRF33VerificarMidia"
-            android:exported="false" />
-        <activity
-            android:name=".TelaRF332Filtro"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" />
-        <activity
-            android:name=".PopupNotificacaoBrailleConcluido"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" />
-        <activity
-            android:name=".PopupConfirmarExclusaoSolicitacao"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity
             android:name=".login.TelaRF01BemVindo"
             android:exported="true">

@@ -1,11 +1,15 @@
 package com.example.bibliounifornew.features.usuario.biblioteca
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
@@ -25,6 +29,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import java.io.ByteArrayOutputStream
 
 class TelaRF08DashboardUsuario : AppCompatActivity() {
 
@@ -32,12 +37,21 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
     private val usuarioRepository = UsuarioRepository()
     private val db                = FirebaseFirestore.getInstance()
 
+    private lateinit var imagePerfil: ShapeableImageView
+
+    // Launcher para selecionar imagem da galeria
+    private val getGalleryImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            processarESubirFoto(it)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf08_dashboardusuario)
 
         val textNomeUsuario = findViewById<TextView>(R.id.textNomeUsuario)
-        val imagePerfil     = findViewById<ShapeableImageView>(R.id.imagePerfilUsuario)
+        imagePerfil         = findViewById(R.id.imagePerfilUsuario)
         val uidAtual        = authRepository.getUsuarioAtual()?.uid
 
         if (uidAtual != null) {
@@ -50,9 +64,10 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
                     // Carrega foto de perfil se disponível
                     val fotoUrl = dados["fotoUrl"] as? String ?: ""
                     if (fotoUrl.isNotEmpty()) {
-                        imagePerfil?.load(fotoUrl) {
+                        imagePerfil.load(fotoUrl) {
                             placeholder(R.drawable.user_placeholder)
                             error(R.drawable.user_placeholder)
+                            crossfade(true)
                         }
                     }
                 } else {
@@ -66,6 +81,11 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
             startActivity(Intent(this, com.example.bibliounifornew.login.TelaRF03LoginAluno::class.java))
             finish()
             return
+        }
+
+        // ─── CLIQUE NA FOTO PARA TROCAR ────────────────────────────────────────
+        imagePerfil.setOnClickListener {
+            getGalleryImage.launch("image/*")
         }
 
         // ─── NAVEGAÇÃO ────────────────────────────────────────────────────────
@@ -90,6 +110,38 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
         btnSair.setOnClickListener                   { showExitPopup() }
 
         NavigationHelper.configurarBarraNavegacao(this)
+    }
+
+    private fun processarESubirFoto(uri: Uri) {
+        val uid = authRepository.getUsuarioAtual()?.uid ?: return
+        Toast.makeText(this, "Processando imagem...", Toast.LENGTH_SHORT).show()
+
+        try {
+            @Suppress("DEPRECATION")
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+            val redimensionado = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
+            val baos = ByteArrayOutputStream()
+            redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+            val bytes = baos.toByteArray()
+
+            imagePerfil.alpha = 0.5f
+
+            usuarioRepository.uploadFotoPerfil(uid, bytes) { sucesso, url, erro ->
+                imagePerfil.alpha = 1.0f
+                if (sucesso && url != null) {
+                    imagePerfil.load(url) {
+                        placeholder(R.drawable.user_placeholder)
+                        error(R.drawable.user_placeholder)
+                        crossfade(true)
+                    }
+                    Toast.makeText(this, "Foto atualizada!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Erro: $erro", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Erro ao processar imagem.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // ─── SEÇÃO DESCOBRIR ──────────────────────────────────────────────────────

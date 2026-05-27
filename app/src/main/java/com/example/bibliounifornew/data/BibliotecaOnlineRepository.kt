@@ -39,7 +39,7 @@ class BibliotecaOnlineRepository {
                         if (querySnapshot.isEmpty) {
                             val isbn = info.industryIdentifiers?.find { it.type == "ISBN_13" }?.identifier
                                 ?: info.industryIdentifiers?.firstOrNull()?.identifier
-                                ?: "Não informado"
+                                ?: "0000000000000"
 
                             val dadosLivro = hashMapOf(
                                 "titulo" to tituloEncontrado,

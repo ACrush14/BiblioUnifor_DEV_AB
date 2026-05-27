@@ -42,14 +42,6 @@ kotlin {
     }
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("com.google.firebase:firebase-messaging:24.0.0")
-        force("com.google.android.gms:play-services-tasks:18.1.0")
-        force("com.google.android.gms:play-services-basement:18.3.0")
-    }
-}
-
 dependencies {
     // Firebase BoM para alinhar as versões
     implementation(platform(libs.firebase.bom))
@@ -83,6 +75,8 @@ dependencies {
     // Retrofit para chamadas de internet
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Converte o resultado para objetos Kotlin
+
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // Testes
     testImplementation(libs.junit)

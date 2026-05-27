@@ -18,6 +18,16 @@ class TelaRF11TelaDePesquisa : AppCompatActivity() {
         val editPesquisa = findViewById<EditText>(R.id.editPesquisarLivro)
         val btnProcurar = findViewById<Button>(R.id.buttonProcurar)
 
+        // Escutar o botão "Procurar" (Lupa) do teclado
+        editPesquisa.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
+                btnProcurar.performClick()
+                true
+            } else {
+                false
+            }
+        }
+
         btnProcurar.setOnClickListener {
             val termoBusca = editPesquisa.text.toString().trim()
 

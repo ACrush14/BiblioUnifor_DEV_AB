@@ -118,7 +118,7 @@
             android:layout_height="56dp"
             android:layout_marginHorizontal="32dp"
             android:layout_marginTop="40dp"
-            android:text="Enviar Código"
+            android:text="Redefinir Senha"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="18sp"

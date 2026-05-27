@@ -1,5 +1,7 @@
 package com.example.bibliounifornew.login
 
+import android.view.inputmethod.InputMethodManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -15,11 +17,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.firestore.FirebaseFirestore
 
 class TelaRF24RecuperacaoSenhaADM : AppCompatActivity() {
 
     private val auth = FirebaseAuth.getInstance()
+    private val db   = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,48 +63,75 @@ class TelaRF24RecuperacaoSenhaADM : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 2) Formato inválido (validação client-side)
+            // 2) Formato inválido
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 txtErro.text       = "Formato de e-mail inválido."
                 txtErro.visibility = View.VISIBLE
                 return@setOnClickListener
             }
 
-            // 3) Chama Firebase — desabilita botão para evitar double-tap
+            fecharTeclado()
             btnEnviar.isEnabled = false
             txtErro.visibility  = View.GONE
 
-            auth.sendPasswordResetEmail(email)
-                .addOnSuccessListener {
-                    // Firebase não informa se o e-mail existe ou não (segurança).
-                    // Em ambos os casos exibimos a mensagem de sucesso.
-                    btnEnviar.isEnabled = true
-                    Toast.makeText(
-                        this,
-                        "E-mail de recuperação enviado com sucesso!",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    // Volta para o Login ADM
-                    startActivity(Intent(this, TelaRF23LoginADM::class.java))
-                    finish()
-                }
-                .addOnFailureListener { e ->
-                    btnEnviar.isEnabled = true
-                    val mensagem = when (e) {
-                        is FirebaseAuthInvalidCredentialsException ->
-                            "Formato de e-mail inválido."
-                        else ->
-                            "Erro ao enviar e-mail. Verifique sua conexão e tente novamente."
+            // 3) Validação no Firestore (Coleção Administradores)
+            db.collection("administradores")
+                .whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (querySnapshot.isEmpty) {
+                        btnEnviar.isEnabled = true
+                        txtErro.text = "E-mail não cadastrado"
+                        txtErro.visibility = View.VISIBLE
+                    } else {
+                        // 4) Envio via Firebase
+                        enviarLinkFirebaseADM(email, btnEnviar, txtErro)
                     }
-                    txtErro.text       = mensagem
+                }
+                .addOnFailureListener {
+                    btnEnviar.isEnabled = true
+                    txtErro.text = "Erro ao validar e-mail ADM."
                     txtErro.visibility = View.VISIBLE
                 }
         }
 
         // ─── VOLTAR PARA LOGIN ADM ────────────────────────────────────────────
         txtVoltar.setOnClickListener {
+            fecharTeclado()
             finish()
         }
+    }
+
+    private fun enviarLinkFirebaseADM(email: String, btnEnviar: MaterialButton, txtErro: TextView) {
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                btnEnviar.isEnabled = true
+
+                if (task.isSuccessful) {
+                    // Navega para a tela de sucesso ADM
+                    startActivity(
+                        Intent(
+                            this,
+                            TelaRF24EmailEnviadoADM::class.java
+                        )
+                    )
+                    finish()
+                } else {
+                    val exception = task.exception
+                    val mensagemErro = when (exception) {
+                        is FirebaseAuthInvalidUserException -> "Este e-mail não está cadastrado."
+                        else -> "Erro ao enviar recuperação"
+                    }
+                    txtErro.text = mensagemErro
+                    txtErro.visibility = View.VISIBLE
+                }
+            }
+    }
+
+    private fun fecharTeclado() {
+        val view = currentFocus ?: View(this)
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     // ─── LOGO ─────────────────────────────────────────────────────────────────

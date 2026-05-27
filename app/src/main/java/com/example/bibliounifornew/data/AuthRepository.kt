@@ -21,8 +21,11 @@ class AuthRepository {
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     user?.sendEmailVerification()?.addOnCompleteListener { emailTask ->
+                        // Desloga imediatamente para evitar redirecionamentos automáticos por outros listeners
+                        auth.signOut()
+
                         if (emailTask.isSuccessful) {
-                            onComplete(true, user.uid)
+                            onComplete(true, user?.uid)
                         } else {
                             onComplete(false, "Conta criada, mas falha ao enviar o e-mail de verificação.")
                         }

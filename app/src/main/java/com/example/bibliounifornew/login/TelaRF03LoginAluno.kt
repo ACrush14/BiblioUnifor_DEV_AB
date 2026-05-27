@@ -58,7 +58,9 @@ class TelaRF03LoginAluno : AppCompatActivity() {
 
                 if (sucesso) {
                     Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, TelaRF08DashboardUsuario::class.java))
+                    val intent = Intent(this, TelaRF08DashboardUsuario::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
                     finish()
                 } else {
                     erro.text = "E-mail ou senha incorretos"

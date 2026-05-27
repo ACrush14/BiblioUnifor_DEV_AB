@@ -32,14 +32,20 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Verificação de Segurança Crítica: Evita abertura indevida durante transições de login/cadastro
+        livroIdAtual = intent.getStringExtra("LIVRO_ID") ?: ""
+        val usuarioAutenticado = authRepository.getUsuarioAtual()
+
+        if (livroIdAtual.isEmpty() || usuarioAutenticado == null) {
+            finish()
+            return
+        }
+
         setContentView(R.layout.telarf12_teladolivro)
 
-        livroIdAtual = intent.getStringExtra("LIVRO_ID") ?: ""
-
-        if (livroIdAtual.isNotEmpty()) {
-            carregarDadosDoLivro(livroIdAtual)
-            carregarNota()
-        }
+        carregarDadosDoLivro(livroIdAtual)
+        carregarNota()
 
         configurarBotoesDeStatus()
         configurarBotoesAcao()

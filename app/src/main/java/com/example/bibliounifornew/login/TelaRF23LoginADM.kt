@@ -117,7 +117,9 @@ class TelaRF23LoginADM : AppCompatActivity() {
                             }
                             role == "adm" -> {
                                 // Entra independente de cadastroConfirmado
-                                startActivity(Intent(this, TelaRF28DashboardADM::class.java))
+                                val intent = Intent(this, TelaRF28DashboardADM::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
                                 finish()
                             }
                             else -> {

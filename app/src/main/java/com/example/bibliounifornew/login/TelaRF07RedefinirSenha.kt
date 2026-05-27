@@ -1,5 +1,7 @@
 package com.example.bibliounifornew.login
 
+import android.view.inputmethod.InputMethodManager
+import android.content.Context
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -12,9 +14,12 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
 
 class TelaRF07RedefinirSenha :
     AppCompatActivity() {
+
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreate(
         savedInstanceState: Bundle?
@@ -156,17 +161,9 @@ class TelaRF07RedefinirSenha :
 
         btn.setOnClickListener {
 
-
-            val senha =
-
-                senhaNova.text
-                    .toString()
-
-
-            val confirma =
-
-                confirmar.text
-                    .toString()
+            val email = intent.getStringExtra("email") ?: ""
+            val senha = senhaNova.text.toString()
+            val confirma = confirmar.text.toString()
 
 
 
@@ -214,7 +211,16 @@ class TelaRF07RedefinirSenha :
                 }
 
                 else -> {
-                    mostrarPopup()
+                    fecharTeclado()
+                    // RF07: Dispara o reset real no Firebase para o e-mail validado
+                    auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            mostrarPopupEmail()
+                        } else {
+                            erro1.text = "Erro ao redefinir senha"
+                            erro1.visibility = View.VISIBLE
+                        }
+                    }
                 }
             }
 
@@ -262,6 +268,31 @@ class TelaRF07RedefinirSenha :
     //---------------------------------
     // POPUP
     //---------------------------------
+
+    private fun mostrarPopupEmail() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.popup_sucesso_redefinir_senha)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val imageLogo = dialog.findViewById<ImageView>(R.id.imageLogoPopup)
+        carregarLogoSegura(imageLogo)
+
+        val titulo = dialog.findViewById<TextView>(R.id.textTituloPopup)
+        val descricao = dialog.findViewById<TextView>(R.id.textDescricaoPopup)
+        val voltar = dialog.findViewById<Button>(R.id.buttonRetornarLogin)
+
+        titulo.text = "Tudo certo!"
+        descricao.text = "Enviamos um link oficial do Firebase para seu e-mail.\n\nAbra o e-mail para concluir a alteração da senha."
+        voltar.text = "Voltar ao Login"
+
+        voltar.setOnClickListener {
+            startActivity(Intent(this, TelaRF03LoginAluno::class.java))
+            dialog.dismiss()
+            finish()
+        }
+
+        dialog.show()
+    }
 
     private fun mostrarPopup(){
 
@@ -318,6 +349,12 @@ class TelaRF07RedefinirSenha :
 
 
 
+
+    private fun fecharTeclado() {
+        val view = currentFocus ?: View(this)
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 
     //---------------------------------
     // LOGO

@@ -1,5 +1,7 @@
 package com.example.bibliounifornew.login
 
+import android.view.inputmethod.InputMethodManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -125,8 +127,15 @@ class TelaRF06ValidacaoCodigo :
 
             val textoCodigo = codigo.text.toString().trim()
             val tipoExtra = intent.getStringExtra("tipo") ?: "usuario"
+            val codigoRecebido = intent.getStringExtra("codigo") ?: ""
 
             erro.visibility = View.GONE
+
+            if (codigoRecebido.isEmpty()) {
+                erro.text = "Código expirado"
+                erro.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
 
             when {
                 //-------------------
@@ -140,7 +149,7 @@ class TelaRF06ValidacaoCodigo :
                 //-------------------
                 // CÓDIGO ERRADO
                 //-------------------
-                textoCodigo != "1234" -> {
+                textoCodigo != codigoRecebido -> {
                     erro.text = "Código incorreto"
                     erro.visibility = View.VISIBLE
                 }
@@ -149,14 +158,16 @@ class TelaRF06ValidacaoCodigo :
                 // CÓDIGO CERTO (Direcionamento por Tipo)
                 //-------------------
                 else -> {
+                    fecharTeclado()
                     val destino = if (tipoExtra == "adm") {
                         TelaRF25RedefinirSenhaADM::class.java
                     } else {
                         TelaRF07RedefinirSenha::class.java
                     }
 
-                    val intent = Intent(this, destino)
-                    startActivity(intent)
+                    val nextIntent = Intent(this, destino)
+                    nextIntent.putExtra("email", intent.getStringExtra("email"))
+                    startActivity(nextIntent)
                     finish()
                 }
             }
@@ -181,6 +192,12 @@ class TelaRF06ValidacaoCodigo :
 
         }
 
+    }
+
+    private fun fecharTeclado() {
+        val view = currentFocus ?: View(this)
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun carregarLogoSegura(imageView: ImageView) {

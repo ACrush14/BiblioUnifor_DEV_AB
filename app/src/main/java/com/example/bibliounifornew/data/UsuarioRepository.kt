@@ -3,10 +3,12 @@ package com.example.bibliounifornew.data
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.storage.FirebaseStorage
 
 class UsuarioRepository {
 
     private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
 
     fun salvarUsuarioFirestore(
         uid: String,
@@ -241,6 +243,39 @@ class UsuarioRepository {
                     doc.data?.let { Notificacao.fromFirestore(doc.id, it) }
                 }
                 onChange(lista)
+            }
+    }
+
+    /**
+     * Upload de foto de perfil (Storage) + Atualização do campo fotoUrl (Firestore).
+     * RF08.4: Consolidado para uso no Dashboard e Configurações.
+     */
+    fun uploadFotoPerfil(
+        uid: String,
+        imageBytes: ByteArray,
+        colecao: String = "usuarios",
+        onComplete: (Boolean, String?, String?) -> Unit
+    ) {
+        val storageRef = storage.reference.child("profile_images/$uid.jpg")
+
+        storageRef.putBytes(imageBytes)
+            .continueWithTask { task ->
+                if (!task.isSuccessful) throw task.exception!!
+                storageRef.downloadUrl
+            }
+            .addOnSuccessListener { downloadUri ->
+                val url = downloadUri.toString()
+                db.collection(colecao).document(uid)
+                    .update("fotoUrl", url)
+                    .addOnSuccessListener {
+                        onComplete(true, url, null)
+                    }
+                    .addOnFailureListener { e ->
+                        onComplete(false, null, e.message)
+                    }
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, null, e.message)
             }
     }
 }

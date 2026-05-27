@@ -307,7 +307,7 @@ class TelaRF26NovaContaADM : AppCompatActivity() {
                                     "cadastroConfirmado"  to false,
                                     "criadoEm"            to System.currentTimeMillis()
                                 )
-                                db.collection("usuarios").document(uidOuErro)
+                                db.collection("administradores").document(uidOuErro)
                                     .set(perfil, SetOptions.merge())
                                     .addOnSuccessListener {
                                         com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
