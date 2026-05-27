@@ -9,14 +9,16 @@ import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
 
 data class ItemSolicitacaoMidia(
-    val docId        : String = "",
-    val uidUsuario   : String = "",
-    val idLivro      : String = "",
-    val nomeUsuario  : String = "Usuário",
-    val tituloLivro  : String = "Título Indisponível",
-    val autorLivro   : String = "Autor Desconhecido",
-    val tiposSolicit : String = "",   // "audiobook,pdf,braille" (separado por vírgula)
-    val status       : String = "pendente"
+    val docId           : String = "",
+    val uidUsuario      : String = "",
+    val idLivro         : String = "",
+    val nomeUsuario     : String = "Usuário",
+    val tituloLivro     : String = "Título Indisponível",
+    val autorLivro      : String = "Autor Desconhecido",
+    val coverUrl        : String = "",     // URL da capa — preenchida no join com livros/
+    val tiposSolicit    : String = "",     // "audiobook,pdf,braille" (separado por vírgula)
+    val status          : String = "pendente",
+    val dataSolicitacao : Long   = 0L     // timestamp epoch ms da solicitação
 )
 
 class SolicitacoesMidiaAdapter(
