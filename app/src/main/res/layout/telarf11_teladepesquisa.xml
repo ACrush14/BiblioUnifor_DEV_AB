@@ -100,8 +100,9 @@
 
                 <EditText
                     android:id="@+id/editPesquisarLivro"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:hint="Título ou ISBN..."
                     android:importantForAutofill="no"
@@ -111,6 +112,18 @@
                     android:textColor="#444444"
                     android:textColorHint="#999999"
                     android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/btnAbrirFiltro"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/ic_menu_more"
+                    app:tint="@color/biblio_blue"
+                    android:contentDescription="Abrir filtros"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
 
             </LinearLayout>
 

@@ -49,6 +49,7 @@
     <string name="btn_reservar">Reservar</string>
     <string name="btn_comprar_amazon">Comprar (Amazon)</string>
     <string name="btn_setor_localizado">Setor Localizado</string>
+    <string name="msg_setor_nao_informado">Setor não informado</string>
 
     <string name="titulo_livro">O Alienista</string>
     <string name="autor_livro">por Machado de Assis</string>
@@ -506,6 +507,9 @@
          ═══════════════════════════════════════════════════════════════ -->
     <string name="msg_renovacao_realizada">Renovação realizada! Novo prazo: %1$s</string>
     <string name="msg_limite_renovacoes">Você já atingiu o limite de renovações desse livro.</string>
+    <string name="msg_pdf_indisponivel">Este livro não possui PDF disponível.</string>
+    <string name="msg_audiobook_indisponivel">Este livro não possui Audiobook disponível.</string>
+    <string name="msg_livro_ja_alugado">Este livro já está alugado.</string>
     <string name="msg_solicitacao_duplicada">Você já possui uma solicitação ativa para este livro.</string>
     <string name="msg_edicao_manual_habilitada">Edição manual habilitada</string>
     <string name="erro_data_invalida_renovacao">Informe uma data válida</string>
@@ -592,6 +596,24 @@
     <string name="hint_pesquisa_livro">Digite o nome de um livro ou autor</string>
     <string name="erro_login_para_livraria">Faça login para usar esta função.</string>
     <string name="erro_adicionar_livraria_pesquisa">Não foi possível adicionar à Livraria.</string>
+
+    <string name="desc_abrir_filtros">Abrir filtros</string>
+    <string name="label_todos">Todos</string>
+    <string name="label_disponivel">Disponível</string>
+    <string name="label_indisponivel">Indisponível</string>
+    <string name="label_disponibilidade">Disponibilidade</string>
+    <string name="btn_aplicar_filtro">Aplicar Filtro</string>
+    <string name="btn_limpar_filtros">Limpar Filtros</string>
+    <string name="categoria_todos">Todas as Categorias</string>
+    <string name="categoria_tecnologia">Tecnologia</string>
+    <string name="categoria_literatura">Literatura</string>
+    <string name="categoria_ciencia">Ciência</string>
+    <string name="categoria_historia">História</string>
+    <string name="categoria_biografia">Biografia</string>
+    <string name="categoria_fantasia">Fantasia</string>
+    <string name="categoria_suspense">Suspense</string>
+    <string name="categoria_romance">Romance</string>
+    <string name="categoria_outros">Outros</string>
 
     <!-- RF29 — Gerenciamento de Usuários (ADM) -->
     <string name="fmt_erro_carregar_usuarios">Erro ao carregar usuários: %1$s</string>

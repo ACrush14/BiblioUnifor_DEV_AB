@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -90,6 +91,8 @@ class TelaRF21Historico : AppCompatActivity() {
         val tvVazio      = findViewById<TextView>(R.id.tvHistoricoVazio)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewHistorico)
 
+        Log.d("DEBUG_HISTORICO", "UID logado: $usuarioId")
+
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val result = db.collection("historico_usuarios")
@@ -97,16 +100,24 @@ class TelaRF21Historico : AppCompatActivity() {
                     .get()
                     .await()
 
+                Log.d("DEBUG_HISTORICO", "Documentos retornados: ${result.size()}")
+
                 val itens = result.documents.mapNotNull { doc ->
+                    val lId = doc.getString("livroId")
+                    val uId = doc.getString("usuarioId")
+                    val tit = doc.getString("titulo")
+                    Log.d("DEBUG_HISTORICO", "Doc: livroId=$lId, usuarioId=$uId, titulo=$tit")
+
                     val livroId  = doc.getString("livroId")  ?: return@mapNotNull null
                     val titulo   = doc.getString("titulo")   ?: getString(R.string.sem_titulo)
                     val autor    = doc.getString("autor")    ?: getString(R.string.sem_autor)
                     val acao     = doc.getString("acao")     ?: "Adicionado"
                     val dataLido = doc.getLong("adicionadoEm") ?: 0L
-                    // coverUrl já gravado por registrarNoHistorico() — zero join
                     val coverUrl = doc.getString("coverUrl") ?: ""
                     ItemHistorico(livroId, titulo, autor, acao, dataLido, coverUrl)
                 }.sortedByDescending { it.dataLido }
+
+                Log.d("DEBUG_HISTORICO", "Itens finais após mapNotNull: ${itens.size}")
 
                 withContext(Dispatchers.Main) {
                     if (isFinishing || isDestroyed) return@withContext

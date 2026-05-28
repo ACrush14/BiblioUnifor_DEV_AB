@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 data class EntidadeLivro(
     @PrimaryKey
     val id: String = "",
-    val title: String,
-    val author: String,
+    val title: String = "",
+    val author: String = "",
     val description: String = "", // Substitui o 'content' para ficar mais semântico
     val category: String = "",
     val coverUrl: String = "",

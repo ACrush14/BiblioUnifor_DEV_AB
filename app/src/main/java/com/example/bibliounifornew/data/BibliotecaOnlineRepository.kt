@@ -30,25 +30,32 @@ class BibliotecaOnlineRepository {
                         val info = livroApi.volumeInfo
                         val tituloEncontrado = info.title ?: continue
 
-                        // Verifica duplicata de forma síncrona (na thread IO)
-                        val querySnapshot = Tasks.await(
-                            firestore.collection("livros")
-                                .whereEqualTo("titulo", tituloEncontrado)
-                                .get()
-                        )
+                        val isbn13 = info.industryIdentifiers?.find { it.type == "ISBN_13" }?.identifier ?: ""
+                        val isbn10 = info.industryIdentifiers?.find { it.type == "ISBN_10" }?.identifier ?: ""
+
+                        // Verifica duplicata por ISBN ou Título
+                        val querySnapshot = if (isbn13.isNotEmpty()) {
+                            Tasks.await(firestore.collection("livros").whereEqualTo("isbn13", isbn13).get())
+                        } else if (isbn10.isNotEmpty()) {
+                            Tasks.await(firestore.collection("livros").whereEqualTo("isbn10", isbn10).get())
+                        } else {
+                            Tasks.await(firestore.collection("livros").whereEqualTo("title", tituloEncontrado).get())
+                        }
 
                         if (querySnapshot.isEmpty) {
-                            val isbn = info.industryIdentifiers?.find { it.type == "ISBN_13" }?.identifier
-                                ?: info.industryIdentifiers?.firstOrNull()?.identifier
-                                ?: "0000000000000"
-
                             val dadosLivro = hashMapOf(
-                                "titulo" to tituloEncontrado,
-                                "autor" to (info.authors?.joinToString(", ") ?: "Autor Desconhecido"),
-                                "descricao" to (info.description ?: "Sem descrição disponível."),
+                                "title" to tituloEncontrado,
+                                "author" to (info.authors?.joinToString(", ") ?: "Autor Desconhecido"),
+                                "description" to (info.description ?: "Sem descrição disponível."),
                                 "coverUrl" to (info.imageLinks?.thumbnail?.replace("http://", "https://") ?: ""),
-                                "isbn" to isbn,
-                                "genero" to (info.categories?.joinToString(", ") ?: "Gênero Desconhecido")
+                                "isbn10" to isbn10,
+                                "isbn13" to isbn13,
+                                "category" to (info.categories?.firstOrNull() ?: "Gênero Desconhecido"),
+                                "publishDate" to (info.publishedDate ?: ""),
+                                "publisher" to (info.publisher ?: ""),
+                                "language" to (info.language ?: ""),
+                                "totalPages" to (info.pageCount ?: 0),
+                                "isAvailable" to true
                             )
                             // Adiciona ao Firestore e espera concluir
                             Tasks.await(firestore.collection("livros").add(dadosLivro))

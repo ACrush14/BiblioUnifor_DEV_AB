@@ -4,6 +4,7 @@ import android.view.inputmethod.InputMethodManager
 import android.content.Context
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.Editable
@@ -12,9 +13,13 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TelaRF07RedefinirSenha :
     AppCompatActivity() {
@@ -357,39 +362,44 @@ class TelaRF07RedefinirSenha :
     }
 
     //---------------------------------
-    // LOGO
+    // LOGO (Carregamento Seguro para evitar Canvas Limit Crash)
     //---------------------------------
+    private fun carregarLogoSegura(imageView: ImageView) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val resId = R.drawable.unifor_marca
+                val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeResource(resources, resId, options)
 
-    private fun carregarLogoSegura(
-        imageView: ImageView
-    ){
+                // Reduz para no máximo 300px (seguro para UI e memória)
+                val targetSize = 300
+                var inSampleSize = 1
+                if (options.outHeight > targetSize || options.outWidth > targetSize) {
+                    val halfHeight = options.outHeight / 2
+                    val halfWidth = options.outWidth / 2
+                    while (halfHeight / inSampleSize >= targetSize && halfWidth / inSampleSize >= targetSize) {
+                        inSampleSize *= 2
+                    }
+                }
 
-        try{
+                options.inJustDecodeBounds = false
+                options.inSampleSize = inSampleSize
+                options.inPreferredConfig = Bitmap.Config.RGB_565
+                val decoded = BitmapFactory.decodeResource(resources, resId, options)
 
-            val options = BitmapFactory.Options().apply {
-                inSampleSize = 4
-                inJustDecodeBounds = false
+                val finalBitmap = if (decoded != null && (decoded.width > targetSize || decoded.height > targetSize)) {
+                    Bitmap.createScaledBitmap(decoded, targetSize, targetSize, true)
+                } else {
+                    decoded
+                }
+
+                withContext(Dispatchers.Main) {
+                    imageView.setImageBitmap(finalBitmap)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-
-            val bitmap =
-                BitmapFactory.decodeResource(
-                    resources,
-                    R.drawable.unifor_marca,
-                    options
-                )
-
-            imageView.setImageBitmap(
-                bitmap
-            )
-
         }
-
-        catch(e:Exception){
-
-            e.printStackTrace()
-
-        }
-
     }
 
 }

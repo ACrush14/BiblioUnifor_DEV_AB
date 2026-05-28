@@ -8,7 +8,10 @@
     android:layout_marginHorizontal="16dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
-    app:cardBackgroundColor="#FFFFFF">
+    app:cardBackgroundColor="#FFFFFF"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -72,6 +75,17 @@
                 tools:text="1882"
                 android:textColor="#888888"
                 android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/txtDisponibilidade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Disponível"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#2E7D32"
+                tools:text="Disponível" />
 
             <LinearLayout
                 android:layout_width="match_parent"

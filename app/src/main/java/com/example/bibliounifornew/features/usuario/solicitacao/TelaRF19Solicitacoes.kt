@@ -18,7 +18,8 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
 
     private val db = FirebaseFirestore.getInstance()
     private var tituloAtual: String = ""
-    private var autorAtual: String = ""
+    private var autorAtual: String  = ""
+    private var setorAtual: String  = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +88,7 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
                 autorAtual  = autor
                 val genero   = doc.getString("category")    ?: doc.getString("categoria") ?: ""
                 val coverUrl = doc.getString("coverUrl")    ?: ""
+                setorAtual   = doc.getString("librarySector") ?: doc.getString("setor") ?: getString(R.string.msg_setor_nao_informado)
 
                 txtTitulo?.text = titulo.ifEmpty { "Sem título" }
                 txtAutor?.text  = autor.ifEmpty  { "Autor desconhecido" }
@@ -115,6 +117,7 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
 
         // Injeta o nome do livro atual no popup
         dialog.findViewById<TextView>(R.id.textLivroSetor)?.text = "Livro: $tituloAtual"
+        dialog.findViewById<TextView>(R.id.textSetorLocalizado)?.text = setorAtual
 
         dialog.findViewById<Button>(R.id.buttonVoltarSetor)
             ?.setOnClickListener { dialog.dismiss() }

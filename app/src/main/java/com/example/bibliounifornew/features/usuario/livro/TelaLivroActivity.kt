@@ -40,7 +40,6 @@ import com.example.bibliounifornew.data.AppDatabase
 import com.example.bibliounifornew.data.EntidadeLivro
 import com.example.bibliounifornew.data.LivroRepository
 import com.example.bibliounifornew.features.usuario.biblioteca.TelaRF14LeituraActivity
-import com.example.bibliounifornew.features.usuario.solicitacao.TelaRF19Solicitacoes
 import com.example.bibliounifornew.viewmodel.LivroViewModel
 import com.example.bibliounifornew.viewmodel.LivroViewModelFactory
 import com.google.android.material.button.MaterialButton
@@ -159,16 +158,8 @@ class TelaLivroActivity : AppCompatActivity() {
             )
         }
 
-        // ── Botão "Solicitar" → RF19 ───────────────────────────────────────────
-        findViewById<MaterialButton>(R.id.buttonSolicitar)?.setOnClickListener {
-            startActivity(
-                android.content.Intent(this, TelaRF19Solicitacoes::class.java)
-                    .putExtra("LIVRO_ID", livro.id)
-            )
-        }
-
-        // ── Botão "Ler" → RF14 ────────────────────────────────────────────────
-        findViewById<MaterialButton>(R.id.buttonLer)?.setOnClickListener {
+        // ── Botão "Opções de Leitura" → RF14 ──────────────────────────────────
+        findViewById<MaterialButton>(R.id.buttonOpcoesLeitura)?.setOnClickListener {
             startActivity(
                 android.content.Intent(this, TelaRF14LeituraActivity::class.java)
                     .putExtra("LIVRO_ID", livro.id)

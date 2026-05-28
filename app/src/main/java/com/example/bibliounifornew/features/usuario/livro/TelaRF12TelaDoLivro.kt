@@ -62,6 +62,8 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
 
         carregarDadosDoLivro(livroIdAtual)
         carregarNota()
+        carregarStatusLeitura()
+        carregarMediaAvaliacoes()
 
         configurarBotoesDeStatus()
         configurarBotoesAcao()
@@ -99,7 +101,7 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
                 }
 
                 if (snapshot == null || !snapshot.exists()) {
-                    Toast.makeText(this, "Livro não encontrado.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.erro_livro_nao_encontrado), Toast.LENGTH_SHORT).show()
                     return@addSnapshotListener
                 }
 
@@ -177,7 +179,15 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
         }
 
         if (livro.category.isNotEmpty()) {
-            findViewById<MaterialButton>(R.id.buttonGenero)?.text = livro.category
+            val acessibilidade = if (livro.hasBraille) " | Braille" else ""
+            val formatos = mutableListOf<String>()
+            if (livro.linkPdf.isNotEmpty()) formatos.add("PDF")
+            if (livro.linkAudiobook.isNotEmpty()) formatos.add("Audio")
+            
+            val formatoTxt = if (formatos.isNotEmpty()) " | ${formatos.joinToString("/")}" else ""
+            val setorTxt = if (livro.librarySector.isNotEmpty()) " | Setor: ${livro.librarySector}" else ""
+            
+            findViewById<MaterialButton>(R.id.buttonGenero)?.text = "${livro.category}$setorTxt$acessibilidade$formatoTxt"
         }
 
         val txtDisp    = findViewById<TextView>(R.id.textDisponivel)
@@ -225,6 +235,57 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
                     SetOptions.merge()
                 )
         }
+    }
+
+    private fun carregarStatusLeitura() {
+        val uid = authRepository.getUsuarioAtual()?.uid ?: return
+        db.collection("biblioteca_usuarios").document("${uid}_$livroIdAtual").get()
+            .addOnSuccessListener { doc ->
+                val status = doc.getString("statusLeitura") ?: ""
+                atualizarVisualBotoesStatus(status)
+            }
+    }
+
+    private fun atualizarVisualBotoesStatus(status: String) {
+        val btnNaoLido = findViewById<MaterialButton>(R.id.buttonNaoLido)
+        val btnLendo   = findViewById<MaterialButton>(R.id.buttonLendo)
+        val btnLido    = findViewById<MaterialButton>(R.id.buttonLido)
+
+        definirBotaoInativo(btnNaoLido)
+        definirBotaoInativo(btnLendo)
+        definirBotaoInativo(btnLido)
+
+        when (status) {
+            "Não Lido" -> definirBotaoAtivo(btnNaoLido)
+            "Lendo"    -> definirBotaoAtivo(btnLendo)
+            "Lido"     -> definirBotaoAtivo(btnLido)
+        }
+    }
+
+    private fun carregarMediaAvaliacoes() {
+        db.collection("biblioteca_usuarios")
+            .whereEqualTo("livroId", livroIdAtual)
+            .get()
+            .addOnSuccessListener { result ->
+                var soma = 0.0
+                var cont = 0
+                for (doc in result) {
+                    val nota = doc.getDouble("nota")
+                    if (nota != null && nota > 0) {
+                        soma += nota
+                        cont++
+                    }
+                }
+
+                val txtAvaliacoes = findViewById<TextView>(R.id.textAvaliacoes)
+                if (cont > 0) {
+                    val media = soma / cont
+                    val mediaFormatada = "%.1f".format(media)
+                    txtAvaliacoes?.text = "⭐ $mediaFormatada\n($cont avaliações)"
+                } else {
+                    txtAvaliacoes?.text = "⭐ 0.0\n(0 avaliações)"
+                }
+            }
     }
 
     // ─── BOTÕES DE STATUS DE LEITURA ─────────────────────────────────────────
@@ -277,10 +338,10 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
         db.collection("biblioteca_usuarios").document("${uid}_${livroIdAtual}")
             .set(campos, SetOptions.merge())
             .addOnSuccessListener {
-                Toast.makeText(this, "Status: $status salvo!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.fmt_status_salvo, status), Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Erro ao salvar status.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.erro_salvar_status), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -299,80 +360,96 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
         }
         findViewById<MaterialButton>(R.id.buttonOpcoesLeitura)?.setOnClickListener {
             if (livroIdAtual.isEmpty()) {
-                Toast.makeText(this, "Aguarde o carregamento do livro...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.msg_aguarde_carregamento), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            OpcoesDeLeituraBottomSheet.newInstance(
-                livroId       = livroIdAtual,
-                titulo        = tituloAtual,
-                autor         = autorAtual,
-                linkPdf       = linkPdfAtual,
-                linkAudiobook = linkAudiobookAtual,
-                hasBraille    = hasBrailleAtual,
-                setor         = setorAtual
-            ).show(supportFragmentManager, OpcoesDeLeituraBottomSheet.TAG)
+            val intent = Intent(this, com.example.bibliounifornew.features.usuario.biblioteca.TelaRF14LeituraActivity::class.java)
+            intent.putExtra("LIVRO_ID", livroIdAtual)
+            startActivity(intent)
         }
     }
 
     private fun adicionarListaDesejos() {
         if (livroIdAtual.isEmpty()) {
-            Toast.makeText(this, "Aguarde o carregamento do livro...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.msg_aguarde_carregamento), Toast.LENGTH_SHORT).show()
             return
         }
         val uid = authRepository.getUsuarioAtual()?.uid ?: run {
-            Toast.makeText(this, "Faça login para usar esta função.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.erro_login_necessario), Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Buscamos os nomes atuais dos campos ou usamos o ID como fallback seguro
-        val tituloParaSalvar = if (tituloAtual.isNotEmpty()) tituloAtual else "Livro em processamento"
-        val autorParaSalvar  = if (autorAtual.isNotEmpty()) autorAtual else "Aguardando dados"
+        db.collection("lista_desejos")
+            .whereEqualTo("usuarioId", uid)
+            .whereEqualTo("livroId", livroIdAtual)
+            .get()
+            .addOnSuccessListener { query ->
+                if (!query.isEmpty) {
+                    mostrarSnackbarCinza("Este livro já está na sua Lista de Desejos.")
+                    return@addOnSuccessListener
+                }
 
-        val dados = hashMapOf(
-            "usuarioId"    to uid,
-            "livroId"      to livroIdAtual,
-            "titulo"       to tituloParaSalvar,
-            "autor"        to autorParaSalvar,
-            "coverUrl"     to coverUrlAtual,
-            "disponivel"   to disponivelAtual,
-            "adicionadoEm" to System.currentTimeMillis()
-        )
+                val dados = hashMapOf(
+                    "usuarioId"    to uid,
+                    "livroId"      to livroIdAtual,
+                    "titulo"       to tituloAtual,
+                    "autor"        to autorAtual,
+                    "coverUrl"     to coverUrlAtual,
+                    "disponivel"   to disponivelAtual,
+                    "adicionadoEm" to System.currentTimeMillis()
+                )
 
-        usuarioRepository.salvarListaDesejos(uid, livroIdAtual, dados) { sucesso, erro ->
-            if (sucesso) {
-                Toast.makeText(this, "Adicionado à Lista de Desejos!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Erro ao salvar: $erro", Toast.LENGTH_SHORT).show()
+                db.collection("lista_desejos").document("${uid}_$livroIdAtual")
+                    .set(dados)
+                    .addOnSuccessListener {
+                        mostrarSnackbarCinza("Livro adicionado à sua Lista de Desejos.")
+                    }
             }
-        }
     }
 
     private fun adicionarSuaLivraria() {
         if (livroIdAtual.isEmpty()) {
-            Toast.makeText(this, "Livro sem ID. Tente novamente.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.erro_livro_sem_id), Toast.LENGTH_SHORT).show()
             return
         }
         val uid = authRepository.getUsuarioAtual()?.uid ?: run {
-            Toast.makeText(this, "Faça login para usar esta função.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.erro_login_necessario), Toast.LENGTH_SHORT).show()
             return
         }
-        val dados = hashMapOf(
-            "usuarioId"     to uid,
-            "livroId"       to livroIdAtual,
-            "titulo"        to tituloAtual,
-            "autor"         to autorAtual,
-            "statusLeitura" to "Não Lido",
-            "adicionadoEm"  to System.currentTimeMillis()
+
+        db.collection("biblioteca_usuarios").document("${uid}_${livroIdAtual}").get()
+            .addOnSuccessListener { doc ->
+                if (doc.exists()) {
+                    mostrarSnackbarCinza("Este livro já está na sua Livraria.")
+                    return@addOnSuccessListener
+                }
+
+                val dados = hashMapOf(
+                    "usuarioId"     to uid,
+                    "livroId"       to livroIdAtual,
+                    "titulo"        to tituloAtual,
+                    "autor"         to autorAtual,
+                    "coverUrl"      to coverUrlAtual,
+                    "statusLeitura" to "Não Lido",
+                    "adicionadoEm"  to System.currentTimeMillis()
+                )
+                db.collection("biblioteca_usuarios").document("${uid}_${livroIdAtual}")
+                    .set(dados, SetOptions.merge())
+                    .addOnSuccessListener {
+                        usuarioRepository.registrarNoHistorico(uid, livroIdAtual, tituloAtual, autorAtual, "Adicionado")
+                        mostrarSnackbarCinza("Livro adicionado à sua Livraria.")
+                    }
+            }
+    }
+
+    private fun mostrarSnackbarCinza(mensagem: String) {
+        val snackbar = com.google.android.material.snackbar.Snackbar.make(
+            findViewById(android.R.id.content),
+            mensagem,
+            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
         )
-        db.collection("biblioteca_usuarios").document("${uid}_${livroIdAtual}")
-            .set(dados, SetOptions.merge())
-            .addOnSuccessListener {
-                // RF15.8: Registra no histórico a adição
-                usuarioRepository.registrarNoHistorico(uid, livroIdAtual, tituloAtual, autorAtual, "Adicionado")
-                Toast.makeText(this, "\"${tituloAtual.ifEmpty { livroIdAtual }}\" adicionado à sua Livraria!", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Não foi possível adicionar à Livraria. Tente novamente.", Toast.LENGTH_SHORT).show()
-            }
+        snackbar.setBackgroundTint(Color.parseColor("#444444"))
+        snackbar.setTextColor(Color.WHITE)
+        snackbar.show()
     }
 }

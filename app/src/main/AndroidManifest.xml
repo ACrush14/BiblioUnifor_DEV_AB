@@ -15,6 +15,7 @@
     <queries>
         <package android:name="com.spotify.music" />
         <package android:name="com.google.android.apps.docs" />
+        <package android:name="com.google.android.gms" />
 
         <intent>
             <action android:name="android.intent.action.VIEW" />

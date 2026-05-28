@@ -153,14 +153,29 @@ class TelaRF23LoginADM : AppCompatActivity() {
         }
     }
 
+    // ─── LOGO (Carregamento Seguro para evitar Canvas Limit Crash) ───────────
     private fun carregarLogoSegura(imageView: ImageView) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val options = BitmapFactory.Options().apply {
-                    inSampleSize = 4
-                    inJustDecodeBounds = false
+                val resId = R.drawable.unifor_marca
+                val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeResource(resources, resId, options)
+
+                // Reduz para no máximo 500px para evitar estouro de memória (Canvas Limit)
+                val targetSize = 500
+                var inSampleSize = 1
+                if (options.outHeight > targetSize || options.outWidth > targetSize) {
+                    val halfHeight = options.outHeight / 2
+                    val halfWidth = options.outWidth / 2
+                    while (halfHeight / inSampleSize >= targetSize && halfWidth / inSampleSize >= targetSize) {
+                        inSampleSize *= 2
+                    }
                 }
-                val bitmap = BitmapFactory.decodeResource(resources, R.drawable.unifor_marca, options)
+
+                options.inJustDecodeBounds = false
+                options.inSampleSize = inSampleSize
+                val bitmap = BitmapFactory.decodeResource(resources, resId, options)
+
                 withContext(Dispatchers.Main) {
                     imageView.setImageBitmap(bitmap)
                 }

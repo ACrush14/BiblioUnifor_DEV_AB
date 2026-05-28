@@ -81,11 +81,69 @@
                 android:textSize="26sp"
                 android:fontFamily="sans-serif-black" />
 
-            <!-- NOVA SENHA LABEL -->
+            <!-- SENHA ATUAL LABEL -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
+                android:text="Senha atual"
+                android:textColor="@color/biblio_blue"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+
+            <!-- ERRO SENHA ATUAL -->
+            <TextView
+                android:id="@+id/textErroSenhaAtual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Campo obrigatório"
+                android:textColor="@color/biblio_red"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+            <!-- INPUT SENHA ATUAL -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input">
+
+                <EditText
+                    android:id="@+id/editSenhaAtual"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="Senha atual"
+                    android:inputType="textPassword"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="52dp"
+                    android:textColor="#333333"
+                    android:textColorHint="#9E9E9E"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/iconOlhoSenhaAtual"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="4dp"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_eye_closed"
+                    app:tint="@color/biblio_blue"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/desc_mostrar_ocultar_senha" />
+
+            </RelativeLayout>
+
+            <!-- NOVA SENHA LABEL -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:text="Nova senha"
                 android:textColor="@color/biblio_blue"
                 android:textSize="14sp"

@@ -122,11 +122,56 @@
 
             <!-- BOTÃO -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonProcurarLivro"
+                android:id="@+id/buttonReservar"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginBottom="16dp"
-                android:text="Procurar"
+                android:text="Reservar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/biblio_blue"
+                app:cornerRadius="28dp"
+                app:elevation="4dp" />
+
+            <!-- BOTÃO -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonSolicitarPdf"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
+                android:text="Solicitar PDF"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/biblio_blue"
+                app:cornerRadius="28dp"
+                app:elevation="4dp" />
+
+            <!-- BOTÃO -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonSolicitarBraille"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
+                android:text="Solicitar Braille"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/biblio_blue"
+                app:cornerRadius="28dp"
+                app:elevation="4dp" />
+
+            <!-- BOTÃO -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonSolicitarAudio"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
+                android:text="Solicitar Audiobook"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -165,14 +210,27 @@
                 app:cornerRadius="28dp"
                 app:elevation="4dp" />
 
-            <!-- BOTÃO: "Reservar" removido conforme RF14 (substituído pelo fluxo de Alugar) -->
-
             <!-- BOTÃO -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonSetorLivro"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
                 android:text="Setor Localizado"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/biblio_blue"
+                app:cornerRadius="28dp"
+                app:elevation="4dp" />
+
+            <!-- BOTÃO -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonProcurarLivro"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Procurar"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="18sp"

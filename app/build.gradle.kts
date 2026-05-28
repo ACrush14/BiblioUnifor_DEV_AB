@@ -72,6 +72,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
 
     // Android UI e Core
+    implementation(libs.androidx.core)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)

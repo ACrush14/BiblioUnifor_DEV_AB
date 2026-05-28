@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_popup_rounded"
+    android:padding="28dp">
+
+    <!-- BARRA SUPERIOR -->
+    <View
+        android:layout_width="45dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:background="#DDDDDD"
+        android:alpha="0.8"/>
+
+    <!-- TÍTULO DO POPUP -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filtrar Pesquisa"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/biblio_blue"
+        android:layout_marginBottom="28dp"/>
+
+    <!-- CAMPO TÍTULO -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TÍTULO"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.1"
+        android:textColor="#888888"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/editTituloFiltro"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_input"
+        android:hint="Nome do título"
+        android:paddingHorizontal="18dp"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:textColorHint="#999999"
+        android:inputType="text"
+        android:importantForAutofill="no"
+        android:singleLine="true"/>
+
+    <!-- CAMPO AUTOR -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AUTOR"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.1"
+        android:textColor="#888888"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/editAutorFiltro"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_input"
+        android:hint="Nome do autor..."
+        android:paddingHorizontal="18dp"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:textColorHint="#999999"
+        android:inputType="text"
+        android:importantForAutofill="no"
+        android:singleLine="true"/>
+
+    <!-- CATEGORIA -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CATEGORIA"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.1"
+        android:textColor="#888888"
+        android:layout_marginBottom="8dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerCategoriaFiltro"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_input"
+        android:paddingHorizontal="18dp" />
+
+    <!-- DISPONIBILIDADE -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DISPONIBILIDADE"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.1"
+        android:textColor="#888888"
+        android:layout_marginBottom="8dp"/>
+
+    <RadioGroup
+        android:id="@+id/radioGroupDisponibilidade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="32dp">
+
+        <RadioButton
+            android:id="@+id/radioTodos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Todos"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/radioDisponivel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Disponível"/>
+
+        <RadioButton
+            android:id="@+id/radioIndisponivel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Indisponível"/>
+    </RadioGroup>
+
+    <!-- BOTÕES DE AÇÃO -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonAplicarFiltro"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Aplicar Filtro"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/biblio_blue"
+        app:cornerRadius="28dp"
+        app:elevation="4dp"
+        android:layout_marginBottom="12dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonLimparFiltro"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="Limpar Filtros"
+        android:textAllCaps="false"
+        android:textSize="15sp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="#E53935"
+        app:cornerRadius="26dp"/>
+
+</LinearLayout>

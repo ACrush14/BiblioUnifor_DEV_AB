@@ -109,9 +109,11 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
                 val fotoUrl = dados["fotoUrl"] as? String ?: ""
                 if (fotoUrl.isNotEmpty()) {
                     imagePerfil.load(fotoUrl) {
-                        placeholder(R.drawable.user_placeholder)
-                        error(R.drawable.user_placeholder)
                         crossfade(true)
+                        // Não passamos o resource direto se ele for gigante
+                        placeholder(R.drawable.user_placeholder) 
+                        error(R.drawable.user_placeholder)
+                        size(400, 400) // Força o Coil a redimensionar
                     }
                 }
             } else {
@@ -136,8 +138,13 @@ class TelaRF08DashboardUsuario : AppCompatActivity() {
                     redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
                     val bytes = baos.toByteArray()
 
+                    // Importante: reciclar o bitmap original se não for mais usado
+                    if (bitmap != redimensionado) {
+                        bitmap.recycle()
+                    }
+
                     withContext(Dispatchers.Main) {
-                        imagePerfil.setImageBitmap(bitmap)
+                        imagePerfil.setImageBitmap(redimensionado)
 
                         usuarioRepository.uploadFotoPerfil(uid, bytes) { sucesso, url, erro ->
                             if (isFinishing || isDestroyed) return@uploadFotoPerfil
