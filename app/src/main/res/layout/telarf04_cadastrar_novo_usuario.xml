@@ -36,8 +36,8 @@
             <!-- Cabeçalho de Identidade -->
             <ImageView
                 android:id="@+id/imageLogoCadastro"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_marginBottom="16dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/desc_logo_biblio"
@@ -162,23 +162,44 @@
                     app:tint="@color/biblio_blue" />
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/tvErroSenha1"
+            <!-- Requisitos Fixos da Senha -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:text="@string/erro_campo"
-                android:textColor="@color/biblio_red"
-                android:textSize="12sp"
-                android:visibility="gone" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="• Pelo menos 8 caracteres"
+                    android:textColor="#5F6368"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="• Um número"
+                    android:textColor="#5F6368"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="• Uma letra maiúscula"
+                    android:textColor="#5F6368"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvErroSenha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="4dp"
                 android:text="@string/erro_requisitos_senha"
                 android:textColor="@color/biblio_red"
                 android:textSize="12sp"
@@ -215,22 +236,11 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/tvErroSenha2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:text="@string/erro_campo"
-                android:textColor="@color/biblio_red"
-                android:textSize="12sp"
-                android:visibility="gone" />
-
-            <TextView
                 android:id="@+id/tvErroSenhaDiferente"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="4dp"
                 android:text="@string/erro_senhas_diferentes"
                 android:textColor="@color/biblio_red"
                 android:textSize="12sp"
@@ -251,7 +261,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:backgroundTint="@color/biblio_blue"
-                app:cornerRadius="28dp"
+                app:cornerRadius="16dp"
                 app:elevation="4dp" />
 
             <!-- Rodapé com Link -->

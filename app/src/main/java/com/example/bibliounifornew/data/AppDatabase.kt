@@ -12,6 +12,8 @@ import androidx.room.RoomDatabase
  *  v2 → v3  Ajustes de tipos/colunas intermediários
  *  v3 → v4  Adição de suporte à TelaLivroActivity (offline-first):
  *           campos coverUrl, isAvailable, stockQuantity em EntidadeLivro
+ *  v4 → v5  Suporte a links de mídia digital (RF12):
+ *           campos linkPdf e linkAudiobook em EntidadeLivro
  *
  * Estratégia de migração (desenvolvimento local):
  *   fallbackToDestructiveMigration — descarta o banco local e recria as
@@ -19,7 +21,7 @@ import androidx.room.RoomDatabase
  *   persistentes ficam no Firestore; o Room atua apenas como cache local.
  *   Para produção, substituir por uma classe Migration explícita.
  */
-@Database(entities = [EntidadeLivro::class, Usuario::class], version = 4, exportSchema = false)
+@Database(entities = [EntidadeLivro::class, Usuario::class], version = 5, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun livroDao(): LivroDao

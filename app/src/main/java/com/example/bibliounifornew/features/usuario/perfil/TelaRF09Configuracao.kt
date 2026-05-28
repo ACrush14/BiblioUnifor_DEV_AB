@@ -11,9 +11,14 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import coil.load
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.AuthRepository
@@ -37,8 +42,8 @@ class TelaRF09Configuracao : AppCompatActivity() {
     // Listener em tempo real — cancelado em onDestroy para evitar memory leak
     private var snapshotListener  : ListenerRegistration? = null
 
-    // Launcher de galeria — registrado antes de onCreate
-    private val galeria = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+    // PickVisualMedia: API moderna — sem permissão READ_EXTERNAL_STORAGE em Android 13+
+    private val galeria = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri: Uri? ->
         uri?.let { processarESubirFoto(it) }
     }
 
@@ -141,7 +146,9 @@ class TelaRF09Configuracao : AppCompatActivity() {
                 .setTitle("Foto de Perfil")
                 .setMessage("Deseja mudar sua foto?")
                 .setPositiveButton("Escolher da Galeria") { _, _ ->
-                    galeria.launch("image/*")
+                    galeria.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
                 }
                 .setNegativeButton("Cancelar", null)
                 .show()
@@ -178,41 +185,110 @@ class TelaRF09Configuracao : AppCompatActivity() {
         val uid = usuarioAtual?.uid ?: return
         val imagePerfil = findViewById<ShapeableImageView>(R.id.imagePerfilUsuario)
 
-        try {
-            // 1. ATUALIZAÇÃO IMEDIATA NA UI (Feedback instantâneo)
-            val inputStream = contentResolver.openInputStream(uri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            inputStream?.close()
+        // Feedback visual imediato — escurece avatar enquanto processa
+        imagePerfil?.alpha = 0.5f
 
-            if (bitmap != null) {
-                imagePerfil?.setImageBitmap(bitmap)
-                imagePerfil?.alpha = 0.5f // Indicador visual de "em progresso"
+        // Todo I/O (leitura + decode + compressão) em Dispatchers.IO.
+        // lifecycleScope cancela automaticamente se a Activity for destruída.
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                // ── Passo 1: lê apenas dimensões, zero custo de memória ────────
+                val boundsOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                contentResolver.openInputStream(uri)?.use {
+                    BitmapFactory.decodeStream(it, null, boundsOpts)
+                }
 
-                // 2. Preparação dos bytes para upload
-                val redimensionado = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
+                // ── Passo 2: inSampleSize para não estourar RAM com foto de câmera
+                //    Decodifica em no máx 500×500 antes de escalar para 250×250.
+                val sampleSize = calcularInSampleSize(boundsOpts, reqW = 500, reqH = 500)
+                val decodeOpts = BitmapFactory.Options().apply {
+                    inJustDecodeBounds = false
+                    inSampleSize       = sampleSize
+                }
+                val original = contentResolver.openInputStream(uri)?.use { stream ->
+                    BitmapFactory.decodeStream(stream, null, decodeOpts)
+                }
+
+                if (original == null) {
+                    withContext(Dispatchers.Main) {
+                        imagePerfil?.alpha = 1.0f
+                        Toast.makeText(
+                            this@TelaRF09Configuracao,
+                            getString(R.string.erro_processar_imagem),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    return@launch
+                }
+
+                // ── Passo 3: escala para exatamente 250×250 e descarta o original
+                val redimensionado = Bitmap.createScaledBitmap(original, 250, 250, true)
+                original.recycle()   // libera memória imediatamente
+
+                // ── Passo 4: comprime JPEG 80% e descarta o bitmap escalado
                 val baos = ByteArrayOutputStream()
                 redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                redimensionado.recycle()
                 val bytes = baos.toByteArray()
 
-                // 3. Upload em segundo plano
-                usuarioRepository.uploadFotoPerfil(uid, bytes) { sucesso, url, erro ->
-                    if (isFinishing || isDestroyed) return@uploadFotoPerfil
-                    imagePerfil?.alpha = 1.0f
-                    if (sucesso && url != null) {
-                        // Recarrega via Coil para garantir que o cache seja atualizado
-                        imagePerfil?.load(url) {
-                            placeholder(R.drawable.user_placeholder)
-                            error(R.drawable.user_placeholder)
+                // ── Passo 5: upload e atualização de UI na Main Thread ─────────
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+                    usuarioRepository.uploadFotoPerfil(uid, bytes) { sucesso, url, erro ->
+                        if (isFinishing || isDestroyed) return@uploadFotoPerfil
+                        imagePerfil?.alpha = 1.0f
+                        if (sucesso && url != null) {
+                            imagePerfil?.load(url) {
+                                placeholder(R.drawable.user_placeholder)
+                                error(R.drawable.user_placeholder)
+                            }
+                            Toast.makeText(
+                                this@TelaRF09Configuracao,
+                                "Foto atualizada com sucesso!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            Toast.makeText(
+                                this@TelaRF09Configuracao,
+                                "Erro ao enviar foto: $erro",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                        Toast.makeText(this, "Foto atualizada com sucesso!", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(this, "Erro: $erro", Toast.LENGTH_SHORT).show()
                     }
                 }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    imagePerfil?.alpha = 1.0f
+                    Toast.makeText(
+                        this@TelaRF09Configuracao,
+                        getString(R.string.erro_processar_imagem),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
-        } catch (e: Exception) {
-            Toast.makeText(this, "Erro ao processar imagem.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    /**
+     * Calcula o maior inSampleSize potência-de-2 tal que a imagem decodificada
+     * ainda seja >= [reqW] × [reqH]. Mantém qualidade mínima para o scale final.
+     */
+    private fun calcularInSampleSize(
+        options: BitmapFactory.Options,
+        reqW: Int,
+        reqH: Int
+    ): Int {
+        val rawW = options.outWidth
+        val rawH = options.outHeight
+        var sampleSize = 1
+        if (rawW > reqW || rawH > reqH) {
+            val halfW = rawW / 2
+            val halfH = rawH / 2
+            while ((halfW / sampleSize) >= reqW && (halfH / sampleSize) >= reqH) {
+                sampleSize *= 2
+            }
+        }
+        return sampleSize
     }
 
     // ─── HELPERS ──────────────────────────────────────────────────────────────

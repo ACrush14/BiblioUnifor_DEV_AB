@@ -7,9 +7,15 @@ import android.text.InputType
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.AuthRepository
 import com.example.bibliounifornew.features.usuario.biblioteca.TelaRF08DashboardUsuario
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TelaRF03LoginAluno : AppCompatActivity() {
 
@@ -53,19 +59,55 @@ class TelaRF03LoginAluno : AppCompatActivity() {
 
             // Login Real via Firebase
             authRepository.loginUsuario(textoEmail, textoSenha) { sucesso, mensagemOuUid ->
-                botaoEntrar.isEnabled = true
-                botaoEntrar.text = "Entrar"
-
-                if (sucesso) {
-                    Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, TelaRF08DashboardUsuario::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    finish()
-                } else {
+                if (!sucesso) {
+                    botaoEntrar.isEnabled = true
+                    botaoEntrar.text = "Entrar"
                     erro.text = "E-mail ou senha incorretos"
                     erro.visibility = View.VISIBLE
+                    return@loginUsuario
                 }
+
+                // GAP-1 GATE: verifica "contaAtiva" antes de liberar o Dashboard.
+                // Usuários desativados pelo ADM têm contaAtiva == false no Firestore,
+                // mas o Auth record permanece. Este check impede o acesso sem delete().
+                val uid = FirebaseAuth.getInstance().currentUser?.uid ?: run {
+                    botaoEntrar.isEnabled = true
+                    botaoEntrar.text = "Entrar"
+                    erro.text = "Erro ao obter sessão. Tente novamente."
+                    erro.visibility = View.VISIBLE
+                    return@loginUsuario
+                }
+
+                FirebaseFirestore.getInstance()
+                    .collection("usuarios").document(uid).get()
+                    .addOnSuccessListener { doc ->
+                        botaoEntrar.isEnabled = true
+                        botaoEntrar.text = "Entrar"
+
+                        // Se o campo não existir (contas antigas) assume ativa = true
+                        val contaAtiva = doc.getBoolean("contaAtiva") ?: true
+                        if (!contaAtiva) {
+                            // Desloga imediatamente para não manter sessão inválida
+                            FirebaseAuth.getInstance().signOut()
+                            erro.text = "Sua conta foi desativada. Entre em contato com a biblioteca."
+                            erro.visibility = View.VISIBLE
+                            return@addOnSuccessListener
+                        }
+
+                        Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, TelaRF08DashboardUsuario::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        finish()
+                    }
+                    .addOnFailureListener {
+                        // Falha ao ler Firestore → bloqueia por segurança
+                        FirebaseAuth.getInstance().signOut()
+                        botaoEntrar.isEnabled = true
+                        botaoEntrar.text = "Entrar"
+                        erro.text = "Erro de conexão. Verifique sua internet e tente novamente."
+                        erro.visibility = View.VISIBLE
+                    }
             }
         }
 
@@ -98,16 +140,35 @@ class TelaRF03LoginAluno : AppCompatActivity() {
         }
     }
 
+    // ─── LOGO (Carregamento Seguro para evitar Canvas Limit Crash) ───────────
     private fun carregarLogoSegura(imageView: ImageView) {
-        try {
-            val options = BitmapFactory.Options().apply {
-                inSampleSize = 4
-                inJustDecodeBounds = false
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val resId = R.drawable.unifor_marca
+                val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeResource(resources, resId, options)
+
+                // Reduz para no máximo 500px para evitar estouro de memória (Canvas Limit)
+                val targetSize = 500
+                var inSampleSize = 1
+                if (options.outHeight > targetSize || options.outWidth > targetSize) {
+                    val halfHeight = options.outHeight / 2
+                    val halfWidth = options.outWidth / 2
+                    while (halfHeight / inSampleSize >= targetSize && halfWidth / inSampleSize >= targetSize) {
+                        inSampleSize *= 2
+                    }
+                }
+
+                options.inJustDecodeBounds = false
+                options.inSampleSize = inSampleSize
+                val bitmap = BitmapFactory.decodeResource(resources, resId, options)
+                
+                withContext(Dispatchers.Main) {
+                    imageView.setImageBitmap(bitmap)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.unifor_marca, options)
-            imageView.setImageBitmap(bitmap)
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 }

@@ -3,11 +3,13 @@ package com.example.bibliounifornew.features.usuario.livro
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageView
@@ -23,6 +25,10 @@ import com.example.bibliounifornew.features.usuario.solicitacao.TelaRF18StatusAl
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class TelaRF16ListaDesejosActivity : AppCompatActivity() {
 
@@ -91,71 +97,71 @@ class TelaRF16ListaDesejosActivity : AppCompatActivity() {
 
     // ─── CARREGAR DO FIRESTORE ────────────────────────────────────────────────
 
+    /**
+     * PERF-2: Elimina o padrão N+1 — lê todos os campos diretamente de cada
+     * documento da coleção lista_desejos, sem joins adicionais.
+     *
+     * Campos lidos e fallbacks:
+     *   coverUrl   → doc["coverUrl"] ?: "" (placeholder exibido pelo adapter)
+     *   disponivel → doc["disponivel"] ?: true (otimista para docs sem o campo)
+     *   titulo     → doc["titulo"] ?: doc["bookTitle"] ?: sem_titulo
+     *   autor      → doc["autor"] ?: doc["bookAuthor"] ?: sem_autor
+     *
+     * Docs antigos sem coverUrl mostram o drawable placeholder — aceitável.
+     * Docs novos (gravados via salvarListaDesejos com coverUrl incluído) mostram
+     * a capa correta sem nenhuma query extra.
+     */
     private fun carregarListaDesejos() {
-        db.collection("lista_desejos")
-            .whereEqualTo("usuarioId", usuarioId)
-            .get()
-            .addOnSuccessListener { result ->
-                if (result.isEmpty) {
-                    adapter.atualizarLista(emptyList())
-                    return@addOnSuccessListener
+        val tvVazio  = findViewById<TextView>(R.id.tvDesejosVazios)
+        val recycler = findViewById<RecyclerView>(R.id.recyclerListaDesejos)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val result = db.collection("lista_desejos")
+                    .whereEqualTo("usuarioId", usuarioId)
+                    .get()
+                    .await()
+
+                val itens = result.documents.mapNotNull { doc ->
+                    val livroId = doc.getString("livroId") ?: return@mapNotNull null
+                    val titulo  = doc.getString("titulo")
+                        ?: doc.getString("bookTitle")
+                        ?: getString(R.string.sem_titulo)
+                    val autor   = doc.getString("autor")
+                        ?: doc.getString("bookAuthor")
+                        ?: getString(R.string.sem_autor)
+                    // coverUrl desnormalizado — vazio para docs antigos (adapter usa placeholder)
+                    val coverUrl   = doc.getString("coverUrl") ?: ""
+                    // disponivel desnormalizado — otimista para docs sem o campo
+                    val disponivel = doc.getBoolean("disponivel") ?: true
+                    ItemListaDesejos(
+                        docId      = doc.id,
+                        livroId    = livroId,
+                        titulo     = titulo,
+                        autor      = autor,
+                        coverUrl   = coverUrl,
+                        disponivel = disponivel
+                    )
                 }
 
-                val total       = result.size()
-                var processados = 0
-                val listaTemp   = mutableListOf<ItemListaDesejos>()
-
-                for (doc in result) {
-                    val livroId = doc.getString("livroId") ?: ""
-                    val titulo  = doc.getString("titulo")  ?: ""
-                    val autor   = doc.getString("autor")   ?: ""
-                    val docId   = doc.id
-
-                    if (livroId.isEmpty()) {
-                        processados++
-                        if (processados == total) adapter.atualizarLista(listaTemp)
-                        continue
-                    }
-
-                    // Join com coleção livros para pegar capa e estoque
-                    db.collection("livros").document(livroId).get()
-                        .addOnSuccessListener { livroDoc ->
-                            val coverUrl  = livroDoc.getString("coverUrl") ?: ""
-                            val estoque   = livroDoc.getLong("estoque")
-                                ?: livroDoc.getLong("quantidade")
-                                ?: livroDoc.getLong("stock")
-                                ?: 0L
-                            val tituloFinal = titulo.ifEmpty {
-                                livroDoc.getString("title") ?: livroDoc.getString("titulo") ?: livroId
-                            }
-                            val autorFinal = autor.ifEmpty {
-                                livroDoc.getString("author") ?: livroDoc.getString("autor") ?: ""
-                            }
-                            listaTemp.add(
-                                ItemListaDesejos(
-                                    docId      = docId,
-                                    livroId    = livroId,
-                                    titulo     = tituloFinal,
-                                    autor      = autorFinal,
-                                    coverUrl   = coverUrl,
-                                    disponivel = estoque > 0L
-                                )
-                            )
-                            processados++
-                            if (processados == total) adapter.atualizarLista(listaTemp)
-                        }
-                        .addOnFailureListener {
-                            listaTemp.add(
-                                ItemListaDesejos(docId = docId, livroId = livroId, titulo = titulo, autor = autor)
-                            )
-                            processados++
-                            if (processados == total) adapter.atualizarLista(listaTemp)
-                        }
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+                    val vazio = itens.isEmpty()
+                    tvVazio?.visibility  = if (vazio) View.VISIBLE else View.GONE
+                    recycler?.visibility = if (vazio) View.GONE   else View.VISIBLE
+                    adapter.atualizarLista(itens)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+                    Toast.makeText(
+                        this@TelaRF16ListaDesejosActivity,
+                        "Erro ao carregar lista de desejos: ${e.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Erro ao carregar lista de desejos: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+        }
     }
 
     // ─── AÇÕES ────────────────────────────────────────────────────────────────

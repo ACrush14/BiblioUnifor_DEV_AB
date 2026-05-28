@@ -69,16 +69,19 @@ class TelaRF28DashboardADM : AppCompatActivity() {
     }
 
     private fun carregarDadosPerfil() {
-        val uid = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid
+        val uid         = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid
         val txtBemVindo = findViewById<TextView>(R.id.textBemVindoAdm)
-        val imageFoto   = findViewById<ImageView>(R.id.cardFotoAdm)?.findViewById<ImageView>(R.id.imageFotoAdmInterna)
+        // cardFotoAdm é um MaterialCardView — não pode ser cast para ImageView.
+        // imageFotoAdmInterna é o ImageView filho e é único no layout,
+        // portanto Activity.findViewById o localiza diretamente.
+        val imageFoto   = findViewById<ImageView>(R.id.imageFotoAdmInterna)
 
         if (uid != null) {
             db.collection("administradores").document(uid).get()
                 .addOnSuccessListener { doc ->
                     val nome = doc.getString("nome") ?: "Administrador"
-                    txtBemVindo.text = "Bem-vindo, $nome"
-                    
+                    txtBemVindo?.text = "Bem-vindo, $nome"
+
                     val fotoUrl = doc.getString("fotoUrl") ?: ""
                     if (fotoUrl.isNotEmpty()) {
                         imageFoto?.load(fotoUrl) {

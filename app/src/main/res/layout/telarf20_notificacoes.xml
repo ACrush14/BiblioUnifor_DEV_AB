@@ -43,7 +43,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/user_placeholder" />
+                android:src="@drawable/user_placeholder"
+                android:contentDescription="@string/content_desc_foto_perfil" />
 
         </androidx.cardview.widget.CardView>
 
@@ -102,7 +103,30 @@
         android:clipToPadding="false"
         android:paddingTop="8dp"
         android:paddingBottom="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/barraUsuario"
         app:layout_constraintTop_toBottomOf="@id/layoutTituloNotif" />
+
+    <!-- EMPTY STATE — exibido quando não há notificações -->
+    <TextView
+        android:id="@+id/tvNenhumaNotificacao"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:padding="40dp"
+        android:text="@string/msg_sem_notificacoes"
+        android:textColor="@color/biblio_blue"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/barraUsuario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutTituloNotif" />
+
+    <include
+        android:id="@+id/barraUsuario"
+        layout="@layout/barra_tarefas_usuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -95,6 +95,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerAlugueis" />
 
+    <!-- ESTADO VAZIO — visível quando não há aluguéis ativos -->
+    <TextView
+        android:id="@+id/tvListaVazia"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/msg_nenhum_aluguel_ativo"
+        android:textColor="@color/biblio_blue"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/include_nav_adm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerAlugueis" />
+
     <include
         android:id="@+id/include_nav_adm"
         layout="@layout/barra_tarefas_adm"

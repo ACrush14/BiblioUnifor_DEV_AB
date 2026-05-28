@@ -54,29 +54,41 @@
 
             <TextView
                 android:id="@+id/txtTituloAluguel"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/biblio_dark"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:maxLines="2"
                 android:ellipsize="end"
                 tools:text="Título do Livro" />
 
             <TextView
+                android:id="@+id/txtAutorAluguel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="6dp"
+                android:textColor="#757575"
+                android:textSize="13sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="Nome do Autor" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:text="Devolução:"
                 android:textStyle="bold"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/txtDataAluguel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                android:textSize="13sp"
+                android:layout_marginBottom="4dp"
+                android:textSize="12sp"
                 tools:text="15/05/2026" />
 
             <TextView
@@ -84,14 +96,15 @@
                 android:layout_height="wrap_content"
                 android:text="Status:"
                 android:textStyle="bold"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/txtStatusAluguel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:textSize="13sp"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 tools:text="Disponível para renovação" />
 
             <com.google.android.material.button.MaterialButton

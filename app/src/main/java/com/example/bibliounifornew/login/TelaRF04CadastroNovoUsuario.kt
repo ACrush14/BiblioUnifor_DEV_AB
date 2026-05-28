@@ -9,8 +9,12 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.CadastroViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
 
@@ -43,8 +47,6 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
         val erroUsuario = findViewById<TextView>(R.id.tvErroUsuario)
         val erroEmail = findViewById<TextView>(R.id.tvErroEmail)
         val erroSenha = findViewById<TextView>(R.id.tvErroSenha)
-        val erroSenha1 = findViewById<TextView>(R.id.tvErroSenha1)
-        val erroSenha2 = findViewById<TextView>(R.id.tvErroSenha2)
         val erroSenhaDiferente = findViewById<TextView>(R.id.tvErroSenhaDiferente)
 
         val btnCriar = findViewById<Button>(R.id.btnCriar)
@@ -100,8 +102,6 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
             erroUsuario.visibility = View.GONE
             erroEmail.visibility = View.GONE
             erroSenha.visibility = View.GONE
-            erroSenha1.visibility = View.GONE
-            erroSenha2.visibility = View.GONE
             erroSenhaDiferente.visibility = View.GONE
 
             val nomeTexto = nome.text.toString().trim()
@@ -112,7 +112,7 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
 
             var temErro = false
 
-            // Validação individual para mostrar os erros na tela
+            // Validação individual
             if (nomeTexto.isEmpty()) {
                 erroNome.visibility = View.VISIBLE
                 temErro = true
@@ -131,29 +131,23 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
                 temErro = true
             }
 
-            if (senhaTexto.isEmpty()) {
-                erroSenha1.visibility = View.VISIBLE
+            // Validação de Requisitos da Senha (8+ chars, Número, Maiúscula)
+            val senhaValida = senhaTexto.length >= 8 &&
+                              senhaTexto.any { it.isDigit() } &&
+                              senhaTexto.any { it.isUpperCase() }
+
+            if (!senhaValida) {
+                erroSenha.visibility = View.VISIBLE
                 temErro = true
-            } else {
-                val senhaValida = senhaTexto.length >= 8 && senhaTexto.any { it.isDigit() } && senhaTexto.any { it.isUpperCase() }
-                if (!senhaValida) {
-                    erroSenha.visibility = View.VISIBLE
-                    temErro = true
-                }
             }
 
-            if (confirmaTexto.isEmpty()) {
-                erroSenha2.visibility = View.VISIBLE
-                temErro = true
-            } else if (senhaTexto != confirmaTexto) {
+            // Validação de Confirmação
+            if (senhaTexto != confirmaTexto) {
                 erroSenhaDiferente.visibility = View.VISIBLE
                 temErro = true
             }
 
-            if (temErro) {
-                Toast.makeText(this, "Verifique os campos marcados", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            if (temErro) return@setOnClickListener
 
             //-----------------------------------
             // INTEGRAÇÃO FIREBASE (CRIAR CONTA)
@@ -214,15 +208,35 @@ class TelaRF04CadastroNovoUsuario : AppCompatActivity() {
         }
     }
 
+    // ─── LOGO (Carregamento Seguro para evitar Canvas Limit Crash) ───────────
     private fun carregarLogoSegura(imageView: ImageView) {
-        try {
-            val options = BitmapFactory.Options().apply {
-                inSampleSize = 4
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val resId = R.drawable.unifor_marca
+                val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeResource(resources, resId, options)
+
+                // Reduz para no máximo 500px para evitar estouro de memória (Canvas Limit)
+                val targetSize = 500
+                var inSampleSize = 1
+                if (options.outHeight > targetSize || options.outWidth > targetSize) {
+                    val halfHeight = options.outHeight / 2
+                    val halfWidth = options.outWidth / 2
+                    while (halfHeight / inSampleSize >= targetSize && halfWidth / inSampleSize >= targetSize) {
+                        inSampleSize *= 2
+                    }
+                }
+
+                options.inJustDecodeBounds = false
+                options.inSampleSize = inSampleSize
+                val bitmap = BitmapFactory.decodeResource(resources, resId, options)
+
+                withContext(Dispatchers.Main) {
+                    imageView.setImageBitmap(bitmap)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.unifor_marca, options)
-            imageView.setImageBitmap(bitmap)
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 }

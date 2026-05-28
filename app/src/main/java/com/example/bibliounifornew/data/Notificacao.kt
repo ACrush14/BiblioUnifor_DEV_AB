@@ -35,8 +35,11 @@ data class Notificacao(
          */
         fun fromFirestore(docId: String, data: Map<String, Any?>): Notificacao {
 
-            // Tratamento robusto para a data (aceita Long ou Timestamp do Firebase)
-            val rawDate = data["data"] ?: data["timestamp"]
+            // Tratamento robusto para a data:
+            // "data"      → campo padrão (docs antigos e RF31)
+            // "timestamp" → alias legado
+            // "criadoEm"  → campo gravado pelo ADM no GAP-3 (RF35)
+            val rawDate = data["data"] ?: data["timestamp"] ?: data["criadoEm"]
             val timestampResolvido = when (rawDate) {
                 is Long -> rawDate
                 is com.google.firebase.Timestamp -> rawDate.toDate().time

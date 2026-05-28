@@ -12,12 +12,18 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.Solicitacao
 import com.example.bibliounifornew.data.SolicitacaoRepository
-import com.example.bibliounifornew.features.usuario.livro.TelaRF12TelaDoLivro
+import com.example.bibliounifornew.features.usuario.biblioteca.TelaRF14LeituraActivity
 import com.example.bibliounifornew.data.UsuarioRepository
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
 
@@ -26,6 +32,7 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
     private val solicitacaoRepository = SolicitacaoRepository()
     private val usuarioRepository     = UsuarioRepository()
     private val auth                  = FirebaseAuth.getInstance()
+    private val db                    = FirebaseFirestore.getInstance()
 
     private var tituloLivro: String = ""
     private var autorLivro: String = ""
@@ -53,11 +60,14 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
 
         // ─── LÓGICA DE SCROLL → HABILITA CHECKBOX ────────────────────────────
         scrollView.viewTreeObserver.addOnScrollChangedListener {
-            val child = scrollView.getChildAt(scrollView.childCount - 1)
-            val diff  = child.bottom - (scrollView.height + scrollView.scrollY)
-            if (diff <= 0) {
-                checkBox.isEnabled = true
-                textAviso.visibility = android.view.View.GONE
+            val child = scrollView.getChildAt(0)
+            if (child != null) {
+                val diff = child.bottom - (scrollView.height + scrollView.scrollY)
+                // Se a diferença for pequena, considera que chegou ao fim
+                if (diff <= 50) { 
+                    checkBox.isEnabled = true
+                    textAviso.visibility = android.view.View.GONE
+                }
             }
         }
 
@@ -76,11 +86,14 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
     // ─── PERSISTÊNCIA VIA REPOSITORY ─────────────────────────────────────────
 
     /**
-     * Constrói o objeto [Solicitacao] e delega a gravação ao
-     * [SolicitacaoRepository]. Apenas após o sucesso confirmado pelo Firestore
-     * o popup de sucesso é exibido — nenhum feedback falso é mostrado.
+     * Verifica duplicata e grava a solicitação de forma segura.
      *
-     * @param tipoMidia "PDF" | "Braille" | "Audiobook" | "Reserva"
+     * Passo 1 (IO thread): consulta a coleção pertinente ("solicitacoes_midia" ou "solicitacoes_emprestimo")
+     *   para o par uid+livroId. Se já existir, exibe Toast e para.
+     *
+     * Passo 2 (Main thread): chama o método de gravação no Repository.
+     *
+     * @param tipoMidia "PDF" | "Braille" | "Audiobook" | "Reserva" | "Aluguel"
      * @param livroId   ID do documento na coleção "livros"
      */
     private fun gravarSolicitacao(tipoMidia: String, livroId: String) {
@@ -90,38 +103,87 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
             return
         }
 
-        val solicitacao = Solicitacao(
-            uidUsuario      = uid,
-            uidAluno        = uid,        // alias de compatibilidade com RF31 (ADM)
-            idLivro         = livroId,
-            tipos           = tipoMidia,
-            status          = "pendente",
-            dataSolicitacao = System.currentTimeMillis()
-        )
-
-        // Desabilita o botão durante o request para evitar duplo envio
         val btnConfirmar = findViewById<Button>(R.id.buttonConfirmarTermosTela)
         btnConfirmar?.isEnabled = false
 
-        solicitacaoRepository.gravarSolicitacao(solicitacao) { sucesso, _, erro ->
-            if (isFinishing || isDestroyed) return@gravarSolicitacao
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                // ── DEDUPLICATION CHECK ───────────────────────────────────────
+                val colecao = if (tipoMidia == "Aluguel") "solicitacoes_emprestimo" else "solicitacoes_midia"
+                val campoUid = if (tipoMidia == "Aluguel") "uidAluno" else "uidUsuario"
+                val statuses = if (tipoMidia == "Aluguel") listOf("pendente", "ativo", "atrasado") else listOf("pendente", "em_andamento")
 
-            if (sucesso) {
-                // RF15.8: Registra no histórico a solicitação
-                val acao = when(tipoMidia) {
-                    "Reserva" -> "Reserva Solicitada"
-                    else -> "$tipoMidia Solicitado"
+                val duplicata = db.collection(colecao)
+                    .whereEqualTo(campoUid, uid)
+                    .whereEqualTo("idLivro", livroId)
+                    .whereIn("status", statuses)
+                    .get()
+                    .await()
+
+                if (!duplicata.isEmpty) {
+                    withContext(Dispatchers.Main) {
+                        if (isFinishing || isDestroyed) return@withContext
+                        btnConfirmar?.isEnabled = true
+                        val msg = if (tipoMidia == "Aluguel") getString(R.string.msg_livro_ja_alugado) else getString(R.string.msg_solicitacao_duplicada)
+                        Toast.makeText(this@TelaRF19SolicitacoesTermosCondicoes, msg, Toast.LENGTH_SHORT).show()
+                    }
+                    return@launch
                 }
-                usuarioRepository.registrarNoHistorico(uid, livroId, tituloLivro, autorLivro, acao)
 
-                showPopupSucesso(livroId)
-            } else {
-                btnConfirmar?.isEnabled = true
-                Toast.makeText(
-                    this,
-                    "Erro ao registrar solicitação: $erro",
-                    Toast.LENGTH_SHORT
-                ).show()
+                // ── GRAVAR NO FIRESTORE ───────────────────────────────────────
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+
+                    if (tipoMidia == "Aluguel") {
+                        // Fluxo de Aluguel (Transação com estoque)
+                        val resultado = solicitacaoRepository.criarEmprestimoComControleDeEstoque(
+                            uidAluno = uid,
+                            livroId  = livroId,
+                            titulo   = tituloLivro,
+                            autor    = autorLivro
+                        )
+
+                        resultado.onSuccess {
+                            usuarioRepository.registrarNoHistorico(uid, livroId, tituloLivro, autorLivro, "Aluguel Solicitado")
+                            showPopupSucesso(livroId, true)
+                        }.onFailure { e ->
+                            btnConfirmar?.isEnabled = true
+                            Toast.makeText(this@TelaRF19SolicitacoesTermosCondicoes, "Erro: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+
+                    } else {
+                        // Fluxo de Mídia (Simples)
+                        val solicitacao = Solicitacao(
+                            uidUsuario      = uid,
+                            uidAluno        = uid,
+                            idLivro         = livroId,
+                            tipos           = tipoMidia,
+                            status          = "pendente",
+                            dataSolicitacao = System.currentTimeMillis()
+                        )
+
+                        solicitacaoRepository.gravarSolicitacao(solicitacao) { sucesso, _, erro ->
+                            if (sucesso) {
+                                val acao = when (tipoMidia) {
+                                    "Reserva" -> "Reserva Solicitada"
+                                    else      -> "$tipoMidia Solicitado"
+                                }
+                                usuarioRepository.registrarNoHistorico(uid, livroId, tituloLivro, autorLivro, acao)
+                                showPopupSucesso(livroId, false)
+                            } else {
+                                btnConfirmar?.isEnabled = true
+                                Toast.makeText(this@TelaRF19SolicitacoesTermosCondicoes, "Erro: $erro", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+                    btnConfirmar?.isEnabled = true
+                    Toast.makeText(this@TelaRF19SolicitacoesTermosCondicoes, getString(R.string.erro_conexao_banco), Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -129,33 +191,30 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
     // ─── POPUP DE SUCESSO ─────────────────────────────────────────────────────
 
     /**
-     * Exibe o popup de confirmação. Ao clicar em OK, retorna à tela do livro
-     * (RF12) usando FLAG_ACTIVITY_CLEAR_TOP + LIVRO_ID, preservando a pilha de
-     * navegação sem criar uma instância nova sem ID.
-     *
-     * ┌── Back stack após solicitação ──────────────────────────────┐
-     * │  RF12 (TelaRF12TelaDoLivro / TelaLivroActivity)             │
-     * │    ← RF19 (TelaRF19Solicitacoes)         [destruída]        │
-     * │       ← RF19Terms (esta Activity)        [destruída]        │
-     * └─────────────────────────────────────────────────────────────┘
-     * FLAG_ACTIVITY_CLEAR_TOP remove RF19 e RF19Terms e reutiliza RF12.
-     * O LIVRO_ID é passado para garantir que o onCreate/onNewIntent tenha dados.
+     * Exibe o popup de confirmação.
+     * @param isAluguel define qual layout de sucesso exibir (o de aluguel ou o de mídia)
      */
-    private fun showPopupSucesso(livroId: String) {
+    private fun showPopupSucesso(livroId: String, isAluguel: Boolean) {
         val dialog = Dialog(this)
-        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.telarf19_solicitacoes_voltar_biblioteca)
-        dialog.window?.setBackgroundDrawable(
-            android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT)
-        )
-        dialog.setCancelable(false)
-
-        dialog.findViewById<Button>(R.id.buttonPopupOkSolicitacao)
-            ?.setOnClickListener {
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        
+        if (isAluguel) {
+            dialog.setContentView(R.layout.popup_livro_adicionado)
+            dialog.findViewById<Button>(R.id.buttonVerMeusLivros)?.setOnClickListener {
+                dialog.dismiss()
+                startActivity(Intent(this, com.example.bibliounifornew.features.usuario.solicitacao.TelaRF18StatusAluguel::class.java))
+                finish()
+            }
+        } else {
+            dialog.setContentView(R.layout.telarf19_solicitacoes_voltar_biblioteca)
+            dialog.findViewById<Button>(R.id.buttonPopupOkSolicitacao)?.setOnClickListener {
                 dialog.dismiss()
                 voltarParaLivro(livroId)
             }
+        }
 
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCancelable(false)
         dialog.show()
     }
 
@@ -165,7 +224,7 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
      * possa re-popular a UI mesmo que seja recriada pelo CLEAR_TOP.
      */
     private fun voltarParaLivro(livroId: String) {
-        val intent = Intent(this, TelaRF12TelaDoLivro::class.java)
+        val intent = Intent(this, TelaRF14LeituraActivity::class.java)
             .putExtra("LIVRO_ID", livroId)
             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         startActivity(intent)

@@ -139,13 +139,68 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- BOTÃO FECHAR -->
+            <!-- ─── SEÇÃO DE UPLOAD DE LINKS ─── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:text="Inserir links de mídia"
+                android:textColor="@color/biblio_dark"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textAllCaps="false" />
+
+            <!-- LINK PDF -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayoutLinkPdf"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Link do PDF"
+                android:layout_marginBottom="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editLinkPdf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textUri"
+                    android:imeOptions="actionNext"
+                    android:contentDescription="Campo para colar link do PDF" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- LINK AUDIOBOOK -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayoutLinkAudiobook"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Link do Audiobook"
+                android:layout_marginBottom="16dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editLinkAudiobook"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textUri"
+                    android:imeOptions="actionDone"
+                    android:contentDescription="Campo para colar link do Audiobook" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- BOTÃO SALVAR LINKS -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnFecharSolicitacoes"
+                android:id="@+id/btnSalvarLinks"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="24dp"
-                android:text="Fechar"
+                android:text="Salvar Links"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"
@@ -153,8 +208,25 @@
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 app:backgroundTint="@color/biblio_blue"
-                app:cornerRadius="28dp"
-                app:elevation="4dp"/>
+                app:cornerRadius="16dp"
+                app:elevation="2dp"/>
+
+            <!-- BOTÃO FECHAR -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFecharSolicitacoes"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="Fechar"
+                android:textAllCaps="false"
+                android:textColor="@color/biblio_blue"
+                android:textSize="14sp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                app:strokeColor="@color/biblio_blue"
+                app:cornerRadius="16dp"
+                app:elevation="0dp"/>
 
         </LinearLayout>
 

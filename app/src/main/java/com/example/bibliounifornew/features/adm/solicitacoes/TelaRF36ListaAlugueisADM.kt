@@ -2,8 +2,12 @@ package com.example.bibliounifornew.features.adm.solicitacoes
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bibliounifornew.R
@@ -11,7 +15,10 @@ import com.example.bibliounifornew.features.adm.gerenciamento.NavigationHelperAD
 import com.example.bibliounifornew.features.adm.gerenciamento.TelaRF30UsuariosParaADM
 import com.example.bibliounifornew.features.adm.gerenciamento.TelaRF37InfoLivroADM
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class TelaRF36ListaAlugueisADM : AppCompatActivity() {
 
@@ -47,103 +54,128 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
     }
 
     /**
-     * Carrega solicitacoes_emprestimo (status != "devolvido"), depois enriquece
-     * com nome do usuário via join em usuarios/{uidAluno} e título via livros/{idLivro}.
+     * GAP-4 / PERF-2 FIX — carrega aluguéis ativos sem N+1 queries.
+     *
+     * Estratégia de desnormalização:
+     *   Lê nomeAluno/tituloLivro/autorLivro diretamente do documento de empréstimo.
+     *   Novos docs criados por SolicitacaoRepository.criarEmprestimoComControleDeEstoque()
+     *   já incluem tituloLivro e autorLivro. Docs antigos recebem fallback seguro.
+     *   Zero joins adicionais por item → custo fixo de 1 query total.
+     *
+     * FAILED_PRECONDITION:
+     *   Se o Firestore exigir um índice composto (ex: ao adicionar .orderBy()),
+     *   o erro é capturado e logado com o link direto de criação de índice.
+     *
+     * Estado vazio:
+     *   tvListaVazia é exibido quando nenhuma coleção retorna resultados.
      */
     private fun carregarAlugueis() {
-        // Tenta buscar na coleção solicitacoes_emprestimo
-        // Se falhar, tentamos carregar sem o orderBy para evitar erro de índice ausente
-        db.collection("solicitacoes_emprestimo")
-            .whereIn("status", listOf("pendente", "ativo", "atrasado"))
-            .get()
-            .addOnSuccessListener { result ->
+        val tvVazia = findViewById<TextView>(R.id.tvListaVazia)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val result = db.collection("solicitacoes_emprestimo")
+                    .whereIn("status", listOf("pendente", "ativo", "atrasado"))
+                    .get()
+                    .await()
+
                 if (result.isEmpty) {
-                    // Se estiver vazio, talvez a coleção seja 'alugueis'? 
-                    // Vamos tentar uma segunda busca preventiva
-                    buscarNaColecaoAlternativa()
-                    return@addOnSuccessListener
+                    // Fallback: tenta coleção legada "alugueis"
+                    val resultAlt = db.collection("alugueis").get().await()
+                    val lista = mapearDocumentos(resultAlt.documents)
+                    withContext(Dispatchers.Main) {
+                        if (isFinishing || isDestroyed) return@withContext
+                        if (lista.isEmpty()) {
+                            tvVazia?.visibility = View.VISIBLE
+                            adapter.atualizarLista(emptyList())
+                        } else {
+                            tvVazia?.visibility = View.GONE
+                            adapter.atualizarLista(lista)
+                        }
+                    }
+                    return@launch
                 }
-                processarDocumentos(result.documents)
-            }
-            .addOnFailureListener { e ->
-                android.util.Log.e("FirestoreError", "Erro ao carregar alugueis: ${e.message}")
-                Toast.makeText(this, getString(R.string.erro_carregar_alugueis), Toast.LENGTH_SHORT).show()
-                buscarNaColecaoAlternativa()
-            }
-    }
 
-    private fun buscarNaColecaoAlternativa() {
-        db.collection("alugueis")
-            .get()
-            .addOnSuccessListener { result ->
-                if (!result.isEmpty) {
-                    processarDocumentos(result.documents)
+                val lista = mapearDocumentos(result.documents)
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+                    tvVazia?.visibility = if (lista.isEmpty()) View.VISIBLE else View.GONE
+                    adapter.atualizarLista(lista)
+                }
+
+            } catch (e: Exception) {
+                // FAILED_PRECONDITION → índice composto ausente no Firestore
+                val msg = e.message ?: ""
+                if (msg.contains("FAILED_PRECONDITION", ignoreCase = true)) {
+                    Log.e(
+                        "RF36_INDEX",
+                        "Índice composto ausente. Crie-o em:\n" +
+                        "https://console.firebase.google.com → Firestore → Indexes\n" +
+                        "Campos: status (ASC) + dataSolicitacao (DESC)\n" +
+                        "Erro original: $msg"
+                    )
                 } else {
-                    Toast.makeText(this, getString(R.string.msg_nenhum_aluguel_colecao), Toast.LENGTH_SHORT).show()
+                    Log.e("RF36", "Erro ao carregar aluguéis: $msg")
+                }
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+                    tvVazia?.visibility = View.VISIBLE
+                    Toast.makeText(
+                        this@TelaRF36ListaAlugueisADM,
+                        getString(R.string.erro_carregar_alugueis),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
+        }
     }
 
-    private fun processarDocumentos(documentos: List<com.google.firebase.firestore.DocumentSnapshot>) {
-        val totalDocs = documentos.size
-        var processados = 0
-        val listaTemp = mutableListOf<ItemAluguel>()
+    /**
+     * PERF-2: Mapeia documentos Firestore para [ItemAluguel] SEM N+1 queries.
+     *
+     * Prioridade de leitura para cada campo:
+     *   nomeUsuario → "nomeAluno" | "usuarioNome" | fallback "Usuário"
+     *   tituloLivro → "tituloLivro" | "titulo" | fallback "Livro Desconhecido"
+     *   autorLivro  → "autorLivro"  | "autor"  | fallback "Autor Desconhecido"
+     *
+     * Documentos antigos (sem campos desnormalizados) exibem o fallback.
+     * Documentos novos (criados via GAP-5) já carregam os campos corretamente.
+     */
+    private fun mapearDocumentos(
+        documentos: List<com.google.firebase.firestore.DocumentSnapshot>
+    ): List<ItemAluguel> {
+        return documentos
+            .mapNotNull { doc ->
+                val docId   = doc.id
+                val uidAluno = doc.getString("uidAluno")   ?: doc.getString("usuarioId") ?: ""
+                val idLivro  = doc.getString("idLivro")    ?: doc.getString("livroId")   ?: ""
+                val status   = doc.getString("status")     ?: "ativo"
+                val dataMs   = doc.getLong("dataSolicitacao") ?: doc.getLong("dataMs")   ?: 0L
 
-        for (doc in documentos) {
-            val docId = doc.id
-            val uidAluno = doc.getString("uidAluno") ?: doc.getString("usuarioId") ?: ""
-            val idLivro = doc.getString("idLivro") ?: doc.getString("livroId") ?: ""
-            val status = doc.getString("status") ?: "ativo"
-            val dataMs = doc.getLong("dataSolicitacao") ?: doc.getLong("dataMs") ?: 0L
+                // ── Campos desnormalizados — zero joins adicionais ────────────
+                val nomeUsuario = doc.getString("nomeAluno")
+                    ?: doc.getString("usuarioNome")
+                    ?: getString(R.string.placeholder_usuario)
 
-            val itemBase = ItemAluguel(
-                docId = docId,
-                uidAluno = uidAluno,
-                idLivro = idLivro,
-                dataMs = dataMs,
-                status = status
-            )
-            listaTemp.add(itemBase)
+                val tituloLivro = doc.getString("tituloLivro")
+                    ?: doc.getString("titulo")
+                    ?: getString(R.string.sem_titulo)
 
-            var nomeUsuario = "Usuário"
-            var tituloLivro = "Título..."
-            var autorLivro = "Autor..."
-            var joinsRestantes = 2
+                val autorLivro  = doc.getString("autorLivro")
+                    ?: doc.getString("autor")
+                    ?: getString(R.string.sem_autor)
 
-            fun verificarConclusao() {
-                joinsRestantes--
-                if (joinsRestantes == 0) {
-                    val idx = listaTemp.indexOfFirst { it.docId == docId }
-                    if (idx >= 0) {
-                        listaTemp[idx] = listaTemp[idx].copy(
-                            nomeUsuario = nomeUsuario,
-                            tituloLivro = tituloLivro,
-                            autorLivro = autorLivro
-                        )
-                    }
-                    processados++
-                    if (processados == totalDocs) {
-                        adapter.atualizarLista(listaTemp.sortedByDescending { it.dataMs })
-                    }
-                }
+                ItemAluguel(
+                    docId       = docId,
+                    uidAluno    = uidAluno,
+                    idLivro     = idLivro,
+                    dataMs      = dataMs,
+                    status      = status,
+                    nomeUsuario = nomeUsuario,
+                    tituloLivro = tituloLivro,
+                    autorLivro  = autorLivro
+                )
             }
-
-            if (uidAluno.isNotEmpty()) {
-                db.collection("usuarios").document(uidAluno).get()
-                    .addOnSuccessListener { u ->
-                        nomeUsuario = u.getString("nome") ?: u.getString("email") ?: "Usuário"
-                        verificarConclusao()
-                    }.addOnFailureListener { verificarConclusao() }
-            } else { verificarConclusao() }
-
-            if (idLivro.isNotEmpty()) {
-                db.collection("livros").document(idLivro).get()
-                    .addOnSuccessListener { l ->
-                        tituloLivro = l.getString("title") ?: l.getString("titulo") ?: "Título"
-                        autorLivro = l.getString("author") ?: l.getString("autor") ?: "Autor"
-                        verificarConclusao()
-                    }.addOnFailureListener { verificarConclusao() }
-            } else { verificarConclusao() }
-        }
+            .sortedByDescending { it.dataMs }
     }
 }

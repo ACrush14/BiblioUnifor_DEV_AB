@@ -492,13 +492,25 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
             val credential = EmailAuthProvider.getCredential(adminEmail, senha)
             currentUser.reauthenticate(credential)
                 .addOnSuccessListener {
-                    // RF28.11 FIX: deleta o documento Firestore do usuário.
-                    // O registro no Firebase Authentication persiste (limitação do SDK
-                    // cliente — deleção de Auth de terceiros exige Cloud Function com
-                    // Admin SDK). Com o documento ausente, o RBAC de TelaRF03LoginAluno
-                    // bloqueia o acesso: "!doc.exists() → acesso negado".
+                    // GAP-1 FIX: Desativação lógica (soft-delete) em vez de delete().
+                    //
+                    // Motivo: delete() apaga todos os dados do usuário permanentemente
+                    // (histórico, perfil, aluguéis passados). Com update() o documento
+                    // permanece, preservando rastreabilidade. O campo "contaAtiva = false"
+                    // é verificado em TelaRF03LoginAluno após autenticação bem-sucedida
+                    // para bloquear o acesso sem apagar o Auth record.
+                    //
+                    // O registro no Firebase Authentication permanece — deleção de Auth
+                    // de terceiros exige Cloud Function com Admin SDK (fora do escopo cliente).
+                    val admUid = currentUser.uid
                     db.collection("usuarios").document(usuarioId)
-                        .delete()
+                        .update(
+                            mapOf(
+                                "contaAtiva"      to false,
+                                "desativadoPorAdm" to admUid,
+                                "desativadoEm"    to System.currentTimeMillis()
+                            )
+                        )
                         .addOnSuccessListener {
                             Toast.makeText(
                                 this,

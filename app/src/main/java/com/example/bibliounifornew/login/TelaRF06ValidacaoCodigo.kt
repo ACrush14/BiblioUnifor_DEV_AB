@@ -11,8 +11,12 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.bibliounifornew.R
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class TelaRF06ValidacaoCodigo :
@@ -201,15 +205,32 @@ class TelaRF06ValidacaoCodigo :
     }
 
     private fun carregarLogoSegura(imageView: ImageView) {
-        try {
-            val options = BitmapFactory.Options().apply {
-                inSampleSize = 4
-                inJustDecodeBounds = false
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val resId = R.drawable.unifor_marca
+                val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeResource(resources, resId, options)
+
+                val targetSize = 500
+                var inSampleSize = 1
+                if (options.outHeight > targetSize || options.outWidth > targetSize) {
+                    val halfHeight = options.outHeight / 2
+                    val halfWidth = options.outWidth / 2
+                    while (halfHeight / inSampleSize >= targetSize && halfWidth / inSampleSize >= targetSize) {
+                        inSampleSize *= 2
+                    }
+                }
+
+                options.inJustDecodeBounds = false
+                options.inSampleSize = inSampleSize
+                val bitmap = BitmapFactory.decodeResource(resources, resId, options)
+
+                withContext(Dispatchers.Main) {
+                    imageView.setImageBitmap(bitmap)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.unifor_marca, options)
-            imageView.setImageBitmap(bitmap)
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 

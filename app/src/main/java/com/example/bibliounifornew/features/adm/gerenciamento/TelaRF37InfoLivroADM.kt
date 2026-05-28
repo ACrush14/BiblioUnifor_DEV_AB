@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.Window
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -38,20 +39,29 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
         if (livroId.isNotEmpty()) {
             carregarDadosLivro()
         } else {
+            // GAP-2 FIX: ID ausente → não deixa tela vazia com "O Alienista" do XML.
+            // Toast + finish() retornam imediatamente para RF32 sem estado quebrado.
             Toast.makeText(this, getString(R.string.erro_id_livro_nao_fornecido), Toast.LENGTH_SHORT).show()
+            finish()
+            return
         }
 
         // Configurar cliques dos lápis para editar campos
-        configurarEdicao(R.id.btnEditTitulo,    R.id.editTituloLivro,   "title")
-        configurarEdicao(R.id.btnEditAutor,     R.id.editAutorLivro,    "author")
-        configurarEdicao(R.id.btnEditDescricao, R.id.editDescricaoLivro,"description")
-        configurarEdicao(R.id.btnEditLingua,    R.id.editLingua,        "language")
-        configurarEdicao(R.id.btnEditEditora,   R.id.editEditora,       "publisher")
-        configurarEdicao(R.id.btnEditDimensao,  R.id.editDimensao,      "dimensions")
-        configurarEdicao(R.id.btnEditISBN10,    R.id.editISBN10,        "isbn10")
-        configurarEdicao(R.id.btnEditISBN13,    R.id.editISBN13,        "isbn13")
-        configurarEdicao(R.id.btnEditData,      R.id.editData,          "publishedDate")
-        configurarEdicao(R.id.btnEditPaginas,   R.id.editPaginas,       "pageCount")
+        configurarEdicao(R.id.btnEditTitulo,        R.id.editTituloLivro,   "title")
+        configurarEdicao(R.id.btnEditAutor,         R.id.editAutorLivro,    "author")
+        configurarEdicao(R.id.btnEditDescricao,     R.id.editDescricaoLivro,"description")
+        configurarEdicao(R.id.btnEditLingua,        R.id.editLingua,        "language")
+        configurarEdicao(R.id.btnEditEditora,       R.id.editEditora,       "publisher")
+        configurarEdicao(R.id.btnEditDimensao,      R.id.editDimensao,      "dimensions")
+        configurarEdicao(R.id.btnEditISBN10,        R.id.editISBN10,        "isbn10")
+        configurarEdicao(R.id.btnEditISBN13,        R.id.editISBN13,        "isbn13")
+        configurarEdicao(R.id.btnEditData,          R.id.editData,          "publishedDate")
+        configurarEdicao(R.id.btnEditPaginas,       R.id.editPaginas,       "pageCount")
+        // Campos de URL e Categoria — adicionados para fechar o schema completo
+        configurarEdicao(R.id.btnEditCategoria,     R.id.editCategoria,     "category")
+        configurarEdicao(R.id.btnEditLinkCapa,      R.id.editLinkCapa,      "coverUrl")
+        configurarEdicao(R.id.btnEditLinkPdf,       R.id.editLinkPdf,       "linkPdf")
+        configurarEdicao(R.id.btnEditLinkAudiobook, R.id.editLinkAudiobook, "linkAudiobook")
 
         // Controle de Exemplares
         findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnDiminuirExemplares)
@@ -92,6 +102,46 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
                     doc.getString("publishedDate") ?: "")
                 findViewById<EditText>(R.id.editPaginas)?.setText(
                     doc.getLong("pageCount")?.toString() ?: "0")
+
+                // Campos de URL e Categoria
+                val categoria = doc.getString("category")
+                    ?: doc.getString("categoria") ?: ""
+                findViewById<EditText>(R.id.editCategoria)?.setText(categoria)
+
+                val linkCapa = doc.getString("coverUrl")
+                    ?: doc.getString("imagemUrl") ?: ""
+                findViewById<EditText>(R.id.editLinkCapa)?.setText(linkCapa)
+
+                val linkPdf = doc.getString("linkPdf") ?: ""
+                findViewById<EditText>(R.id.editLinkPdf)?.setText(linkPdf)
+
+                val linkAudio = doc.getString("linkAudiobook") ?: ""
+                findViewById<EditText>(R.id.editLinkAudiobook)?.setText(linkAudio)
+
+                // Braille — define o estado ANTES de registrar o listener para evitar
+                // disparos espúrios ao reciclar / recarregar.
+                val hasBraille = doc.getBoolean("braille")
+                    ?: doc.getBoolean("hasBraille") ?: false
+                val checkBraille = findViewById<CheckBox>(R.id.checkBrailleInfo)
+                checkBraille?.isChecked = hasBraille
+                checkBraille?.setOnCheckedChangeListener { _, isChecked ->
+                    db.collection("livros").document(livroId)
+                        .update(mapOf("braille" to isChecked, "hasBraille" to isChecked))
+                        .addOnSuccessListener {
+                            Toast.makeText(
+                                this@TelaRF37InfoLivroADM,
+                                getString(R.string.msg_campo_atualizado),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(
+                                this@TelaRF37InfoLivroADM,
+                                getString(R.string.erro_conexao_banco),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                }
 
                 // BUG-F2 FIX: lê campo "quantidade" (padrão do projeto) com fallback
                 val total = doc.getLong("quantidade")

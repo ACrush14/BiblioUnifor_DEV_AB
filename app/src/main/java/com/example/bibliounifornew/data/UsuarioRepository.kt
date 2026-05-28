@@ -230,18 +230,21 @@ class UsuarioRepository {
         uid     : String,
         onChange: (List<Notificacao>) -> Unit
     ): ListenerRegistration {
+        // Sem .orderBy() no Firestore: docs do GAP-3 usam "criadoEm" e docs
+        // antigos usam "data" — qualquer orderBy server-side excluiria metade.
+        // A ordenação é feita client-side por timestamp já resolvido pelo
+        // Notificacao.fromFirestore() que aceita os três nomes de campo.
         return db.collection("usuarios")
             .document(uid)
             .collection("notificacoes")
-            .orderBy("data", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null || snapshot == null) {
                     onChange(emptyList())
                     return@addSnapshotListener
                 }
-                val lista = snapshot.documents.mapNotNull { doc ->
-                    doc.data?.let { Notificacao.fromFirestore(doc.id, it) }
-                }
+                val lista = snapshot.documents
+                    .mapNotNull { doc -> doc.data?.let { Notificacao.fromFirestore(doc.id, it) } }
+                    .sortedByDescending { it.timestamp }
                 onChange(lista)
             }
     }

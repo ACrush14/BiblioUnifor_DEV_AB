@@ -43,7 +43,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/o_alienista_capa"
+                android:src="@drawable/osda"
+                tools:src="@drawable/o_alienista_capa"
                 android:contentDescription="@string/desc_capa_livro_crud" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -58,7 +59,8 @@
             android:background="@android:color/transparent"
             android:enabled="false"
             android:fontFamily="sans-serif-black"
-            android:text="O Alienista"
+            android:text=""
+            tools:text="O Alienista"
             android:textColor="@color/white"
             android:textSize="26sp"
             app:layout_constraintEnd_toStartOf="@id/btnEditTitulo"
@@ -416,6 +418,171 @@
                         android:alpha="0.6"
                         android:src="@drawable/ic_edit_pencil"
                         app:tint="@color/black" />
+                </LinearLayout>
+
+                <!-- ── Categoria ── -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Categoria: "
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                    <EditText
+                        android:id="@+id/editCategoria"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:enabled="false"
+                        android:text=""
+                        android:textColor="#777777"
+                        android:textSize="16sp"
+                        android:contentDescription="Categoria do livro" />
+                    <ImageView
+                        android:id="@+id/btnEditCategoria"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:alpha="0.6"
+                        android:src="@drawable/ic_edit_pencil"
+                        android:contentDescription="Editar categoria"
+                        app:tint="@color/black" />
+                </LinearLayout>
+
+                <!-- ── Link da Capa (URL) ── -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Link Capa: "
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                    <EditText
+                        android:id="@+id/editLinkCapa"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:enabled="false"
+                        android:inputType="textUri"
+                        android:text=""
+                        android:textColor="#777777"
+                        android:textSize="14sp"
+                        android:contentDescription="Link da imagem de capa" />
+                    <ImageView
+                        android:id="@+id/btnEditLinkCapa"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:alpha="0.6"
+                        android:src="@drawable/ic_edit_pencil"
+                        android:contentDescription="Editar link da capa"
+                        app:tint="@color/black" />
+                </LinearLayout>
+
+                <!-- ── Link PDF (URL) ── -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Link PDF: "
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                    <EditText
+                        android:id="@+id/editLinkPdf"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:enabled="false"
+                        android:inputType="textUri"
+                        android:text=""
+                        android:textColor="#777777"
+                        android:textSize="14sp"
+                        android:contentDescription="Link do PDF" />
+                    <ImageView
+                        android:id="@+id/btnEditLinkPdf"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:alpha="0.6"
+                        android:src="@drawable/ic_edit_pencil"
+                        android:contentDescription="Editar link do PDF"
+                        app:tint="@color/black" />
+                </LinearLayout>
+
+                <!-- ── Link Audiobook (URL) ── -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Link Audiobook: "
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                    <EditText
+                        android:id="@+id/editLinkAudiobook"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:enabled="false"
+                        android:inputType="textUri"
+                        android:text=""
+                        android:textColor="#777777"
+                        android:textSize="14sp"
+                        android:contentDescription="Link do Audiobook" />
+                    <ImageView
+                        android:id="@+id/btnEditLinkAudiobook"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:alpha="0.6"
+                        android:src="@drawable/ic_edit_pencil"
+                        android:contentDescription="Editar link do Audiobook"
+                        app:tint="@color/black" />
+                </LinearLayout>
+
+                <!-- ── Braille (Checkbox) ── -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Disponível em Braille"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                    <CheckBox
+                        android:id="@+id/checkBrailleInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="Disponível em Braille" />
                 </LinearLayout>
 
                 <LinearLayout

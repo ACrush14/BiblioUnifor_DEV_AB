@@ -49,6 +49,7 @@
     <string name="btn_reservar">Reservar</string>
     <string name="btn_comprar_amazon">Comprar (Amazon)</string>
     <string name="btn_setor_localizado">Setor Localizado</string>
+    <string name="msg_setor_nao_informado">Setor não informado</string>
 
     <string name="titulo_livro">O Alienista</string>
     <string name="autor_livro">por Machado de Assis</string>
@@ -72,6 +73,12 @@
     <string name="btn_alugar">Alugar</string>
     <string name="btn_solicitar">Solicitar</string>
     <string name="btn_ler_agora">LER AGORA</string>
+    <string name="btn_ler_pdf">Ler em PDF</string>
+    <string name="btn_ouvir_audiobook">Ouvir Audiobook</string>
+    <string name="desc_btn_pdf">Abrir PDF do livro no visualizador padrão</string>
+    <string name="desc_btn_audiobook">Ouvir audiobook no player padrão</string>
+    <string name="erro_abrir_link">Não foi possível abrir o link. Verifique se há um aplicativo compatível instalado.</string>
+    <string name="erro_sem_conexao_sem_cache">Sem conexão com a internet e sem dados em cache para este livro.</string>
     <string name="label_status_leitura">Status da Leitura</string>
     <string name="label_btn_nao_lido">Não lido</string>
     <string name="label_btn_lendo">Lendo</string>
@@ -111,7 +118,6 @@
     <string name="desc_editar_campo">Editar campo</string>
     <string name="label_usuario">Usuário</string>
     <string name="hint_usuario">Digite seu usuário</string>
-    <string name="usuario_exemplo">@joaobobo</string>
     <string name="label_bio">Bio</string>
     <string name="hint_bio">Escreva algo sobre você</string>
     <string name="bio_exemplo">Leitor ávido e fã de Machado de Assis.</string>
@@ -308,6 +314,8 @@
     <string name="erro_nao_pode_excluir_proprio">Você não pode remover sua própria conta por aqui.</string>
     <string name="msg_verificando">Verificando…</string>
     <string name="msg_buscando_dados">Buscando dados no banco…</string>
+    <string name="carregando_dados">Carregando dados…</string>
+    <string name="erro_carregar_usuario">Erro ao carregar usuário</string>
 
     <!-- RF28.5 / RF28.13 — Popup Solicitações -->
     <string name="popup_solicitacoes_label_usuario">USUÁRIO: %s</string>
@@ -355,7 +363,6 @@
     <string name="btn_adicionar_midia">Adicionar Nova Mídia</string>
     <string name="label_acervo_midias">Acervo de Mídias</string>
     <string name="msg_nenhuma_midia">Nenhuma mídia encontrada.</string>
-    <string name="msg_filtro_aplicado">Filtro aplicado.</string>
     <string name="msg_filtros_limpos">Filtros limpos.</string>
     <string name="desc_icone_pesquisa_midia">Ícone de pesquisa</string>
     <string name="desc_filtro_lista">Filtrar lista</string>
@@ -370,7 +377,6 @@
     <string name="hint_arquivo_audiobook">Caminho ou link do Audiobook…</string>
     <string name="msg_livro_cadastrado_sucesso">Livro cadastrado com sucesso!</string>
     <string name="erro_preencha_infos_livro">Preencha todas as informações do livro.</string>
-    <string name="erro_data_invalida">Data inválida (dd/mm/aaaa).</string>
     <string name="erro_quantidade_invalida">Quantidade deve ser um número maior que zero.</string>
     <string name="erro_preencha_infos_extras">Preencha todas as informações extras</string>
     <string name="erro_adicione_arquivos">Adicione todos os arquivos necessários</string>
@@ -391,17 +397,15 @@
          RF32 — Financeiro / Controle de Atrasos (Anderson V04)
          ═══════════════════════════════════════════════════════════════ -->
     <string name="titulo_livros_vencidos">Livros Vencidos</string>
-    <string name="label_bem_vindo">Bem-vindo</string>
     <string name="btn_ver_pendentes">Ver pendentes / retirada</string>
     <string name="msg_nenhum_vencido">Nenhum livro vencido.</string>
-    <string name="btn_renovar_aluguel">Renovar</string>
     <string name="btn_renovar_aluguel_selecionado">Renovar Aluguel Selecionado</string>
     <string name="msg_lista_vencidos_vazia">Não há livros vencidos no momento.</string>
     <string name="msg_aviso_atraso_enviado">Aviso de atraso enviado.</string>
     <string name="msg_multa_notificada">Notificação de multa enviada.</string>
     <string name="msg_aluguel_confirmado">Aluguel confirmado com sucesso.</string>
     <string name="msg_registro_removido">Registro removido.</string>
-    <string name="msg_aluguel_renovado">Aluguel renovado por 14 dias.</string>
+    <string name="msg_aluguel_renovado">Aluguel renovado por 15 dias.</string>
     <string name="erro_renovar_aluguel">Falha ao renovar aluguel. Tente novamente.</string>
     <string name="erro_carregar_vencidos">Erro ao carregar livros vencidos.</string>
     <string name="popup_pendentes_titulo">Detalhes da Pendência</string>
@@ -410,7 +414,9 @@
     <string name="popup_pendentes_btn_confirmar">Confirmar aluguel</string>
     <string name="popup_pendentes_btn_remover">Remover registro\n(Ação irreversível)</string>
     <string name="fmt_info_pendencia">Livro: %1$s\nUsuário: %2$s\nPrazo: %3$s\nAtraso: %4$d dia(s)\nMulta est.: R$ %5$s</string>
+    <string name="notif_atraso_titulo">⚠️ Devolução em atraso</string>
     <string name="notif_atraso_mensagem">Seu aluguel está atrasado. Regularize para evitar bloqueios.</string>
+    <string name="notif_multa_titulo">💰 Multa por atraso</string>
     <string name="notif_multa_mensagem">Existe valor pendente referente ao seu aluguel.</string>
     <string name="fmt_item_atraso">Atraso: %d dia(s)</string>
     <string name="fmt_item_multa">Multa est.: R$ %s</string>
@@ -427,21 +433,34 @@
     <string name="fmt_cadastro_confirmado">Cadastro de %s confirmado!</string>
     <string name="erro_confirmar_cadastro">Não foi possível confirmar o cadastro. Tente novamente.</string>
     <string name="popup_confirmacao_texto">Esse usuário ainda não confirmou o e-mail. Confirmar mesmo assim?</string>
+    <!-- GAP-3: variante com nome do usuário interpolado no popup -->
+    <string name="popup_confirmacao_texto_usuario">Deseja aprovar o cadastro de %s?</string>
     <string name="popup_confirmacao_btn_confirmar">Confirmar Cadastro</string>
     <string name="popup_confirmacao_btn_voltar">Voltar</string>
     <string name="desc_foto_usuario_confirmacao">Foto do usuário</string>
+    <!-- GAP-3: notificação enviada ao aluno após aprovação -->
+    <string name="notif_cadastro_aprovado_titulo">Cadastro aprovado! 🎉</string>
+    <string name="notif_cadastro_aprovado_msg">Seu cadastro na BiblioUnifor foi aprovado pelo administrador. Você já pode acessar todos os recursos da biblioteca.</string>
+    <!-- Reutilizado pelo botão de salvamento em andamento -->
+    <string name="msg_salvando">Salvando…</string>
 
     <!-- ═══════════════════════════════════════════════════════════════
          RF34 — Lista de Aluguéis ADM (Anderson V04)
          ═══════════════════════════════════════════════════════════════ -->
     <string name="titulo_lista_alugueis">Aluguéis</string>
-    <string name="label_alugado">Alugado:</string>
+    <string name="label_alugado_adm">Alugado:</string>
     <string name="btn_ver_livro">Ver livro</string>
     <string name="btn_ver_usuario">Ver usuário</string>
     <string name="desc_avatar_usuario_aluguel">Avatar do usuário</string>
     <string name="desc_capa_livro_aluguel">Capa do livro</string>
     <string name="msg_nenhum_aluguel_colecao">Nenhum aluguel encontrado.</string>
+    <string name="msg_nenhum_aluguel_ativo">Nenhum aluguel ativo no momento.</string>
+    <string name="msg_historico_vazio">Seu histórico de leituras está vazio.</string>
+    <string name="msg_desejos_vazios">Sua lista de desejos está vazia.</string>
+    <string name="msg_sem_notificacoes">Você não tem notificações no momento.</string>
+    <string name="content_desc_foto_perfil">Foto de perfil do usuário</string>
     <string name="erro_carregar_alugueis">Erro ao carregar aluguéis.</string>
+    <string name="placeholder_usuario">Usuário</string>
 
     <!-- ═══════════════════════════════════════════════════════════════
          RF36 — Configurações ADM (Anderson V04)
@@ -452,10 +471,9 @@
     <string name="label_usuario_adm">Usuário</string>
     <string name="hint_usuario_adm">Nome de usuário</string>
     <string name="label_senha_atual_adm">Senha atual</string>
-    <string name="btn_salvar_alteracoes">Salvar Alterações</string>
     <string name="btn_redefinir_senha_adm">Redefinir Senha</string>
     <string name="btn_apagar_conta">Apagar conta</string>
-    <string name="desc_editar_campo">Editar campo</string>
+
     <string name="alert_foto_titulo">Foto de Perfil</string>
     <string name="alert_foto_mensagem">Deseja mudar sua foto de perfil?</string>
     <string name="alert_foto_galeria">Escolher da Galeria</string>
@@ -473,15 +491,162 @@
          ═══════════════════════════════════════════════════════════════ -->
     <string name="desc_fechar_tela">Fechar</string>
     <string name="label_nova_senha">Nova senha</string>
-    <string name="hint_nova_senha">Digite a nova senha</string>
+    <string name="hint_nova_senha_adm">Digite a nova senha</string>
     <string name="label_confirmacao_senha">Confirmação de senha</string>
     <string name="hint_confirmacao_senha">Confirme a nova senha</string>
     <string name="erro_senha_igual_anterior">A senha não pode ser igual à anterior</string>
     <string name="erro_min_8_caracteres">• Mínimo de 8 caracteres</string>
     <string name="erro_pelo_menos_numero">• Pelo menos 1 número</string>
     <string name="erro_pelo_menos_maiuscula">• Pelo menos 1 letra maiúscula</string>
-    <string name="erro_senhas_diferentes">As senhas estão diferentes</string>
+    <string name="erro_senhas_diferentes_adm">As senhas estão diferentes</string>
     <string name="msg_sessao_expirada_senha">Sessão expirada. Faça logout e login novamente antes de alterar a senha.</string>
     <string name="erro_alterar_senha">Erro ao alterar senha. Tente novamente.</string>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         RF18 — Status Aluguel / Calendário de Renovação (Anderson V04)
+         ═══════════════════════════════════════════════════════════════ -->
+    <string name="msg_renovacao_realizada">Renovação realizada! Novo prazo: %1$s</string>
+    <string name="msg_limite_renovacoes">Você já atingiu o limite de renovações desse livro.</string>
+    <string name="msg_pdf_indisponivel">Este livro não possui PDF disponível.</string>
+    <string name="msg_audiobook_indisponivel">Este livro não possui Audiobook disponível.</string>
+    <string name="msg_livro_ja_alugado">Este livro já está alugado.</string>
+    <string name="msg_solicitacao_duplicada">Você já possui uma solicitação ativa para este livro.</string>
+    <string name="msg_edicao_manual_habilitada">Edição manual habilitada</string>
+    <string name="erro_data_invalida_renovacao">Informe uma data válida</string>
+    <string name="erro_id_emprestimo_invalido">Dados do empréstimo inválidos. Tente novamente.</string>
+    <string name="msg_nenhum_aluguel_fisico">Você não possui livros alugados no momento.</string>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         POLISH — Strings extraídas de hardcodes (Anderson V04)
+         Varredura final pré-APK: RF03 · RF04 · RF08 · RF12 · RF13
+                                  RF14 · RF15 · RF16 · RF17 · RF19
+                                  RF20 · RF21 · RF26 · RF29 · RF31
+                                  RF33 · RF38
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Auth / Login (RF03, RF04, RF26) -->
+    <string name="msg_login_sucesso">Login realizado com sucesso!</string>
+    <string name="erro_conta_desativada">Sua conta foi desativada. Entre em contato com a biblioteca.</string>
+    <string name="erro_conexao_internet">Erro de conexão. Verifique sua internet e tente novamente.</string>
+    <string name="erro_campos_invalidos">Verifique os campos marcados</string>
+    <string name="erro_preencha_todos_campos">Preencha todos os campos</string>
+    <string name="erro_perfil_nao_salvo">Conta criada, mas não foi possível salvar o perfil. Tente fazer login.</string>
+    <string name="erro_verificar_credencial">Não foi possível verificar a credencial. Verifique sua conexão.</string>
+    <string name="msg_verificando_credencial">Verificando credencial…</string>
+    <string name="msg_criando_conta">Criando…</string>
+
+    <!-- RF08 — Dashboard Usuário -->
+    <string name="fmt_erro_generico">Erro: %1$s</string>
+
+    <!-- RF12 — Tela do Livro -->
+    <string name="erro_livro_nao_encontrado">Livro não encontrado.</string>
+    <string name="fmt_status_salvo">Status: %1$s salvo!</string>
+    <string name="erro_salvar_status">Erro ao salvar status.</string>
+    <string name="msg_aguarde_carregamento">Aguarde o carregamento do livro…</string>
+    <string name="erro_login_necessario">Faça login para usar esta função.</string>
+    <string name="msg_adicionado_lista_desejos">Adicionado à Lista de Desejos!</string>
+    <string name="fmt_erro_ao_salvar">Erro ao salvar: %1$s</string>
+    <string name="erro_livro_sem_id">Livro sem ID. Tente novamente.</string>
+    <string name="erro_adicionar_livraria">Não foi possível adicionar à Livraria. Tente novamente.</string>
+
+    <!-- RF13 · RF14 — Ver Mais / Leitura -->
+    <string name="erro_carregar_dados_livro">Erro ao carregar dados do livro.</string>
+    <string name="erro_abrir_arquivo">Não foi possível abrir o arquivo.</string>
+    <string name="erro_login_para_alugar">Faça login para alugar.</string>
+    <string name="fmt_erro_solicitacao">Erro ao registrar solicitação: %1$s</string>
+
+    <!-- RF15 — Minha Livraria -->
+    <string name="msg_livraria_vazia">Sua livraria está vazia.</string>
+    <string name="fmt_erro_carregar_livraria">Erro ao carregar livraria: %1$s</string>
+    <string name="erro_remover_item_livraria">Falha ao remover item do servidor.</string>
+
+    <!-- RF16 — Lista de Desejos -->
+    <string name="erro_adicionar_livraria_desejos">Erro ao adicionar à Livraria.</string>
+    <string name="fmt_erro_solicitar">Erro ao solicitar: %1$s</string>
+
+    <!-- RF17 — Amigos (TelaRF17Amigos + TelaRF17_3_BuscaAmigos + TelaRF17_5_PerfilAmigo) -->
+    <string name="msg_sem_amigos">Você ainda não tem amigos adicionados.</string>
+    <string name="fmt_erro_carregar_amigos">Erro ao carregar amigos: %1$s</string>
+    <string name="fmt_amigo_adicionado">%1$s foi adicionado(a) como amigo(a)!</string>
+    <string name="fmt_erro_aceitar_solicitacao">Erro ao aceitar solicitação: %1$s</string>
+    <string name="erro_buscar_perfil">Erro ao buscar seu perfil.</string>
+    <string name="erro_buscar_perfil_solicitante">Erro ao buscar perfil do solicitante.</string>
+    <string name="msg_solicitacao_recusada">Solicitação recusada.</string>
+    <string name="fmt_erro_recusar_solicitacao">Erro ao recusar solicitação: %1$s</string>
+    <string name="erro_identificar_usuario">Não foi possível identificar o usuário.</string>
+    <string name="erro_carregar_perfil">Erro ao carregar perfil.</string>
+    <string name="erro_login_para_amigos">Faça login para adicionar amigos.</string>
+    <string name="fmt_erro_enviar_solicitacao_amizade">Erro ao enviar solicitação: %1$s</string>
+    <string name="erro_obter_perfil">Erro ao obter seu perfil. Tente novamente.</string>
+    <string name="fmt_erro_buscar_usuarios">Erro ao buscar usuários: %1$s</string>
+
+    <!-- RF19 — Termos e Condições -->
+    <string name="erro_login_para_solicitar">Faça login para solicitar.</string>
+
+    <!-- RF20 — Notificações -->
+    <string name="msg_notificacao_descartada">Notificação descartada</string>
+
+    <!-- RF21 — Histórico -->
+    <string name="msg_item_removido_historico">Item removido do seu histórico.</string>
+    <string name="erro_remover_historico">Falha ao remover. Tente novamente.</string>
+    <string name="erro_carregar_historico">Erro ao carregar histórico.</string>
+
+    <!-- RF11 — Pesquisa -->
+    <string name="msg_buscando_novidades">Buscando novidades…</string>
+    <string name="hint_pesquisa_livro">Digite o nome de um livro ou autor</string>
+    <string name="erro_login_para_livraria">Faça login para usar esta função.</string>
+    <string name="erro_adicionar_livraria_pesquisa">Não foi possível adicionar à Livraria.</string>
+
+    <string name="desc_abrir_filtros">Abrir filtros</string>
+    <string name="label_todos">Todos</string>
+    <string name="label_disponivel">Disponível</string>
+    <string name="label_indisponivel">Indisponível</string>
+    <string name="label_disponibilidade">Disponibilidade</string>
+    <string name="btn_aplicar_filtro">Aplicar Filtro</string>
+    <string name="btn_limpar_filtros">Limpar Filtros</string>
+    <string name="categoria_todos">Todas as Categorias</string>
+    <string name="categoria_tecnologia">Tecnologia</string>
+    <string name="categoria_literatura">Literatura</string>
+    <string name="categoria_ciencia">Ciência</string>
+    <string name="categoria_historia">História</string>
+    <string name="categoria_biografia">Biografia</string>
+    <string name="categoria_fantasia">Fantasia</string>
+    <string name="categoria_suspense">Suspense</string>
+    <string name="categoria_romance">Romance</string>
+    <string name="categoria_outros">Outros</string>
+
+    <!-- RF29 — Gerenciamento de Usuários (ADM) -->
+    <string name="fmt_erro_carregar_usuarios">Erro ao carregar usuários: %1$s</string>
+
+    <!-- RF31 — Solicitações ADM -->
+    <string name="msg_sem_solicitacoes_midia">Nenhuma solicitação de mídia pendente.</string>
+    <string name="fmt_erro_carregar_solicitacoes">Erro ao carregar solicitações: %1$s</string>
+    <string name="erro_link_vazio">Preencha ao menos um link antes de salvar.</string>
+    <string name="erro_id_livro_invalido">ID do livro não encontrado. Não foi possível salvar.</string>
+    <string name="msg_links_salvos">Links salvos com sucesso!</string>
+    <string name="fmt_erro_salvar_links">Erro ao salvar links: %1$s</string>
+    <string name="erro_link_invalido">Informe um link válido.</string>
+    <string name="erro_id_livro_solicitacao">ID do livro não encontrado. Verifique a solicitação.</string>
+    <string name="msg_braille_aprovado">Braille aprovado e usuário notificado.</string>
+    <string name="erro_notificar_usuario">Erro ao notificar usuário.</string>
+    <string name="msg_solicitacao_excluida">Solicitação excluída.</string>
+    <string name="fmt_erro_excluir_solicitacao">Erro ao excluir: %1$s</string>
+    <string name="msg_filtro_aplicado">Filtro aplicado.</string>
+    <string name="dialog_msg_link_midia">Insira o Link da Mídia a ser disponibilizada para o usuário.</string>
+    <string name="dialog_btn_salvar">Salvar</string>
+    <string name="dialog_btn_cancelar">Cancelar</string>
+
+    <!-- RF33 — Calendário de Publicação (ADM) -->
+    <string name="erro_preencha_campos_principais">Preencha os campos principais para continuar</string>
+    <string name="erro_data_invalida">Data inválida</string>
+    <string name="erro_data_invalida_formato">Informe uma data válida (dd/mm/aaaa)</string>
+
+    <!-- RF10 — Redefinir Senha Usuário -->
+    <string name="msg_relogar_para_senha">Por segurança, faça login novamente para alterar a senha.</string>
+    <string name="fmt_erro_atualizar_senha">Erro ao atualizar senha: %1$s</string>
+
+    <!-- RF09 — Configurações Usuário (dialog já coberto por alert_foto_*, mas faltava) -->
+    <string name="msg_perfil_salvo">Perfil salvo com sucesso!</string>
+    <string name="fmt_erro_salvar_perfil_usuario">Erro ao salvar: %1$s</string>
 
 </resources>

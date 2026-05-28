@@ -19,6 +19,7 @@ data class ItemAluguel(
     val docId           : String = "",
     val livroId         : String = "",
     val titulo          : String = "",
+    val autorLivro      : String = "",
     val coverUrl        : String = "",
     val status          : String = "pendente",
     val dataDevolucao   : Long   = 0L,
@@ -33,10 +34,11 @@ class StatusAluguelAdapter(
     private val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
 
     inner class AluguelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imgCapa    : ImageView     = itemView.findViewById(R.id.imgCapaAluguel)
-        val txtTitulo  : TextView      = itemView.findViewById(R.id.txtTituloAluguel)
-        val txtData    : TextView      = itemView.findViewById(R.id.txtDataAluguel)
-        val txtStatus  : TextView      = itemView.findViewById(R.id.txtStatusAluguel)
+        val imgCapa    : ImageView      = itemView.findViewById(R.id.imgCapaAluguel)
+        val txtTitulo  : TextView       = itemView.findViewById(R.id.txtTituloAluguel)
+        val txtAutor   : TextView       = itemView.findViewById(R.id.txtAutorAluguel)
+        val txtData    : TextView       = itemView.findViewById(R.id.txtDataAluguel)
+        val txtStatus  : TextView       = itemView.findViewById(R.id.txtStatusAluguel)
         val btnRenovar : MaterialButton = itemView.findViewById(R.id.btnRenovarAluguel)
     }
 
@@ -50,7 +52,8 @@ class StatusAluguelAdapter(
         val item  = lista[position]
         val agora = System.currentTimeMillis()
 
-        holder.txtTitulo.text = item.titulo.ifEmpty { item.livroId }
+        holder.txtTitulo.text = item.titulo.ifEmpty { "Título indisponível" }
+        holder.txtAutor.text  = item.autorLivro
 
         if (item.coverUrl.isNotEmpty()) {
             holder.imgCapa.load(item.coverUrl) {

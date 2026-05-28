@@ -5,10 +5,13 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.View
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bibliounifornew.R
@@ -16,7 +19,10 @@ import com.example.bibliounifornew.data.AuthRepository
 import com.example.bibliounifornew.data.UsuarioRepository
 import com.example.bibliounifornew.features.usuario.perfil.NavigationHelper
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class TelaRF21Historico : AppCompatActivity() {
 
@@ -76,30 +82,59 @@ class TelaRF21Historico : AppCompatActivity() {
     }
 
     /**
-     * Carrega os dados reais do histórico ordenados por data de adição
+     * PERF-2: Carrega o histórico sem N+1 — todos os campos (incluindo coverUrl)
+     * são lidos diretamente de cada documento da coleção historico_usuarios.
+     * UsuarioRepository.registrarNoHistorico() já grava coverUrl no documento,
+     * portanto nenhum join adicional é necessário.
      */
     private fun carregarHistorico() {
-        db.collection("historico_usuarios")
-            .whereEqualTo("usuarioId", usuarioId)
-            // .orderBy("adicionadoEm", Query.Direction.DESCENDING) // Comentado para evitar erro de índice ausente no Firestore
-            .get()
-            .addOnSuccessListener { result ->
-                listaHistorico.clear()
-                val itens = result.documents.mapNotNull { document ->
-                    val livroId  = document.getString("livroId") ?: ""
-                    val titulo   = document.getString("titulo") ?: "Título Indisponível"
-                    val autor    = document.getString("autor") ?: "Autor Desconhecido"
-                    val acao     = document.getString("acao") ?: "Adicionado"
-                    val dataLido = document.getLong("adicionadoEm") ?: 0L
-                    ItemHistorico(livroId, titulo, autor, acao, dataLido)
+        val tvVazio      = findViewById<TextView>(R.id.tvHistoricoVazio)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewHistorico)
+
+        Log.d("DEBUG_HISTORICO", "UID logado: $usuarioId")
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val result = db.collection("historico_usuarios")
+                    .whereEqualTo("usuarioId", usuarioId)
+                    .get()
+                    .await()
+
+                Log.d("DEBUG_HISTORICO", "Documentos retornados: ${result.size()}")
+
+                val itens = result.documents.mapNotNull { doc ->
+                    val lId = doc.getString("livroId")
+                    val uId = doc.getString("usuarioId")
+                    val tit = doc.getString("titulo")
+                    Log.d("DEBUG_HISTORICO", "Doc: livroId=$lId, usuarioId=$uId, titulo=$tit")
+
+                    val livroId  = doc.getString("livroId")  ?: return@mapNotNull null
+                    val titulo   = doc.getString("titulo")   ?: getString(R.string.sem_titulo)
+                    val autor    = doc.getString("autor")    ?: getString(R.string.sem_autor)
+                    val acao     = doc.getString("acao")     ?: "Adicionado"
+                    val dataLido = doc.getLong("adicionadoEm") ?: 0L
+                    val coverUrl = doc.getString("coverUrl") ?: ""
+                    ItemHistorico(livroId, titulo, autor, acao, dataLido, coverUrl)
                 }.sortedByDescending { it.dataLido }
-                
-                listaHistorico.addAll(itens)
-                adapter.notifyDataSetChanged()
+
+                Log.d("DEBUG_HISTORICO", "Itens finais após mapNotNull: ${itens.size}")
+
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+                    listaHistorico.clear()
+                    listaHistorico.addAll(itens)
+                    adapter.notifyDataSetChanged()
+                    val vazio = itens.isEmpty()
+                    tvVazio?.visibility      = if (vazio) View.VISIBLE else View.GONE
+                    recyclerView?.visibility = if (vazio) View.GONE   else View.VISIBLE
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+                    Toast.makeText(this@TelaRF21Historico, "Erro ao carregar histórico.", Toast.LENGTH_SHORT).show()
+                }
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Erro ao carregar histórico.", Toast.LENGTH_SHORT).show()
-            }
+        }
     }
 
     private fun showPopupRemover(nomeLivro: String, onConfirm: () -> Unit) {

@@ -2,6 +2,7 @@ package com.example.bibliounifornew.features.usuario.notificacao
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -14,6 +15,7 @@ import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.AuthRepository
 import com.example.bibliounifornew.data.UsuarioRepository
 import com.example.bibliounifornew.features.usuario.livro.TelaLivroActivity
+import com.example.bibliounifornew.features.usuario.perfil.NavigationHelper
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 
@@ -54,6 +56,9 @@ class TelaRF20Notificacoes : AppCompatActivity() {
 
         // ─── RECYCLERVIEW ─────────────────────────────────────────────────────
         configurarRecyclerView(usuarioAtual.uid)
+
+        // ─── BARRA DE NAVEGAÇÃO ───────────────────────────────────────────────
+        NavigationHelper.configurarBarraNavegacao(this)
     }
 
     // ─── CABEÇALHO ────────────────────────────────────────────────────────────
@@ -89,6 +94,8 @@ class TelaRF20Notificacoes : AppCompatActivity() {
      */
     private fun configurarRecyclerView(uid: String) {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewNotificacoes)
+        val tvVazia      = findViewById<TextView>(R.id.tvNenhumaNotificacao)
+
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         adapter = NotificacaoAdapter(
@@ -105,10 +112,13 @@ class TelaRF20Notificacoes : AppCompatActivity() {
         )
         recyclerView.adapter = adapter
 
-        // ── SnapshotListener — atualiza a lista em tempo real ─────────────────
+        // ── SnapshotListener — atualiza a lista e o empty state em tempo real ─
         listenerNotificacoes = usuarioRepository.escutarNotificacoes(uid) { lista ->
             if (!isFinishing && !isDestroyed) {
                 adapter.atualizarLista(lista)
+                val vazio = lista.isEmpty()
+                tvVazia?.visibility      = if (vazio) View.VISIBLE else View.GONE
+                recyclerView?.visibility = if (vazio) View.GONE   else View.VISIBLE
             }
         }
 

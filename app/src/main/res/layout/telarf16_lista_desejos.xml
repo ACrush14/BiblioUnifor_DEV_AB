@@ -107,6 +107,17 @@
                 android:clipToPadding="false"
                 android:paddingBottom="100dp" />
 
+            <TextView
+                android:id="@+id/tvDesejosVazios"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="40dp"
+                android:text="@string/msg_desejos_vazios"
+                android:textColor="@color/biblio_blue"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

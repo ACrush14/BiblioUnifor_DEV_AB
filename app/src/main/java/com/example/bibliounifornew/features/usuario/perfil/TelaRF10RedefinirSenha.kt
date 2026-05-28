@@ -18,11 +18,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.login.TelaRF03LoginAluno
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 
 class TelaRF10RedefinirSenha : AppCompatActivity() {
 
+    private var senhaAtualVisivel = false
     private var novaSenhaVisivel = false
     private var confirmaSenhaVisivel = false
     private val auth = FirebaseAuth.getInstance()
@@ -31,12 +34,19 @@ class TelaRF10RedefinirSenha : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf10_redefinirsenha)
 
+        // HEADER - SET EMAIL
+        val textEmailUsuario = findViewById<TextView>(R.id.textEmailUsuario)
+        val user = auth.currentUser
+        textEmailUsuario.text = user?.email ?: "Email não disponível"
+
         // CAMPOS
+        val editSenhaAtual = findViewById<EditText>(R.id.editSenhaAtual)
         val editNovaSenha = findViewById<EditText>(R.id.editNovaSenha)
         val editConfirmarSenha = findViewById<EditText>(R.id.editConfirmarSenha)
         val btnSalvar = findViewById<MaterialButton>(R.id.buttonSalvarAlteracoes)
 
         // ERROS
+        val textErroSenhaAtual = findViewById<TextView>(R.id.textErroSenhaAtual)
         val textErroNovaSenha = findViewById<TextView>(R.id.textErroNovaSenha)
         val textErroConfirmacao = findViewById<TextView>(R.id.textErroConfirmacao)
         val textErroSenhaAntiga = findViewById<TextView>(R.id.textErroSenhaAntiga)
@@ -44,8 +54,22 @@ class TelaRF10RedefinirSenha : AppCompatActivity() {
         val textErroSenhas = findViewById<TextView>(R.id.textErroSenhas)
 
         // ÍCONES
+        val iconOlhoSenhaAtual = findViewById<ImageView>(R.id.iconOlhoSenhaAtual)
         val iconOlhoNova = findViewById<ImageView>(R.id.iconOlhoNovaSenha)
         val iconOlhoConfirmar = findViewById<ImageView>(R.id.iconOlhoConfirmar)
+
+        // --- LÓGICA DO OLHO (SENHA ATUAL) ---
+        iconOlhoSenhaAtual.setOnClickListener {
+            senhaAtualVisivel = !senhaAtualVisivel
+            if (senhaAtualVisivel) {
+                editSenhaAtual.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                iconOlhoSenhaAtual.setImageResource(R.drawable.ic_eye_open)
+            } else {
+                editSenhaAtual.transformationMethod = PasswordTransformationMethod.getInstance()
+                iconOlhoSenhaAtual.setImageResource(R.drawable.ic_eye_closed)
+            }
+            editSenhaAtual.setSelection(editSenhaAtual.text.length)
+        }
 
         // --- LÓGICA DO OLHO (NOVA SENHA) ---
         iconOlhoNova.setOnClickListener {
@@ -77,6 +101,7 @@ class TelaRF10RedefinirSenha : AppCompatActivity() {
         val watcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                textErroSenhaAtual.visibility = View.GONE
                 textErroNovaSenha.visibility = View.GONE
                 textErroConfirmacao.visibility = View.GONE
                 textErroSenhaAntiga.visibility = View.GONE
@@ -85,15 +110,18 @@ class TelaRF10RedefinirSenha : AppCompatActivity() {
             }
             override fun afterTextChanged(s: Editable?) {}
         }
+        editSenhaAtual.addTextChangedListener(watcher)
         editNovaSenha.addTextChangedListener(watcher)
         editConfirmarSenha.addTextChangedListener(watcher)
 
         // --- BOTÃO SALVAR ---
         btnSalvar.setOnClickListener {
+            val senhaAtual = editSenhaAtual.text.toString()
             val novaSenha = editNovaSenha.text.toString()
             val confirma = editConfirmarSenha.text.toString()
 
             // Esconder todos antes de validar
+            textErroSenhaAtual.visibility = View.GONE
             textErroNovaSenha.visibility = View.GONE
             textErroConfirmacao.visibility = View.GONE
             textErroSenhaAntiga.visibility = View.GONE
@@ -101,13 +129,21 @@ class TelaRF10RedefinirSenha : AppCompatActivity() {
             textErroSenhas.visibility = View.GONE
 
             when {
+                senhaAtual.isEmpty() -> {
+                    textErroSenhaAtual.text = getString(R.string.erro_campo)
+                    textErroSenhaAtual.visibility = View.VISIBLE
+                }
                 novaSenha.isEmpty() -> {
-                    textErroNovaSenha.text = "Campo obrigatório"
+                    textErroNovaSenha.text = getString(R.string.erro_campo)
                     textErroNovaSenha.visibility = View.VISIBLE
                 }
                 confirma.isEmpty() -> {
-                    textErroConfirmacao.text = "Campo obrigatório"
+                    textErroConfirmacao.text = getString(R.string.erro_campo)
                     textErroConfirmacao.visibility = View.VISIBLE
+                }
+                novaSenha == senhaAtual -> {
+                    textErroSenhaAntiga.text = getString(R.string.erro_senha_igual)
+                    textErroSenhaAntiga.visibility = View.VISIBLE
                 }
                 novaSenha.length < 8 -> {
                     textRegrasSenha.text = "A senha deve conter pelo menos 8 caracteres"
@@ -122,35 +158,48 @@ class TelaRF10RedefinirSenha : AppCompatActivity() {
                     textRegrasSenha.visibility = View.VISIBLE
                 }
                 novaSenha != confirma -> {
+                    textErroSenhas.text = getString(R.string.erro_senha_diferente)
                     textErroSenhas.visibility = View.VISIBLE
                 }
                 else -> {
-                    btnSalvar.isEnabled = false
-                    btnSalvar.text = "Salvando..."
-                    
-                    val user = auth.currentUser
-                    user?.updatePassword(novaSenha)
-                        ?.addOnCompleteListener { task ->
-                            btnSalvar.isEnabled = true
-                            btnSalvar.text = "Salvar Alterações"
-                            
-                            if (task.isSuccessful) {
-                                // SUCESSO - MOSTRAR POPUP
-                                exibirPopupSucesso()
-                            } else {
-                                val exception = task.exception
-                                if (exception is FirebaseAuthRecentLoginRequiredException) {
-                                    Toast.makeText(this, "Por segurança, faça login novamente para alterar a senha.", Toast.LENGTH_LONG).show()
-                                    auth.signOut()
-                                    val intent = Intent(this@TelaRF10RedefinirSenha, TelaRF03LoginAluno::class.java)
-                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                    startActivity(intent)
-                                    finish()
+                    val firebaseUser = auth.currentUser
+                    if (firebaseUser != null && firebaseUser.email != null) {
+                        btnSalvar.isEnabled = false
+                        btnSalvar.text = "Salvando..."
+
+                        // 1. REAUTENTICAR
+                        val credential = EmailAuthProvider.getCredential(firebaseUser.email!!, senhaAtual)
+                        firebaseUser.reauthenticate(credential)
+                            .addOnCompleteListener { reauthTask ->
+                                if (reauthTask.isSuccessful) {
+                                    // 2. ATUALIZAR SENHA
+                                    firebaseUser.updatePassword(novaSenha)
+                                        .addOnCompleteListener { updateTask ->
+                                            btnSalvar.isEnabled = true
+                                            btnSalvar.text = "Salvar Alterações"
+
+                                            if (updateTask.isSuccessful) {
+                                                exibirPopupSucesso()
+                                            } else {
+                                                Toast.makeText(this, "Erro ao atualizar senha: ${updateTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
                                 } else {
-                                    Toast.makeText(this, "Erro ao atualizar senha: ${exception?.message}", Toast.LENGTH_SHORT).show()
+                                    btnSalvar.isEnabled = true
+                                    btnSalvar.text = "Salvar Alterações"
+                                    
+                                    val exception = reauthTask.exception
+                                    if (exception is FirebaseAuthInvalidCredentialsException) {
+                                        textErroSenhaAtual.text = "Senha atual incorreta"
+                                        textErroSenhaAtual.visibility = View.VISIBLE
+                                    } else {
+                                        Toast.makeText(this, "Erro na autenticação: ${exception?.message}", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
                             }
-                        }
+                    } else {
+                        Toast.makeText(this, "Usuário não autenticado", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

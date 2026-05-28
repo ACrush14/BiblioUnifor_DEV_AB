@@ -2,9 +2,11 @@ package com.example.bibliounifornew.features.usuario.solicitacao
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageView
@@ -14,6 +16,10 @@ import com.example.bibliounifornew.data.AuthRepository
 import com.example.bibliounifornew.data.UsuarioRepository
 import com.example.bibliounifornew.features.usuario.perfil.NavigationHelper
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class TelaRF18StatusAluguel : AppCompatActivity() {
 
@@ -21,27 +27,32 @@ class TelaRF18StatusAluguel : AppCompatActivity() {
     private val usuarioRepository = UsuarioRepository()
     private val db                = FirebaseFirestore.getInstance()
 
-    private lateinit var adapter  : StatusAluguelAdapter
-    private val listaAlugueis     = mutableListOf<ItemAluguel>()
+    private lateinit var adapter       : StatusAluguelAdapter
+    private lateinit var recyclerView  : RecyclerView
+    private var tvNenhumAluguel        : TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf18_status_aluguel)
 
         // ─── RECYCLER VIEW ────────────────────────────────────────────────────
-        val recycler = findViewById<RecyclerView>(R.id.recyclerStatusAluguel)
+        recyclerView = findViewById(R.id.recyclerStatusAluguel)
+        tvNenhumAluguel = findViewById(R.id.tvNenhumAluguel)
+
         adapter = StatusAluguelAdapter(
-            lista     = listaAlugueis,
+            lista     = mutableListOf(),
             onRenovar = { item ->
+                // PERF-FIX: passa DOC_ID para que o calendário grave no documento correto
                 startActivity(
                     Intent(this, TelaRF18CalendarioRenovacao::class.java)
+                        .putExtra("DOC_ID",   item.docId)
                         .putExtra("LIVRO_ID", item.livroId)
                         .putExtra("TITULO",   item.titulo)
                 )
             }
         )
-        recycler.layoutManager = LinearLayoutManager(this)
-        recycler.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
 
         // ─── CABEÇALHO ────────────────────────────────────────────────────────
         val textNome    = findViewById<TextView>(R.id.textNomeUsuarioAlugados)
@@ -49,27 +60,30 @@ class TelaRF18StatusAluguel : AppCompatActivity() {
         val usuarioAtual = authRepository.getUsuarioAtual()
 
         if (usuarioAtual != null) {
-            textNome?.text = "Carregando..."
+            textNome?.text = getString(R.string.placeholder_usuario)
 
-            usuarioRepository.buscarPerfilUsuario(usuarioAtual.uid) { sucesso, dados, erro ->
-                if (sucesso && dados != null) {
-                    textNome?.text = dados["nome"] as? String ?: "Usuário"
-                    val fotoUrl = dados["fotoUrl"] as? String ?: ""
-                    if (fotoUrl.isNotEmpty()) {
-                        imagePerfil?.load(fotoUrl) {
-                            placeholder(R.drawable.user_placeholder)
-                            error(R.drawable.user_placeholder)
+            usuarioRepository.buscarPerfilUsuario(usuarioAtual.uid) { sucesso, dados, _ ->
+                if (!isFinishing && !isDestroyed) {
+                    if (sucesso && dados != null) {
+                        textNome?.text = dados["nome"] as? String
+                            ?: getString(R.string.placeholder_usuario)
+                        val fotoUrl = dados["fotoUrl"] as? String ?: ""
+                        if (fotoUrl.isNotEmpty()) {
+                            imagePerfil?.load(fotoUrl) {
+                                placeholder(R.drawable.user_placeholder)
+                                error(R.drawable.user_placeholder)
+                            }
                         }
+                    } else {
+                        textNome?.text = getString(R.string.placeholder_usuario)
                     }
-                } else {
-                    textNome?.text = "Usuário"
-                    Toast.makeText(this, "Erro ao carregar perfil: $erro", Toast.LENGTH_SHORT).show()
                 }
             }
 
             carregarAlugueis(usuarioAtual.uid)
         } else {
-            startActivity(Intent(this, com.example.bibliounifornew.login.TelaRF03LoginAluno::class.java))
+            startActivity(Intent(this,
+                com.example.bibliounifornew.login.TelaRF03LoginAluno::class.java))
             finish()
             return
         }
@@ -77,66 +91,69 @@ class TelaRF18StatusAluguel : AppCompatActivity() {
         NavigationHelper.configurarBarraNavegacao(this)
     }
 
-    // ─── CARREGAR ALUGUÉIS DO FIRESTORE ──────────────────────────────────────
+    // ─── CARREGAR ALUGUÉIS — PERF-2 FIX: sem N+1 ─────────────────────────────
+    //
+    // Antes: fazia 1 query em "livros" por documento de empréstimo (N+1).
+    // Agora: lê os campos desnormalizados "tituloLivro" e "coverUrl" diretamente
+    //        do documento de "solicitacoes_emprestimo" — zero queries extras.
+    //
+    // Campos gravados por SolicitacaoRepository.criarEmprestimoComControleDeEstoque():
+    //   "tituloLivro" — título para exibição rápida
+    //   "autorLivro"  — autor  para exibição rápida
+    //   (coverUrl é escrito na nova versão do repository)
 
     private fun carregarAlugueis(uid: String) {
-        db.collection("solicitacoes_emprestimo")
-            .whereEqualTo("uidAluno", uid)
-            .get()
-            .addOnSuccessListener { result ->
-                if (result.isEmpty) {
-                    adapter.atualizarLista(emptyList())
-                    return@addOnSuccessListener
-                }
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val result = db.collection("solicitacoes_emprestimo")
+                    .whereEqualTo("uidAluno", uid)
+                    .get()
+                    .await()
 
-                val total       = result.size()
-                var processados = 0
-                val listaTemp   = mutableListOf<ItemAluguel>()
-
-                for (doc in result) {
+                val lista = result.documents.mapNotNull { doc ->
                     val docId           = doc.id
-                    val idLivro         = doc.getString("idLivro") ?: doc.getString("livroId") ?: ""
-                    val status          = doc.getString("status")           ?: "pendente"
-                    val dataDevolucao   = doc.getLong("dataDevolucao")      ?: 0L
-                    val dataSolicitacao = doc.getLong("dataSolicitacao")    ?: 0L
+                    val idLivro         = doc.getString("idLivro")
+                        ?: doc.getString("livroId") ?: ""
+                    val status          = doc.getString("status")        ?: "pendente"
+                    val dataDevolucao   = doc.getLong("dataDevolucao")   ?: 0L
+                    val dataSolicitacao = doc.getLong("dataSolicitacao") ?: 0L
 
-                    if (idLivro.isEmpty()) {
-                        listaTemp.add(ItemAluguel(docId = docId, status = status,
-                            dataDevolucao = dataDevolucao, dataSolicitacao = dataSolicitacao))
-                        processados++
-                        if (processados == total) adapter.atualizarLista(listaTemp)
-                        continue
-                    }
+                    // Leitura desnormalizada — sem query adicional à coleção "livros"
+                    val titulo     = doc.getString("tituloLivro")
+                        ?: doc.getString("titulo") ?: ""
+                    val autorLivro = doc.getString("autorLivro")
+                        ?: doc.getString("autor")  ?: ""
+                    val coverUrl   = doc.getString("coverUrl") ?: ""
 
-                    // Join com coleção livros para título e capa
-                    db.collection("livros").document(idLivro).get()
-                        .addOnSuccessListener { livroDoc ->
-                            val titulo   = livroDoc.getString("title")    ?: livroDoc.getString("titulo") ?: idLivro
-                            val coverUrl = livroDoc.getString("coverUrl") ?: ""
-                            listaTemp.add(
-                                ItemAluguel(
-                                    docId           = docId,
-                                    livroId         = idLivro,
-                                    titulo          = titulo,
-                                    coverUrl        = coverUrl,
-                                    status          = status,
-                                    dataDevolucao   = dataDevolucao,
-                                    dataSolicitacao = dataSolicitacao
-                                )
-                            )
-                            processados++
-                            if (processados == total) adapter.atualizarLista(listaTemp)
-                        }
-                        .addOnFailureListener {
-                            listaTemp.add(ItemAluguel(docId = docId, livroId = idLivro, status = status,
-                                dataDevolucao = dataDevolucao, dataSolicitacao = dataSolicitacao))
-                            processados++
-                            if (processados == total) adapter.atualizarLista(listaTemp)
-                        }
+                    ItemAluguel(
+                        docId           = docId,
+                        livroId         = idLivro,
+                        titulo          = titulo,
+                        autorLivro      = autorLivro,
+                        coverUrl        = coverUrl,
+                        status          = status,
+                        dataDevolucao   = dataDevolucao,
+                        dataSolicitacao = dataSolicitacao
+                    )
+                }.sortedByDescending { it.dataSolicitacao }
+
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+                    val vazio = lista.isEmpty()
+                    tvNenhumAluguel?.visibility = if (vazio) View.VISIBLE else View.GONE
+                    recyclerView.visibility     = if (vazio) View.GONE   else View.VISIBLE
+                    adapter.atualizarLista(lista)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+                    Toast.makeText(
+                        this@TelaRF18StatusAluguel,
+                        getString(R.string.erro_carregar_alugueis),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Erro ao carregar aluguéis: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+        }
     }
 }
