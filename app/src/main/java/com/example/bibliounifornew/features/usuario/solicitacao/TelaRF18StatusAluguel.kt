@@ -119,14 +119,17 @@ class TelaRF18StatusAluguel : AppCompatActivity() {
                     val dataSolicitacao = doc.getLong("dataSolicitacao") ?: 0L
 
                     // Leitura desnormalizada — sem query adicional à coleção "livros"
-                    val titulo   = doc.getString("tituloLivro")
-                        ?: doc.getString("titulo") ?: idLivro
-                    val coverUrl = doc.getString("coverUrl") ?: ""
+                    val titulo     = doc.getString("tituloLivro")
+                        ?: doc.getString("titulo") ?: ""
+                    val autorLivro = doc.getString("autorLivro")
+                        ?: doc.getString("autor")  ?: ""
+                    val coverUrl   = doc.getString("coverUrl") ?: ""
 
                     ItemAluguel(
                         docId           = docId,
                         livroId         = idLivro,
                         titulo          = titulo,
+                        autorLivro      = autorLivro,
                         coverUrl        = coverUrl,
                         status          = status,
                         dataDevolucao   = dataDevolucao,

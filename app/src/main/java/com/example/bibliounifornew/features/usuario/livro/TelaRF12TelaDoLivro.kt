@@ -1,10 +1,8 @@
 package com.example.bibliounifornew.features.usuario.livro
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -20,8 +18,6 @@ import com.example.bibliounifornew.data.AuthRepository
 import com.example.bibliounifornew.data.EntidadeLivro
 import com.example.bibliounifornew.data.LivroDao
 import com.example.bibliounifornew.data.UsuarioRepository
-import com.example.bibliounifornew.features.usuario.biblioteca.TelaRF14LeituraActivity
-import com.example.bibliounifornew.features.usuario.solicitacao.TelaRF19Solicitacoes
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -36,13 +32,17 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
     private val usuarioRepository = UsuarioRepository()
     private val db                = FirebaseFirestore.getInstance()
 
-    private var livroIdAtual    : String               = ""
-    private var tituloAtual     : String               = ""
-    private var autorAtual      : String               = ""
-    private var coverUrlAtual   : String               = ""
-    private var disponivelAtual : Boolean              = true
-    private var livroListener   : ListenerRegistration? = null
-    private lateinit var livroDao: LivroDao
+    private var livroIdAtual      : String               = ""
+    private var tituloAtual       : String               = ""
+    private var autorAtual        : String               = ""
+    private var coverUrlAtual     : String               = ""
+    private var disponivelAtual   : Boolean              = true
+    private var linkPdfAtual      : String               = ""
+    private var linkAudiobookAtual: String               = ""
+    private var hasBrailleAtual   : Boolean              = false
+    private var setorAtual        : String               = ""
+    private var livroListener     : ListenerRegistration? = null
+    private lateinit var livroDao : LivroDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +116,9 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
                     isAvailable   = (snapshot.getLong("estoque") ?: snapshot.getLong("quantidade")
                         ?: snapshot.getLong("stock") ?: 0L) > 0,
                     linkPdf       = snapshot.getString("linkPdf")       ?: "",
-                    linkAudiobook = snapshot.getString("linkAudiobook") ?: ""
+                    linkAudiobook = snapshot.getString("linkAudiobook") ?: "",
+                    hasBraille    = snapshot.get("hasBraille") as? Boolean ?: false,
+                    librarySector = snapshot.getString("librarySector") ?: snapshot.getString("setor") ?: ""
                 )
 
                 tituloAtual = entidadeRemota.title
@@ -138,7 +140,9 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
                             stockQuantity = entidadeRemota.stockQuantity,
                             isAvailable   = entidadeRemota.isAvailable,
                             linkPdf       = entidadeRemota.linkPdf,
-                            linkAudiobook = entidadeRemota.linkAudiobook
+                            linkAudiobook = entidadeRemota.linkAudiobook,
+                            hasBraille    = entidadeRemota.hasBraille,
+                            librarySector = entidadeRemota.librarySector
                         ) else entidadeRemota
                     )
                 }
@@ -149,10 +153,14 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
     // Fonte única de renderização — usada tanto pelo Firestore quanto pelo Room.
 
     private fun renderizarDadosDaEntidade(livro: EntidadeLivro) {
-        tituloAtual     = livro.title
-        autorAtual      = livro.author
-        coverUrlAtual   = livro.coverUrl
-        disponivelAtual = livro.isAvailable
+        tituloAtual        = livro.title
+        autorAtual         = livro.author
+        coverUrlAtual      = livro.coverUrl
+        disponivelAtual    = livro.isAvailable
+        linkPdfAtual       = livro.linkPdf
+        linkAudiobookAtual = livro.linkAudiobook
+        hasBrailleAtual    = livro.hasBraille
+        setorAtual         = livro.librarySector
 
         findViewById<TextView>(R.id.textTituloLivro)?.text = livro.title
         findViewById<TextView>(R.id.textAutorLivro)?.text  = livro.author
@@ -188,22 +196,6 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
             indicador?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#C62828"))
         }
 
-        val btnPdf   = findViewById<MaterialButton>(R.id.buttonPdf)
-        val btnAudio = findViewById<MaterialButton>(R.id.buttonAudiobook)
-
-        if (livro.linkPdf.isNotBlank()) {
-            btnPdf?.visibility = View.VISIBLE
-            btnPdf?.setOnClickListener { abrirUrlExterna(livro.linkPdf) }
-        } else {
-            btnPdf?.visibility = View.GONE
-        }
-
-        if (livro.linkAudiobook.isNotBlank()) {
-            btnAudio?.visibility = View.VISIBLE
-            btnAudio?.setOnClickListener { abrirUrlExterna(livro.linkAudiobook) }
-        } else {
-            btnAudio?.visibility = View.GONE
-        }
     }
 
     // ─── NOTA DO USUÁRIO ──────────────────────────────────────────────────────
@@ -305,23 +297,20 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
             startActivity(Intent(this, TelaRF13VerMaisLivro::class.java)
                 .putExtra("LIVRO_ID", livroIdAtual))
         }
-        findViewById<MaterialButton>(R.id.buttonSolicitar)?.setOnClickListener {
-            startActivity(Intent(this, TelaRF19Solicitacoes::class.java)
-                .putExtra("LIVRO_ID", livroIdAtual))
-        }
-        findViewById<MaterialButton>(R.id.buttonLer)?.setOnClickListener {
-            startActivity(Intent(this, TelaRF14LeituraActivity::class.java)
-                .putExtra("LIVRO_ID", livroIdAtual))
-        }
-    }
-
-    // ─── ABRIDOR DE URL EXTERNO ───────────────────────────────────────────────
-
-    private fun abrirUrlExterna(url: String) {
-        try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-        } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, getString(R.string.erro_abrir_link), Toast.LENGTH_SHORT).show()
+        findViewById<MaterialButton>(R.id.buttonOpcoesLeitura)?.setOnClickListener {
+            if (livroIdAtual.isEmpty()) {
+                Toast.makeText(this, "Aguarde o carregamento do livro...", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            OpcoesDeLeituraBottomSheet.newInstance(
+                livroId       = livroIdAtual,
+                titulo        = tituloAtual,
+                autor         = autorAtual,
+                linkPdf       = linkPdfAtual,
+                linkAudiobook = linkAudiobookAtual,
+                hasBraille    = hasBrailleAtual,
+                setor         = setorAtual
+            ).show(supportFragmentManager, OpcoesDeLeituraBottomSheet.TAG)
         }
     }
 

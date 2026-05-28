@@ -179,70 +179,19 @@
                     app:cornerRadius="24dp"/>
             </LinearLayout>
 
-            <!-- AÇÕES DE AQUISIÇÃO -->
-            <LinearLayout
-                android:id="@+id/layoutAcoesAquisicao"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="24dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonSolicitar"
-                    android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:text="@string/btn_solicitar"
-                    android:textAllCaps="false"
-                    android:textColor="@color/biblio_dark"
-                    app:backgroundTint="#D1E9FF"
-                    app:cornerRadius="12dp"
-                    app:elevation="0dp"/>
-            </LinearLayout>
-
+            <!-- AÇÃO UNIFICADA: OPÇÕES DE LEITURA E EMPRÉSTIMO -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonLer"
+                android:id="@+id/buttonOpcoesLeitura"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="12dp"
-                android:text="@string/btn_ler_agora"
-                android:textSize="16sp"
+                android:layout_marginTop="24dp"
+                android:text="Opções de Leitura e Empréstimo"
+                android:textAllCaps="false"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 app:backgroundTint="@color/biblio_blue"
                 app:cornerRadius="30dp"
                 app:elevation="2dp"/>
-
-            <!-- ACESSO DIGITAL: PDF E AUDIOBOOK -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonPdf"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/btn_ler_pdf"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textColor="@color/biblio_blue"
-                android:visibility="gone"
-                android:contentDescription="@string/desc_btn_pdf"
-                app:strokeColor="@color/biblio_blue"
-                app:cornerRadius="16dp"
-                app:elevation="0dp"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonAudiobook"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/btn_ouvir_audiobook"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:textColor="@color/biblio_blue"
-                android:visibility="gone"
-                android:contentDescription="@string/desc_btn_audiobook"
-                app:strokeColor="@color/biblio_blue"
-                app:cornerRadius="16dp"
-                app:elevation="0dp"/>
 
             <!-- NOTA -->
             <TextView
