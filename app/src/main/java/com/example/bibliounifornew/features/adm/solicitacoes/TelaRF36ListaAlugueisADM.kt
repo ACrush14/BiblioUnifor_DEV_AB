@@ -25,10 +25,13 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
     private val db            = FirebaseFirestore.getInstance()
     private lateinit var adapter: AlugueisAdapter
     private val listaAlugueis = mutableListOf<ItemAluguel>()
+    private var filterUsuarioId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf36_lista_alugueis_adm)
+
+        filterUsuarioId = intent.getStringExtra("USUARIO_ID")
 
         // ─── RECYCLERVIEW ─────────────────────────────────────────────────────
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewAlugueis)
@@ -55,33 +58,29 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
 
     /**
      * GAP-4 / PERF-2 FIX — carrega aluguéis ativos sem N+1 queries.
-     *
-     * Estratégia de desnormalização:
-     *   Lê nomeAluno/tituloLivro/autorLivro diretamente do documento de empréstimo.
-     *   Novos docs criados por SolicitacaoRepository.criarEmprestimoComControleDeEstoque()
-     *   já incluem tituloLivro e autorLivro. Docs antigos recebem fallback seguro.
-     *   Zero joins adicionais por item → custo fixo de 1 query total.
-     *
-     * FAILED_PRECONDITION:
-     *   Se o Firestore exigir um índice composto (ex: ao adicionar .orderBy()),
-     *   o erro é capturado e logado com o link direto de criação de índice.
-     *
-     * Estado vazio:
-     *   tvListaVazia é exibido quando nenhuma coleção retorna resultados.
+     * Se filterUsuarioId estiver presente, filtra apenas por esse usuário.
      */
     private fun carregarAlugueis() {
         val tvVazia = findViewById<TextView>(R.id.tvListaVazia)
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val result = db.collection("solicitacoes_emprestimo")
+                var query: com.google.firebase.firestore.Query = db.collection("solicitacoes_emprestimo")
                     .whereIn("status", listOf("pendente", "ativo", "atrasado"))
-                    .get()
-                    .await()
+                
+                if (!filterUsuarioId.isNullOrEmpty()) {
+                    query = query.whereEqualTo("uidAluno", filterUsuarioId)
+                }
+
+                val result = query.get().await()
 
                 if (result.isEmpty) {
                     // Fallback: tenta coleção legada "alugueis"
-                    val resultAlt = db.collection("alugueis").get().await()
+                    var queryAlt: com.google.firebase.firestore.Query = db.collection("alugueis")
+                    if (!filterUsuarioId.isNullOrEmpty()) {
+                        queryAlt = queryAlt.whereEqualTo("uidAluno", filterUsuarioId)
+                    }
+                    val resultAlt = queryAlt.get().await()
                     val lista = mapearDocumentos(resultAlt.documents)
                     withContext(Dispatchers.Main) {
                         if (isFinishing || isDestroyed) return@withContext

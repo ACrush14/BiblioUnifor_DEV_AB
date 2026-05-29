@@ -54,8 +54,9 @@ class LivrosCrudAdapter(
             ctx.getString(R.string.fmt_exemplares, item.quantidade)
             else ctx.getString(R.string.fmt_exemplares_vazio)
 
-        // Capa via Coil — usa coverUrl pré-carregada; fallback para placeholder
+        // Capa via Coil — desabilitado hardware bitmaps para evitar crash de software rendering
         holder.imgCapa.load(item.coverUrl.ifEmpty { null }) {
+            allowHardware(false)
             placeholder(R.drawable.user_placeholder)
             error(R.drawable.user_placeholder)
             fallback(R.drawable.user_placeholder)

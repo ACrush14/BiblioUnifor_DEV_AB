@@ -17,9 +17,13 @@
         <package android:name="com.google.android.apps.docs" />
         <package android:name="com.google.android.gms" />
 
+        <!-- Necessário para resolver o erro "Failed to get service from broker" no Android 11+ -->
+        <intent>
+            <action android:name="com.google.android.gms.auth.api.signin.SERVICE_CONFIG_BY_PACKAGE" />
+        </intent>
+
         <intent>
             <action android:name="android.intent.action.VIEW" />
-
             <data android:mimeType="application/pdf" />
         </intent>
         <intent>

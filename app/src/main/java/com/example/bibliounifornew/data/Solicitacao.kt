@@ -16,6 +16,7 @@ package com.example.bibliounifornew.data
  * Tipos válidos para [tipos]: "PDF" | "Braille" | "Audiobook" | "Reserva"
  */
 data class Solicitacao(
+    val id              : String = "",
     val uidUsuario      : String = "",
     val uidAluno        : String = "",  // alias para compatibilidade legada
     val idLivro         : String = "",
@@ -27,6 +28,7 @@ data class Solicitacao(
      * Converte para Map<String, Any> pronto para gravar no Firestore.
      * Todos os campos são escritos para garantir compatibilidade total
      * com as leituras do ADM em TelaRF31Solicitacoes.
+     * O ID não é enviado no corpo do map pois é a chave do documento.
      */
     fun toFirestoreMap(): Map<String, Any> = mapOf(
         "uidUsuario"       to uidUsuario,
@@ -44,6 +46,7 @@ data class Solicitacao(
          */
         fun fromFirestore(docId: String, data: Map<String, Any?>): Solicitacao {
             return Solicitacao(
+                id              = docId,
                 uidUsuario      = data["uidUsuario"]      as? String ?: "",
                 uidAluno        = data["uidAluno"]        as? String ?: "",
                 idLivro         = data["idLivro"]         as? String ?: "",

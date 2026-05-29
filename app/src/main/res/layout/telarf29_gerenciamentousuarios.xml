@@ -111,6 +111,7 @@
                 android:background="@android:color/transparent"
                 android:hint="Procure um usuário..."
                 android:inputType="text"
+                android:imeOptions="actionSearch"
                 android:importantForAutofill="no"
                 android:minHeight="48dp"
                 android:singleLine="true"

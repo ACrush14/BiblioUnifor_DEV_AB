@@ -8,6 +8,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.Window
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -227,6 +228,10 @@ class TelaRF31Solicitacoes : AppCompatActivity() {
                     criarNotificacaoMidia(item.uidUsuario)
 
                     withContext(Dispatchers.Main) {
+                        // Esconde o teclado antes de fechar para evitar erro de callback IME
+                        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(it.windowToken, 0)
+
                         Toast.makeText(this@TelaRF31Solicitacoes, "Links salvos com sucesso!", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
                     }
@@ -396,6 +401,10 @@ class TelaRF31Solicitacoes : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // Esconde o teclado
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+
             val currentUser = FirebaseAuth.getInstance().currentUser
             val adminEmail  = currentUser?.email
 
@@ -450,10 +459,16 @@ class TelaRF31Solicitacoes : AppCompatActivity() {
         spinner?.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, opcoes)
 
         btnSalvar?.setOnClickListener {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+
             Toast.makeText(this, "Filtro aplicado.", Toast.LENGTH_SHORT).show()
             dialog.dismiss()
         }
         btnLimpar?.setOnClickListener {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+
             editNome?.setText("")
             spinner?.setSelection(0)
             dialog.dismiss()

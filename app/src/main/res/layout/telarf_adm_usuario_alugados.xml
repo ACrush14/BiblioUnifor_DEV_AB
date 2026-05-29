@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/biblio_bg"
-    tools:context="com.example.bibliounifornew.adm.TelaRFAdmUsuarioAlugados">
+    tools:context="com.example.bibliounifornew.features.adm.gerenciamento.TelaRFAdmUsuarioAlugados">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerAlugadosUsuario"

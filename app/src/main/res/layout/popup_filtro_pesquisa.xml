@@ -50,6 +50,7 @@
         android:textSize="15sp"
         android:textColorHint="#999999"
         android:inputType="text"
+        android:imeOptions="actionNext"
         android:importantForAutofill="no"
         android:singleLine="true"/>
 
@@ -76,6 +77,7 @@
         android:textSize="15sp"
         android:textColorHint="#999999"
         android:inputType="text"
+        android:imeOptions="actionDone"
         android:importantForAutofill="no"
         android:singleLine="true"/>
 

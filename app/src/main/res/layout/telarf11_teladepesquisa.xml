@@ -115,8 +115,9 @@
 
                 <ImageView
                     android:id="@+id/btnAbrirFiltro"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="12dp"
                     android:layout_marginStart="8dp"
                     android:src="@drawable/ic_menu_more"
                     app:tint="@color/biblio_blue"

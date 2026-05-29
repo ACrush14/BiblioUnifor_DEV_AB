@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.widget.Button
@@ -131,6 +133,13 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
         val txtAutor  = dialog.findViewById<TextView>(R.id.textAutorLivroSolicitado)
         val txtData   = dialog.findViewById<TextView>(R.id.textDataLivroSolicitado)
         val imgCapa   = dialog.findViewById<ImageView>(R.id.imageLivroSolicitado)
+        val editPdf   = dialog.findViewById<TextInputEditText>(R.id.editLinkPdf)
+        val editAudio = dialog.findViewById<TextInputEditText>(R.id.editLinkAudiobook)
+        val btnSalvar = dialog.findViewById<MaterialButton>(R.id.btnSalvarLinks)
+
+        // Variável para guardar os IDs da solicitação e do livro atuais
+        var currentLivroId = ""
+        var currentSolicitacaoId = ""
 
         // Zera o estado antes de buscar para não piscar dados antigos
         txtNome?.text  = getString(R.string.popup_solicitacoes_label_usuario, usuarioNome.uppercase())
@@ -153,9 +162,14 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
                             txtLista?.text  = getString(R.string.popup_solicitacoes_sem_dados)
                             txtStatus?.text = getString(R.string.popup_status_vazio)
                             cardLivro?.visibility = View.GONE
+                            currentLivroId = ""
+                            currentSolicitacaoId = ""
                         } else {
                             // RF28.13 FIX: exibe total + mais recente (não apenas a primeira)
                             val ultima    = lista.first()
+                            currentLivroId = ultima.idLivro
+                            currentSolicitacaoId = ultima.id
+
                             val tipoTexto = ultima.tipos.ifEmpty { "Geral" }
                             txtLista?.text  = getString(
                                 R.string.popup_solicitacoes_total,
@@ -183,6 +197,11 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
                                         txtAutor?.text  = doc.getString("author")
                                             ?: doc.getString("autor")
                                             ?: getString(R.string.sem_autor)
+                                        
+                                        // Preenche os links atuais do livro
+                                        editPdf?.setText(doc.getString("linkPdf") ?: "")
+                                        editAudio?.setText(doc.getString("linkAudiobook") ?: "")
+
                                         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
                                         val dataFmt = if (ultima.dataSolicitacao > 0)
                                             sdf.format(Date(ultima.dataSolicitacao)) else "N/A"
@@ -203,6 +222,55 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
                 }
         }
 
+        btnSalvar?.setOnClickListener {
+            val linkPdf   = editPdf?.text.toString().trim()
+            val linkAudio = editAudio?.text.toString().trim()
+
+            if (currentLivroId.isEmpty()) {
+                Toast.makeText(this, "Nenhum livro identificado para salvar links.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            btnSalvar.isEnabled = false
+            val updates = hashMapOf<String, Any>(
+                "linkPdf" to linkPdf,
+                "linkAudiobook" to linkAudio,
+                "hasPdf" to linkPdf.isNotEmpty(),
+                "hasAudiobook" to linkAudio.isNotEmpty(),
+                "temPdf" to linkPdf.isNotEmpty(),
+                "temAudiobook" to linkAudio.isNotEmpty()
+            )
+
+            db.collection("livros").document(currentLivroId)
+                .update(updates)
+                .addOnSuccessListener {
+                    // 1. Marca a solicitação como concluída (se houver uma ativa)
+                    if (currentSolicitacaoId.isNotEmpty()) {
+                        db.collection("solicitacoes_midia").document(currentSolicitacaoId)
+                            .update("status", "concluido")
+                    }
+
+                    // 2. Cria notificação na subcoleção do usuário (Padrão do Projeto)
+                    val notificacao = hashMapOf(
+                        "titulo" to "Mídia disponível",
+                        "mensagem" to "Novos links de mídia foram adicionados ao livro que você solicitou.",
+                        "data" to System.currentTimeMillis(),
+                        "lida" to false
+                    )
+                    db.collection("usuarios").document(usuarioId)
+                        .collection("notificacoes").add(notificacao)
+
+                    // 3. Feedback e fechamento
+                    btnSalvar.isEnabled = true
+                    exibirNotificacaoCinza()
+                    dialog.dismiss()
+                }
+                .addOnFailureListener {
+                    btnSalvar.isEnabled = true
+                    Toast.makeText(this, "Erro ao salvar links: ${it.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+
         dialog.findViewById<Button>(R.id.btnFecharSolicitacoes)?.setOnClickListener {
             dialog.dismiss()
             // O listener NÃO é cancelado aqui — permanece ativo até onDestroy(),
@@ -214,6 +282,19 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
             (resources.displayMetrics.widthPixels * 0.90).toInt(),
             android.view.ViewGroup.LayoutParams.WRAP_CONTENT
         )
+    }
+
+    private fun exibirNotificacaoCinza() {
+        val inflater = LayoutInflater.from(this)
+        val layout = inflater.inflate(R.layout.toast_links_salvos, null)
+
+        with(Toast(applicationContext)) {
+            setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 100)
+            duration = Toast.LENGTH_SHORT
+            @Suppress("DEPRECATION")
+            view = layout
+            show()
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────

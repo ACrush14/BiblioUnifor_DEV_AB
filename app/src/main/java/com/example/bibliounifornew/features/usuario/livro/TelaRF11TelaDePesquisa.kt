@@ -3,6 +3,7 @@ package com.example.bibliounifornew.features.usuario.livro
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -124,6 +125,10 @@ class TelaRF11TelaDePesquisa : AppCompatActivity() {
         }
 
         btnAplicar.setOnClickListener {
+            // Esconde o teclado antes de fechar para evitar erro de callback IME
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+
             filtroTitulo = edtTitulo.text.toString().trim()
             filtroAutor = edtAutor.text.toString().trim()
             filtroCategoria = spnCategoria.selectedItem.toString()
@@ -143,6 +148,10 @@ class TelaRF11TelaDePesquisa : AppCompatActivity() {
         }
 
         btnLimpar.setOnClickListener {
+            // Esconde o teclado
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+
             filtroTitulo = ""
             filtroAutor = ""
             filtroCategoria = getString(R.string.categoria_todos)

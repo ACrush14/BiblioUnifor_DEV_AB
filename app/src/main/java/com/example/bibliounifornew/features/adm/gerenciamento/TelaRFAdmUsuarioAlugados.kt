@@ -1,5 +1,6 @@
 package com.example.bibliounifornew.features.adm.gerenciamento
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.features.adm.solicitacoes.ItemAluguel
+import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
@@ -37,7 +39,20 @@ class TelaRFAdmUsuarioAlugados : AppCompatActivity() {
 
         val rv = findViewById<RecyclerView>(R.id.recyclerViewAlugueis)
         rv.layoutManager = LinearLayoutManager(this)
-        adapter = AlugueisUsuarioAdapter(listaAlugueis)
+        adapter = AlugueisUsuarioAdapter(
+            lista = listaAlugueis,
+            onVerLivro = { item ->
+                val intent = Intent(this, TelaRF37InfoLivroADM::class.java)
+                intent.putExtra("LIVRO_ID", item.idLivro)
+                startActivity(intent)
+            },
+            onVerUsuario = { item ->
+                val intent = Intent(this, TelaRF30UsuariosParaADM::class.java)
+                intent.putExtra("USUARIO_ID", item.uidAluno)
+                intent.putExtra("USUARIO_NOME", item.nomeUsuario)
+                startActivity(intent)
+            }
+        )
         rv.adapter = adapter
 
         if (usuarioId.isNotEmpty()) {
@@ -189,7 +204,9 @@ class TelaRFAdmUsuarioAlugados : AppCompatActivity() {
  * pela Activity via join assíncrono em processarDocumentos().
  */
 class AlugueisUsuarioAdapter(
-    private val lista: List<ItemAluguel>
+    private val lista: List<ItemAluguel>,
+    private val onVerLivro: (ItemAluguel) -> Unit,
+    private val onVerUsuario: (ItemAluguel) -> Unit
 ) : RecyclerView.Adapter<AlugueisUsuarioAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -198,6 +215,8 @@ class AlugueisUsuarioAdapter(
         val autor       : TextView  = view.findViewById(R.id.txtAutorAluguel)
         val data        : TextView  = view.findViewById(R.id.txtDataAluguel)
         val capa        : ImageView = view.findViewById(R.id.imgCapaAluguel)
+        val btnVerLivro : MaterialButton = view.findViewById(R.id.btnVerLivroAluguel)
+        val btnVerUsuario : MaterialButton = view.findViewById(R.id.btnVerUsuarioAluguel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -220,6 +239,9 @@ class AlugueisUsuarioAdapter(
             placeholder(R.drawable.osda)
             error(R.drawable.osda)
         }
+
+        holder.btnVerLivro.setOnClickListener { onVerLivro(item) }
+        holder.btnVerUsuario.setOnClickListener { onVerUsuario(item) }
     }
 
     override fun getItemCount(): Int = lista.size

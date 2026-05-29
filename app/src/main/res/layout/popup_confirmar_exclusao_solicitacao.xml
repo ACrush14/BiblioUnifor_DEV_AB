@@ -48,6 +48,7 @@
                 android:background="@android:color/transparent"
                 android:hint="Sua senha..."
                 android:inputType="textPassword"
+                android:imeOptions="actionDone"
                 android:paddingStart="16dp"
                 android:paddingEnd="50dp"
                 android:textColor="@color/black"

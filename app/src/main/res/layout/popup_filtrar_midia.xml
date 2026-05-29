@@ -83,6 +83,7 @@
             android:background="@drawable/bg_input_delicate"
             android:hint="@string/hint_nome_usuario"
             android:inputType="textPersonName"
+            android:imeOptions="actionDone"
             android:paddingHorizontal="16dp"
             android:textColor="@color/black"
             android:textColorHint="@color/gray_hint"
