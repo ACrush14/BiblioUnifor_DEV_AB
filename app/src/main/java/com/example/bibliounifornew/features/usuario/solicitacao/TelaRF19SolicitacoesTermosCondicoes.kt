@@ -135,7 +135,8 @@ class TelaRF19SolicitacoesTermosCondicoes : AppCompatActivity() {
                     if (isFinishing || isDestroyed) return@withContext
 
                     if (tipoMidia == "Aluguel") {
-                        // Fluxo de Aluguel (Transação com estoque)
+                        // O fluxo de Aluguel agora é tratado localmente na TelaRF14LeituraActivity via popup_alugar_livro.
+                        // Caso chegue aqui por algum motivo legado, mantemos o suporte.
                         val resultado = solicitacaoRepository.criarEmprestimoComControleDeEstoque(
                             uidAluno = uid,
                             livroId  = livroId,

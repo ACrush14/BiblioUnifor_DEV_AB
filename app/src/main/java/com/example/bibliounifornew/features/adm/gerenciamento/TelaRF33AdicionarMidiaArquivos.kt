@@ -45,7 +45,12 @@ class TelaRF33AdicionarMidiaArquivos : AppCompatActivity() {
             val atualizacoes = hashMapOf<String, Any>(
                 "linkPdf"       to pdf,
                 "linkAudiobook" to audiobook,
-                "braille"       to braille
+                "temBraille"    to braille,
+                "hasBraille"    to braille,
+                "temPdf"        to pdf.isNotEmpty(),
+                "hasPdf"        to pdf.isNotEmpty(),
+                "temAudiobook"  to audiobook.isNotEmpty(),
+                "hasAudiobook"  to audiobook.isNotEmpty()
             )
 
             if (livroId.isNotEmpty()) {

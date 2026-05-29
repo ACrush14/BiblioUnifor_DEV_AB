@@ -18,6 +18,7 @@ import coil.load
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.AuthRepository
 import com.example.bibliounifornew.data.SolicitacaoRepository
+import com.example.bibliounifornew.data.UsuarioRepository
 import com.example.bibliounifornew.features.usuario.livro.TelaRF11TelaDePesquisa
 import com.example.bibliounifornew.features.usuario.solicitacao.TelaRF18StatusAluguel
 import com.example.bibliounifornew.features.usuario.solicitacao.TelaRF19SolicitacoesTermosCondicoes
@@ -28,6 +29,7 @@ class TelaRF14LeituraActivity : AppCompatActivity() {
 
     private val authRepository        = AuthRepository()
     private val solicitacaoRepository = SolicitacaoRepository()
+    private val usuarioRepository     = UsuarioRepository()
     private val db                    = FirebaseFirestore.getInstance()
     private var livroIdAtual   : String = ""
 
@@ -57,7 +59,7 @@ class TelaRF14LeituraActivity : AppCompatActivity() {
 
         // ─── BOTÃO ALUGAR ─────────────────────────────────────────────────────
         findViewById<Button>(R.id.buttonAlugarLivro)?.setOnClickListener {
-            irParaSolicitacao("Aluguel")
+            showPopupConfirmacaoAluguel()
         }
 
         // ─── BOTÃO RESERVAR ──────────────────────────────────────────────────
@@ -172,33 +174,7 @@ class TelaRF14LeituraActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.msg_aguarde_carregamento), Toast.LENGTH_SHORT).show()
             return
         }
-
-        // Se for aluguel, fazemos uma verificação prévia de duplicata para evitar que o usuário 
-        // aceite os termos à toa se já possuir o livro.
-        if (tipo == "Aluguel") {
-            val uid = authRepository.getUsuarioAtual()?.uid ?: return
-            db.collection("solicitacoes_emprestimo")
-                .whereEqualTo("uidAluno", uid)
-                .whereEqualTo("idLivro", livroIdAtual)
-                .get()
-                .addOnSuccessListener { snapshot ->
-                    val jaAlugado = snapshot.documents.any { doc ->
-                        val status = doc.getString("status") ?: ""
-                        status in listOf("pendente", "ativo", "atrasado")
-                    }
-
-                    if (jaAlugado) {
-                        Toast.makeText(this, getString(R.string.msg_livro_ja_alugado), Toast.LENGTH_LONG).show()
-                    } else {
-                        navegarParaTermos(tipo)
-                    }
-                }
-                .addOnFailureListener {
-                    navegarParaTermos(tipo)
-                }
-        } else {
-            navegarParaTermos(tipo)
-        }
+        navegarParaTermos(tipo)
     }
 
     private fun navegarParaTermos(tipo: String) {
@@ -209,6 +185,96 @@ class TelaRF14LeituraActivity : AppCompatActivity() {
             putExtra("AUTOR",      autorAtual)
         }
         startActivity(intent)
+    }
+
+    // ─── POPUPS DE ALUGUEL (RF14 -> RF18) ────────────────────────────────────
+
+    private fun showPopupConfirmacaoAluguel() {
+        if (tituloAtual.isEmpty()) {
+            Toast.makeText(this, getString(R.string.msg_aguarde_carregamento), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val uid = authRepository.getUsuarioAtual()?.uid ?: return
+
+        // 1. Verifica duplicata antes de mostrar o popup
+        db.collection("solicitacoes_emprestimo")
+            .whereEqualTo("uidAluno", uid)
+            .whereEqualTo("idLivro", livroIdAtual)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val jaAlugado = snapshot.documents.any { doc ->
+                    val status = doc.getString("status") ?: ""
+                    status in listOf("pendente", "ativo", "atrasado")
+                }
+
+                if (jaAlugado) {
+                    Toast.makeText(this, getString(R.string.msg_livro_ja_alugado), Toast.LENGTH_LONG).show()
+                    verificarStatusAluguelRapido() // Atualiza o botão principal
+                } else {
+                    // 2. Mostra o popup de confirmação
+                    val dialog = Dialog(this)
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                    dialog.setContentView(R.layout.popup_alugar_livro)
+                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+                    val textTitulo = dialog.findViewById<TextView>(R.id.textTituloPopupAlugar)
+                    textTitulo?.text = "Você deseja alugar o livro\n\"$tituloAtual\"?"
+
+                    dialog.findViewById<Button>(R.id.buttonAdicionarLivro)?.setOnClickListener {
+                        dialog.dismiss()
+                        executarAluguel(uid)
+                    }
+
+                    dialog.findViewById<TextView>(R.id.textCancelarPopup)?.setOnClickListener {
+                        dialog.dismiss()
+                    }
+
+                    dialog.show()
+                }
+            }
+    }
+
+    private fun executarAluguel(uid: String) {
+        lifecycleScope.launch {
+            val resultado = solicitacaoRepository.criarEmprestimoComControleDeEstoque(
+                uidAluno = uid,
+                livroId  = livroIdAtual,
+                titulo   = tituloAtual,
+                autor    = autorAtual
+            )
+
+            resultado.onSuccess {
+                // Registrar no histórico
+                usuarioRepository.registrarNoHistorico(
+                    uid = uid,
+                    livroId = livroIdAtual,
+                    titulo = tituloAtual,
+                    autor = autorAtual,
+                    acao = "Aluguel Solicitado",
+                    coverUrl = coverUrlAtual
+                )
+                showPopupSucessoAluguel()
+                verificarStatusAluguelRapido()
+            }.onFailure { e ->
+                Toast.makeText(this@TelaRF14LeituraActivity, e.message ?: "Erro ao alugar.", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun showPopupSucessoAluguel() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.popup_livro_adicionado)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCancelable(false)
+
+        dialog.findViewById<Button>(R.id.buttonVerMeusLivros)?.setOnClickListener {
+            dialog.dismiss()
+            startActivity(Intent(this, TelaRF18StatusAluguel::class.java))
+        }
+
+        dialog.show()
     }
 
     // ─── ABRIR MÍDIA (PDF ou AUDIOBOOK) ──────────────────────────────────────

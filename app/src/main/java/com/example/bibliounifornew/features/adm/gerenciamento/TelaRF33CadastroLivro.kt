@@ -32,6 +32,7 @@ class TelaRF33CadastroLivro : AppCompatActivity() {
         val etTitulo   = findViewById<EditText>(R.id.editTituloLivro)
         val etAutor    = findViewById<EditText>(R.id.editAutorLivro)
         val etISBN     = findViewById<EditText>(R.id.editCodigoIsbn)
+        val etSetor    = findViewById<EditText>(R.id.editSetorLivro)
         etData         = findViewById<EditText>(R.id.editDataPublicacao)
         val etQtd      = findViewById<EditText>(R.id.editQuantidadeExemplares)
         val btnAvancar = findViewById<MaterialButton>(R.id.btnEditarMaisInformacoes2)
@@ -50,11 +51,12 @@ class TelaRF33CadastroLivro : AppCompatActivity() {
             val titulo    = etTitulo.text.toString().trim()
             val autor     = etAutor.text.toString().trim()
             val isbn      = etISBN.text.toString().trim()
+            val setor     = etSetor.text.toString().trim()
             val data      = etData.text.toString().trim()
             val qtdStr    = etQtd.text.toString().trim()
 
             // ── Validação ────────────────────────────────────────────────────
-            if (titulo.isEmpty() || autor.isEmpty() || isbn.isEmpty() || data.isEmpty() || qtdStr.isEmpty()) {
+            if (titulo.isEmpty() || autor.isEmpty() || isbn.isEmpty() || setor.isEmpty() || data.isEmpty() || qtdStr.isEmpty()) {
                 tvErro.visibility = View.VISIBLE
                 tvErro.text = getString(R.string.erro_preencha_infos_livro)
                 return@setOnClickListener
@@ -76,17 +78,28 @@ class TelaRF33CadastroLivro : AppCompatActivity() {
             btnAvancar.isEnabled = false
 
             val dados = hashMapOf(
-                "title"          to titulo,
-                "titulo"         to titulo,
-                "author"         to autor,
-                "autor"          to autor,
-                "isbn"           to isbn,
-                "codigo_isbn"    to isbn,
-                "dataPublicacao" to data,
-                "quantidade"     to quantidade,
-                "exemplares"     to quantidade,
-                "criadoEm"       to System.currentTimeMillis()
+                "title"            to titulo,
+                "titulo"           to titulo,
+                "author"           to autor,
+                "autor"            to autor,
+                "isbn"             to isbn,
+                "codigo_isbn"      to isbn,
+                "librarySector"    to setor,
+                "setorBiblioteca"  to setor,
+                "setor"            to setor,
+                "dataPublicacao"   to data,
+                "publishDate"      to data,
+                "quantidade"       to quantidade,
+                "exemplares"       to quantidade,
+                "criadoEm"         to System.currentTimeMillis()
             )
+
+            // Lógica para ISBN10 e ISBN13 para compatibilidade com RF13
+            if (isbn.length == 10) {
+                dados["isbn10"] = isbn
+            } else if (isbn.length == 13) {
+                dados["isbn13"] = isbn
+            }
 
             db.collection("livros")
                 .add(dados)

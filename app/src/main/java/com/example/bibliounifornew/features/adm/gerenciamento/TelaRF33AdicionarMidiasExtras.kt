@@ -24,6 +24,9 @@ class TelaRF33AdicionarMidiasExtras : AppCompatActivity() {
         val etPaginas   = findViewById<EditText>(R.id.editQuantidadePaginas)
         val etCategoria = findViewById<EditText>(R.id.editCategoriaLivro)
         val etEditora   = findViewById<EditText>(R.id.editEditoraLivro)
+        val etIdioma    = findViewById<EditText>(R.id.editIdiomaLivro)
+        val etDimensoes = findViewById<EditText>(R.id.editDimensoesLivro)
+        val etAsin      = findViewById<EditText>(R.id.editAsinLivro)
         val etLinkCapa  = findViewById<EditText>(R.id.editLinkImagem)
         val etSinopse   = findViewById<EditText>(R.id.editSinopse)
         val btnAvancar  = findViewById<MaterialButton>(R.id.btnEditarMaisInformacoes2)
@@ -32,10 +35,13 @@ class TelaRF33AdicionarMidiasExtras : AppCompatActivity() {
             val paginas   = etPaginas.text.toString().trim()
             val categoria = etCategoria.text.toString().trim()
             val editora   = etEditora.text.toString().trim()
+            val idioma    = etIdioma.text.toString().trim()
+            val dimensoes = etDimensoes.text.toString().trim()
+            val asin      = etAsin.text.toString().trim()
             val sinopse   = etSinopse.text.toString().trim()
             val linkCapa  = etLinkCapa.text.toString().trim()   // opcional
 
-            if (paginas.isEmpty() || categoria.isEmpty() || editora.isEmpty() || sinopse.isEmpty()) {
+            if (paginas.isEmpty() || categoria.isEmpty() || editora.isEmpty() || idioma.isEmpty() || sinopse.isEmpty()) {
                 Toast.makeText(this, getString(R.string.erro_preencha_infos_extras), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -44,15 +50,24 @@ class TelaRF33AdicionarMidiasExtras : AppCompatActivity() {
 
             // ── Salva campos extras no documento já criado no Passo 1 ──────
             val atualizacoes = hashMapOf<String, Any>(
-                "pageCount"   to (paginas.toLongOrNull() ?: 0L),
-                "category"    to categoria,
-                "categoria"   to categoria,
-                "publisher"   to editora,
-                "editora"     to editora,
-                "description" to sinopse,
-                "descricao"   to sinopse,
-                "coverUrl"    to linkCapa,
-                "imagemUrl"   to linkCapa
+                "totalPages"    to (paginas.toLongOrNull() ?: 0L),
+                "paginas"       to (paginas.toLongOrNull() ?: 0L),
+                "pageCount"     to (paginas.toLongOrNull() ?: 0L),
+                "category"      to categoria,
+                "categoria"     to categoria,
+                "publisher"     to editora,
+                "editora"       to editora,
+                "language"      to idioma,
+                "lingua"        to idioma,
+                "idioma"        to idioma,
+                "dimensions"    to dimensoes,
+                "dimensoes"     to dimensoes,
+                "asin"          to asin,
+                "ASIN"          to asin,
+                "description"   to sinopse,
+                "descricao"     to sinopse,
+                "coverUrl"      to linkCapa,
+                "imagemUrl"     to linkCapa
             )
 
             if (livroId.isNotEmpty()) {
