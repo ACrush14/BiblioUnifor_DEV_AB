@@ -22,6 +22,7 @@ class TelaRF11TelaDePesquisa : AppCompatActivity() {
     private var filtroAutor: String = ""
     private var filtroCategoria: String = "Todas as Categorias"
     private var filtroDisponibilidade: String = "Todos"
+    private var activeDialog: BottomSheetDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +86,11 @@ class TelaRF11TelaDePesquisa : AppCompatActivity() {
     }
 
     private fun exibirPopupFiltro(termoAtual: String) {
+        if (isFinishing || isDestroyed) return
+        activeDialog?.dismiss()
+
         val dialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
+        activeDialog = dialog
         val view = LayoutInflater.from(this).inflate(R.layout.popup_filtro_pesquisa, null)
 
         val edtTitulo = view.findViewById<EditText>(R.id.editTituloFiltro)
@@ -141,10 +146,11 @@ class TelaRF11TelaDePesquisa : AppCompatActivity() {
             
             salvarFiltros()
             dialog.dismiss()
-            Toast.makeText(this, "Filtros aplicados!", Toast.LENGTH_SHORT).show()
-
-            // Realiza a procura imediatamente com o filtro salvo
-            executarBusca(termoAtual)
+            if (!isFinishing && !isDestroyed) {
+                Toast.makeText(this, "Filtros aplicados!", Toast.LENGTH_SHORT).show()
+                // Realiza a procura imediatamente com o filtro salvo
+                executarBusca(termoAtual)
+            }
         }
 
         btnLimpar.setOnClickListener {
@@ -164,10 +170,18 @@ class TelaRF11TelaDePesquisa : AppCompatActivity() {
             rgDisponibilidade.check(R.id.radioTodos)
             
             dialog.dismiss()
-            Toast.makeText(this, "Filtros limpos", Toast.LENGTH_SHORT).show()
+            if (!isFinishing && !isDestroyed) {
+                Toast.makeText(this, "Filtros limpos", Toast.LENGTH_SHORT).show()
+            }
         }
 
         dialog.setContentView(view)
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        activeDialog?.dismiss()
+        activeDialog = null
+        super.onDestroy()
     }
 }

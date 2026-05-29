@@ -104,69 +104,65 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <androidx.core.widget.NestedScrollView
+    <!-- ÁREA DE CONTEÚDO OTIMIZADA (Removido NestedScrollView para permitir reciclagem) -->
+    <!-- Se houver poucas solicitações, o RecyclerView de solicitações não quebrará a performance significativamente,
+         mas o ideal é que a lista principal (Amigos) ocupe o espaço restante. -->
+
+    <TextView
+        android:id="@+id/textSolicitacoesTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
+        android:text="Solicitações de Amizade"
+        android:textColor="@color/biblio_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/layoutAdicionarAmigos" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSolicitacoes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/textSolicitacoesTitulo" />
+
+    <View
+        android:id="@+id/dividerSolicitacoes"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/biblio_detalhes"
+        android:alpha="0.2"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewSolicitacoes" />
+
+    <TextView
+        android:id="@+id/textMeusAmigosTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
+        android:text="Meus Amigos"
+        android:textColor="@color/biblio_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/dividerSolicitacoes"
+        app:layout_goneMarginTop="16dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewAmigos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:clipToPadding="false"
-        android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@id/barraUsuario"
-        app:layout_constraintTop_toBottomOf="@id/layoutAdicionarAmigos">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="24dp"
-            android:paddingBottom="100dp">
-
-            <TextView
-                android:id="@+id/textSolicitacoesTitulo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="12dp"
-                android:text="Solicitações de Amizade"
-                android:textColor="@color/biblio_dark"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewSolicitacoes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:visibility="gone" />
-
-            <View
-                android:id="@+id/dividerSolicitacoes"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:background="@color/biblio_detalhes"
-                android:alpha="0.2"
-                android:visibility="gone" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="12dp"
-                android:text="Meus Amigos"
-                android:textColor="@color/biblio_dark"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewAmigos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="24dp"
+        app:layout_constraintTop_toBottomOf="@id/textMeusAmigosTitulo"
+        app:layout_constraintBottom_toTopOf="@id/barraUsuario" />
 
     <include
         android:id="@+id/barraUsuario"

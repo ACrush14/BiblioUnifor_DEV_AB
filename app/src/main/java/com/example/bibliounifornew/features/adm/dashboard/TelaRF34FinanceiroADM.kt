@@ -36,6 +36,8 @@ class TelaRF34FinanceiroADM : AppCompatActivity() {
     private lateinit var tvNenhumVencido : TextView
     private lateinit var adapter         : VencidosAdapter
 
+    private var activeDialog: Dialog? = null
+
     // Cópia imutável da lista atual — usada pelo btnVerPendentes
     private var listaAtual: List<LivroVencidoModel> = emptyList()
 
@@ -75,6 +77,12 @@ class TelaRF34FinanceiroADM : AppCompatActivity() {
         }
 
         NavigationHelperADM.configurarBarraNavegacao(this)
+    }
+
+    override fun onDestroy() {
+        activeDialog?.dismiss()
+        activeDialog = null
+        super.onDestroy()
     }
 
     // ─── CARREGAR VENCIDOS ────────────────────────────────────────────────────
@@ -194,6 +202,7 @@ class TelaRF34FinanceiroADM : AppCompatActivity() {
                 "status"        to "ativo"
             ))
             .addOnSuccessListener {
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 listaAtual = listaAtual.filter { it.docIdAtual != modelo.docIdAtual }
                 adapter.removerPorDocId(modelo.docIdAtual)
                 if (listaAtual.isEmpty()) {
@@ -203,6 +212,7 @@ class TelaRF34FinanceiroADM : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.msg_aluguel_renovado), Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
+                if (isFinishing || isDestroyed) return@addOnFailureListener
                 Toast.makeText(this, getString(R.string.erro_renovar_aluguel), Toast.LENGTH_SHORT).show()
             }
     }
@@ -210,10 +220,14 @@ class TelaRF34FinanceiroADM : AppCompatActivity() {
     // ─── POPUP PENDENTES ─────────────────────────────────────────────────────
 
     private fun exibirPopupPendentes(modelo: LivroVencidoModel) {
+        activeDialog?.dismiss()
         val dialog = Dialog(this)
+        activeDialog = dialog
+
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_pendentes_retirada)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setOnDismissListener { activeDialog = null }
 
         val sdf            = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
         val prazoFormatado = sdf.format(Date(modelo.dataLimiteMs))
@@ -263,10 +277,12 @@ class TelaRF34FinanceiroADM : AppCompatActivity() {
             db.collection("solicitacoes_emprestimo").document(modelo.docIdAtual)
                 .update(mapOf("status" to "devolvido"))
                 .addOnSuccessListener {
+                    if (isFinishing || isDestroyed) return@addOnSuccessListener
                     removerDaLista(modelo.docIdAtual)
                     Toast.makeText(this, getString(R.string.msg_aluguel_confirmado), Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener {
+                    if (isFinishing || isDestroyed) return@addOnFailureListener
                     Toast.makeText(this, getString(R.string.erro_conexao_banco), Toast.LENGTH_SHORT).show()
                 }
             dialog.dismiss()
@@ -276,10 +292,12 @@ class TelaRF34FinanceiroADM : AppCompatActivity() {
             db.collection("solicitacoes_emprestimo").document(modelo.docIdAtual)
                 .delete()
                 .addOnSuccessListener {
+                    if (isFinishing || isDestroyed) return@addOnSuccessListener
                     removerDaLista(modelo.docIdAtual)
                     Toast.makeText(this, getString(R.string.msg_registro_removido), Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener {
+                    if (isFinishing || isDestroyed) return@addOnFailureListener
                     Toast.makeText(this, getString(R.string.erro_conexao_banco), Toast.LENGTH_SHORT).show()
                 }
             dialog.dismiss()
@@ -338,11 +356,13 @@ class TelaRF34FinanceiroADM : AppCompatActivity() {
             .collection("notificacoes")
             .add(notif)
             .addOnSuccessListener {
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 val msgRes = if (tipo == "atraso") R.string.msg_aviso_atraso_enviado
                              else R.string.msg_multa_notificada
                 Toast.makeText(this, getString(msgRes), Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
+                if (isFinishing || isDestroyed) return@addOnFailureListener
                 Toast.makeText(this, getString(R.string.erro_conexao_banco), Toast.LENGTH_SHORT).show()
             }
     }

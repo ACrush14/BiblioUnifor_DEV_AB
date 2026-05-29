@@ -46,6 +46,8 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
     private var usuarioNome  : String = ""
     private var usuarioEmail : String = ""
 
+    private var activeDialog: Dialog? = null
+
     // ─────────────────────────────────────────────────────────────────────────
     // CICLO DE VIDA
     // ─────────────────────────────────────────────────────────────────────────
@@ -92,9 +94,11 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
      * evitando callbacks órfãos e consumo desnecessário de rede/memória.
      */
     override fun onDestroy() {
-        super.onDestroy()
+        activeDialog?.dismiss()
+        activeDialog = null
         solicitacoesListener?.remove()
         solicitacoesListener = null
+        super.onDestroy()
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -105,6 +109,7 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
         if (usuarioId.isEmpty()) return
         db.collection("usuarios").document(usuarioId).get()
             .addOnSuccessListener { doc ->
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 if (!doc.exists()) return@addOnSuccessListener
                 val role = doc.getString("role") ?: doc.getString("tipoPerfil") ?: "aluno"
                 textTipo?.text = role.uppercase()
@@ -120,10 +125,14 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
     // ─────────────────────────────────────────────────────────────────────────
 
     private fun exibirPopupSolicitacoes() {
+        activeDialog?.dismiss()
         val dialog = Dialog(this)
+        activeDialog = dialog
+
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_solicitacoes_usuario_adm)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setOnDismissListener { activeDialog = null }
 
         val txtNome   = dialog.findViewById<TextView>(R.id.textPopupNomeUsuario)
         val txtLista  = dialog.findViewById<TextView>(R.id.textPopupListaSolicitacoes)
@@ -302,10 +311,14 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
     // ─────────────────────────────────────────────────────────────────────────
 
     private fun exibirPopupAtraso() {
+        activeDialog?.dismiss()
         val dialog = Dialog(this)
+        activeDialog = dialog
+
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_atraso_aluguel_usuario)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setOnDismissListener { activeDialog = null }
 
         val txtMensagem = dialog.findViewById<TextView>(R.id.textNomeLivroAtrasado)
         val txtMulta    = dialog.findViewById<TextView>(R.id.textValorMulta)
@@ -438,10 +451,14 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
     // ─────────────────────────────────────────────────────────────────────────
 
     private fun exibirPopupPermissao(textTipo: TextView?) {
+        activeDialog?.dismiss()
         val dialog = Dialog(this)
+        activeDialog = dialog
+
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_mudar_permissao_adm)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setOnDismissListener { activeDialog = null }
 
         val editSenha   = dialog.findViewById<TextInputEditText>(R.id.editSenhaPermissao)
         val txtErro     = dialog.findViewById<TextView>(R.id.textErroPermissao)
@@ -539,9 +556,12 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
         }
 
         val dialog = Dialog(this)
+        activeDialog = dialog
+
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_apagar_conta_adm)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setOnDismissListener { activeDialog = null }
 
         val editSenha    = dialog.findViewById<TextInputEditText>(R.id.editSenhaApagarContaADM)
         val txtErro      = dialog.findViewById<TextView>(R.id.textErroApagarContaADM)

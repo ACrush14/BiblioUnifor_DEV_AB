@@ -60,62 +60,46 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollViewLivraria"
+    <!-- Seção de Título Fixa no Topo da Área de Conteúdo -->
+    <LinearLayout
+        android:id="@+id/layoutTituloLivraria"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toTopOf="@id/barraUsuario"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/headerMinhaLivraria">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="24dp"
-            android:paddingTop="24dp">
+            android:text="@string/label_meus_livros"
+            android:textColor="@color/biblio_dark"
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="12dp"
+            android:src="@android:drawable/ic_menu_agenda"
+            app:tint="@color/biblio_dark"
+            android:contentDescription="Ícone Meus Livros" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_meus_livros"
-                    android:textColor="@color/biblio_dark"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
+    </LinearLayout>
 
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginStart="12dp"
-                    android:src="@android:drawable/ic_menu_agenda"
-                    app:tint="@color/biblio_dark"
-                    android:contentDescription="Ícone Meus Livros" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewLivraria"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:nestedScrollingEnabled="false"
-                android:paddingBottom="100dp" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    <!-- RecyclerView com reciclagem ativa -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewLivraria"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="24dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutTituloLivraria"
+        app:layout_constraintBottom_toTopOf="@id/barraUsuario" />
 
     <include
         android:id="@+id/barraUsuario"

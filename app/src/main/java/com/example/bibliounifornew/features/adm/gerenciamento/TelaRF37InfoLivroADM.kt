@@ -29,6 +29,7 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
     private val db   = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
     private var livroId: String = ""
+    private var activeDialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +81,7 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
     private fun carregarDadosLivro() {
         db.collection("livros").document(livroId).get()
             .addOnSuccessListener { doc ->
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 if (!doc.exists()) return@addOnSuccessListener
 
                 findViewById<EditText>(R.id.editTituloLivro)?.setText(
@@ -128,6 +130,7 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
                     db.collection("livros").document(livroId)
                         .update(mapOf("braille" to isChecked, "hasBraille" to isChecked))
                         .addOnSuccessListener {
+                            if (isFinishing || isDestroyed) return@addOnSuccessListener
                             Toast.makeText(
                                 this@TelaRF37InfoLivroADM,
                                 getString(R.string.msg_campo_atualizado),
@@ -135,6 +138,7 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
                             ).show()
                         }
                         .addOnFailureListener {
+                            if (isFinishing || isDestroyed) return@addOnFailureListener
                             Toast.makeText(
                                 this@TelaRF37InfoLivroADM,
                                 getString(R.string.erro_conexao_banco),
@@ -151,9 +155,9 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
                 findViewById<TextView>(R.id.textExemplaresTotal)?.text = total.toString()
 
                 // BUG-F5 FIX: usa ID direto em vez de getChildAt(0)
-                val coverUrl = doc.getString("coverUrl") ?: doc.getString("imagemUrl") ?: ""
+                val coverUrlVal = doc.getString("coverUrl") ?: doc.getString("imagemUrl") ?: ""
                 findViewById<ImageView>(R.id.imgCapaLivroDetalhe)?.load(
-                    coverUrl.ifEmpty { null }
+                    coverUrlVal.ifEmpty { null }
                 ) {
                     placeholder(R.drawable.osda)
                     error(R.drawable.osda)
@@ -196,11 +200,13 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
                 val novoValor = campo?.text.toString()
                 db.collection("livros").document(livroId).update(firestoreField, novoValor)
                     .addOnSuccessListener {
+                        if (isFinishing || isDestroyed) return@addOnSuccessListener
                         campo?.isEnabled = false
                         botao.setImageResource(R.drawable.ic_edit_pencil)
                         Toast.makeText(this, getString(R.string.msg_campo_atualizado), Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
+                        if (isFinishing || isDestroyed) return@addOnFailureListener
                         Toast.makeText(this, getString(R.string.erro_conexao_banco), Toast.LENGTH_SHORT).show()
                     }
             }
@@ -218,9 +224,11 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
         db.collection("livros").document(livroId)
             .update(mapOf("quantidade" to novo, "exemplares" to novo))
             .addOnSuccessListener {
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 tvTotal.text = novo.toString()
             }
             .addOnFailureListener {
+                if (isFinishing || isDestroyed) return@addOnFailureListener
                 Toast.makeText(this, getString(R.string.erro_conexao_banco), Toast.LENGTH_SHORT).show()
             }
     }
@@ -232,6 +240,7 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
      */
     private fun abrirPopupApagar() {
         val dialog = Dialog(this)
+        activeDialog = dialog
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_apagar_midia)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -267,8 +276,10 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
             val credential = EmailAuthProvider.getCredential(user.email!!, senha)
             user.reauthenticate(credential)
                 .addOnSuccessListener {
+                    if (isFinishing || isDestroyed) return@addOnSuccessListener
                     db.collection("livros").document(livroId).delete()
                         .addOnSuccessListener {
+                            if (isFinishing || isDestroyed) return@addOnSuccessListener
                             Toast.makeText(
                                 this,
                                 getString(R.string.msg_midia_removida),
@@ -278,11 +289,13 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
                             finish()
                         }
                         .addOnFailureListener {
+                            if (isFinishing || isDestroyed) return@addOnFailureListener
                             btnConfirmar.isEnabled = true
                             Toast.makeText(this, getString(R.string.erro_conexao_banco), Toast.LENGTH_SHORT).show()
                         }
                 }
                 .addOnFailureListener {
+                    if (isFinishing || isDestroyed) return@addOnFailureListener
                     btnConfirmar.isEnabled = true
                     textErro?.visibility = View.VISIBLE
                     textErro?.text = getString(R.string.erro_senha_incorreta)
@@ -290,6 +303,12 @@ class TelaRF37InfoLivroADM : AppCompatActivity() {
         }
 
         btnCancelar?.setOnClickListener { dialog.dismiss() }
+        dialog.setOnDismissListener { activeDialog = null }
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        activeDialog?.dismiss()
+        super.onDestroy()
     }
 }

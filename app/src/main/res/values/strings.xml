@@ -635,6 +635,11 @@
     <string name="dialog_msg_link_midia">Insira o Link da Mídia a ser disponibilizada para o usuário.</string>
     <string name="dialog_btn_salvar">Salvar</string>
     <string name="dialog_btn_cancelar">Cancelar</string>
+    <string name="label_usuario_prefix">Usuário: %1$s</string>
+    <string name="label_tipos_prefix">Tipos: %1$s</string>
+    <string name="label_status_prefix">Status: %1$s</string>
+    <string name="label_solicitado_em">Solicitado em: %1$s</string>
+    <string name="label_pesquisar_solicitacoes_hint">Pesquisar solicitações...</string>
 
     <!-- RF33 — Calendário de Publicação (ADM) -->
     <string name="erro_preencha_campos_principais">Preencha os campos principais para continuar</string>

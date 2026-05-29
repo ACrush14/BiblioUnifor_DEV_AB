@@ -31,6 +31,7 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: LivroAdapter
+    private var activeDialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +83,7 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
     }
 
     private fun adicionarSuaLivraria(livro: EntidadeLivro) {
+        if (isFinishing || isDestroyed) return
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid == null) {
             Toast.makeText(this, getString(R.string.erro_login_para_livraria), Toast.LENGTH_SHORT).show()
@@ -101,38 +103,41 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
             .document("${uid}_${livro.id}")
             .set(dados, SetOptions.merge())
             .addOnSuccessListener {
-                val snackbar = Snackbar.make(recyclerView, "Livro adicionado à sua livraria.", Snackbar.LENGTH_LONG)
-                snackbar.setBackgroundTint(Color.parseColor("#444444"))
-                snackbar.setTextColor(Color.WHITE)
-                snackbar.show()
+                if (!isFinishing && !isDestroyed) {
+                    val snackbar = Snackbar.make(recyclerView, "Livro adicionado à sua livraria.", Snackbar.LENGTH_LONG)
+                    snackbar.setBackgroundTint(Color.parseColor("#444444"))
+                    snackbar.setTextColor(Color.WHITE)
+                    snackbar.show()
+                }
             }
             .addOnFailureListener {
-                Toast.makeText(this, getString(R.string.erro_adicionar_livraria_pesquisa), Toast.LENGTH_SHORT).show()
+                if (!isFinishing && !isDestroyed) {
+                    Toast.makeText(this, getString(R.string.erro_adicionar_livraria_pesquisa), Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
     private fun exibirPopupAlugar(livro: EntidadeLivro) {
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.popup_alugar_livro)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        if (isFinishing || isDestroyed) return
+        activeDialog?.dismiss()
 
-        val txtTitulo = dialog.findViewById<TextView>(R.id.textTituloPopupAlugar)
-        txtTitulo.text = "Você deseja alugar o livro\n\"${livro.title}\"?"
+        activeDialog = Dialog(this).apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setContentView(R.layout.popup_alugar_livro)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        val btnAlugar = dialog.findViewById<Button>(R.id.buttonAdicionarLivro)
-        val btnCancelar = dialog.findViewById<TextView>(R.id.textCancelarPopup)
+            findViewById<TextView>(R.id.textTituloPopupAlugar)?.text = "Você deseja alugar o livro\n\"${livro.title}\"?"
 
-        btnAlugar.setOnClickListener {
-            dialog.dismiss()
-            confirmarAluguel(livro)
+            findViewById<Button>(R.id.buttonAdicionarLivro)?.setOnClickListener {
+                dismiss()
+                confirmarAluguel(livro)
+            }
+
+            findViewById<TextView>(R.id.textCancelarPopup)?.setOnClickListener {
+                dismiss()
+            }
+            show()
         }
-
-        btnCancelar.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
     }
 
     private fun confirmarAluguel(livro: EntidadeLivro) {
@@ -152,28 +157,40 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
             .collection("solicitacoes_emprestimo")
             .add(solicitacao)
             .addOnSuccessListener {
-                exibirPopupSucessoAluguel()
+                if (!isFinishing && !isDestroyed) {
+                    exibirPopupSucessoAluguel()
+                }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Erro ao solicitar aluguel.", Toast.LENGTH_SHORT).show()
+                if (!isFinishing && !isDestroyed) {
+                    Toast.makeText(this, "Erro ao solicitar aluguel.", Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
     private fun exibirPopupSucessoAluguel() {
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.popup_livro_adicionado)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        if (isFinishing || isDestroyed) return
+        activeDialog?.dismiss()
 
-        val btnVerMeusLivros = dialog.findViewById<Button>(R.id.buttonVerMeusLivros)
-        btnVerMeusLivros.setOnClickListener {
-            dialog.dismiss()
-            val intent = android.content.Intent(this, TelaRF18StatusAluguel::class.java)
-            startActivity(intent)
-            finish()
+        activeDialog = Dialog(this).apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setContentView(R.layout.popup_livro_adicionado)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            findViewById<Button>(R.id.buttonVerMeusLivros)?.setOnClickListener {
+                dismiss()
+                val intent = android.content.Intent(this@TelaRF11_1_ResultadoPesquisa, TelaRF18StatusAluguel::class.java)
+                startActivity(intent)
+                finish()
+            }
+            show()
         }
+    }
 
-        dialog.show()
+    override fun onDestroy() {
+        activeDialog?.dismiss()
+        activeDialog = null
+        super.onDestroy()
     }
 
     private fun realizarBusca(
@@ -197,6 +214,7 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
         firestore.collection("livros")
             .get()
             .addOnSuccessListener { result ->
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 val listaDeLivros = mutableListOf<EntidadeLivro>()
                 Log.d("BUSCA", "Firestore retornou ${result.size()} documentos. Termo: '$termoLower', Cat: '$filtroCatTratado'")
 
@@ -320,6 +338,7 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
                 Log.d("BUSCA", "Total exibido após filtros: ${listaDeLivros.size}")
             }
             .addOnFailureListener { e ->
+                if (isFinishing || isDestroyed) return@addOnFailureListener
                 Log.e("BUSCA", "Erro Firestore", e)
             }
     }
@@ -332,9 +351,11 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
                     termoDeBusca = termoParaApi,
                     onSuccess = {
                         lifecycleScope.launch(Dispatchers.Main) {
+                            if (isFinishing || isDestroyed) return@launch
                             Toast.makeText(this@TelaRF11_1_ResultadoPesquisa, getString(R.string.msg_buscando_novidades), Toast.LENGTH_SHORT).show()
                             delay(1000)
                             
+                            if (isFinishing || isDestroyed) return@launch
                             val originalTermo = intent.getStringExtra("TERMO_PESQUISA") ?: ""
                             val fTitulo  = intent.getStringExtra("FILTRO_TITULO") ?: ""
                             val fAutor   = intent.getStringExtra("FILTRO_AUTOR") ?: ""

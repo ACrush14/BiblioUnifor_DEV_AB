@@ -104,6 +104,7 @@ class TelaRF33CadastroLivro : AppCompatActivity() {
             db.collection("livros")
                 .add(dados)
                 .addOnSuccessListener { docRef ->
+                    if (isFinishing || isDestroyed) return@addOnSuccessListener
                     btnAvancar.isEnabled = true
                     Toast.makeText(this, getString(R.string.msg_livro_cadastrado_sucesso), Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, TelaRF33AdicionarMidiasExtras::class.java)
@@ -112,6 +113,7 @@ class TelaRF33CadastroLivro : AppCompatActivity() {
                     finish()
                 }
                 .addOnFailureListener { e ->
+                    if (isFinishing || isDestroyed) return@addOnFailureListener
                     btnAvancar.isEnabled = true
                     tvErro.visibility    = View.VISIBLE
                     tvErro.text          = getString(R.string.erro_conexao_banco)

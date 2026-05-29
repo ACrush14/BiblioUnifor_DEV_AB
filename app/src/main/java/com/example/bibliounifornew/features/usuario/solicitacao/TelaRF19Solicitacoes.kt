@@ -20,6 +20,7 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
     private var tituloAtual: String = ""
     private var autorAtual: String  = ""
     private var setorAtual: String  = ""
+    private var activeDialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +111,11 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
     // ─── POPUP SETOR ─────────────────────────────────────────────────────────
 
     private fun showPopupSetor() {
+        if (isFinishing || isDestroyed) return
+        activeDialog?.dismiss()
+
         val dialog = Dialog(this)
+        activeDialog = dialog
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_setor_localizado)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -123,5 +128,11 @@ class TelaRF19Solicitacoes : AppCompatActivity() {
             ?.setOnClickListener { dialog.dismiss() }
 
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        activeDialog?.dismiss()
+        activeDialog = null
+        super.onDestroy()
     }
 }

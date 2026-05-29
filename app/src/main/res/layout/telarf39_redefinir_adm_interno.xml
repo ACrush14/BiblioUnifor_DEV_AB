@@ -42,7 +42,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/user_placeholder"
-                android:contentDescription="Foto do Administrador"/>
+                android:contentDescription="@string/desc_foto_adm_header"/>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -91,6 +91,61 @@
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
                 app:tint="@color/biblio_dark"
                 android:contentDescription="@string/desc_fechar_tela" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/label_senha_atual"
+                android:textColor="@color/biblio_dark"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="4dp">
+
+                <EditText
+                    android:id="@+id/editTextSenhaAtual"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_input"
+                    android:hint="@string/placeholder_senha"
+                    android:importantForAutofill="no"
+                    android:inputType="textPassword"
+                    android:paddingHorizontal="20dp"
+                    android:paddingEnd="56dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#9E9E9E"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/iconOlhoSenhaAtual"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_eye_closed"
+                    app:tint="@color/biblio_blue"
+                    android:contentDescription="@string/desc_mostrar_ocultar_senha"/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tvErroSenhaAtual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/erro_campo"
+                android:textColor="@color/biblio_red"
+                android:textSize="12sp"
+                android:visibility="gone"/>
 
             <TextView
                 android:layout_width="wrap_content"

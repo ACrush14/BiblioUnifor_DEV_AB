@@ -1,5 +1,6 @@
 package com.example.bibliounifornew.features.usuario.livro
 
+import android.app.Dialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -44,6 +45,8 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
     private var livroListener     : ListenerRegistration? = null
     private lateinit var livroDao : LivroDao
 
+    private var activeDialog: Dialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -70,8 +73,29 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        activeDialog?.dismiss()
+        activeDialog = null
         livroListener?.remove()  // Evita memory leak e callbacks pós-destruição
+        super.onDestroy()
+    }
+
+    private fun safeToast(mensagem: String, duracao: Int = Toast.LENGTH_SHORT) {
+        if (!isFinishing && !isDestroyed) {
+            Toast.makeText(this, mensagem, duracao).show()
+        }
+    }
+
+    private fun mostrarSnackbarCinza(mensagem: String) {
+        if (isFinishing || isDestroyed) return
+        val root = findViewById<View>(android.R.id.content) ?: return
+        val snackbar = com.google.android.material.snackbar.Snackbar.make(
+            root,
+            mensagem,
+            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+        )
+        snackbar.setBackgroundTint(Color.parseColor("#444444"))
+        snackbar.setTextColor(Color.WHITE)
+        snackbar.show()
     }
 
     // ─── CARREGAMENTO DE DADOS ────────────────────────────────────────────────
@@ -89,11 +113,7 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
                             if (cached != null) {
                                 renderizarDadosDaEntidade(cached)
                             } else {
-                                Toast.makeText(
-                                    this@TelaRF12TelaDoLivro,
-                                    getString(R.string.erro_sem_conexao_sem_cache),
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                safeToast(getString(R.string.erro_sem_conexao_sem_cache), Toast.LENGTH_LONG)
                             }
                         }
                     }
@@ -101,7 +121,7 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
                 }
 
                 if (snapshot == null || !snapshot.exists()) {
-                    Toast.makeText(this, getString(R.string.erro_livro_nao_encontrado), Toast.LENGTH_SHORT).show()
+                    safeToast(getString(R.string.erro_livro_nao_encontrado))
                     return@addSnapshotListener
                 }
 
@@ -218,6 +238,7 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
         // Carrega nota salva anteriormente
         db.collection("biblioteca_usuarios").document("${uid}_${livroIdAtual}").get()
             .addOnSuccessListener { doc ->
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 ratingBar.rating = doc.getDouble("nota")?.toFloat() ?: 0f
             }
 
@@ -241,6 +262,7 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
         val uid = authRepository.getUsuarioAtual()?.uid ?: return
         db.collection("biblioteca_usuarios").document("${uid}_$livroIdAtual").get()
             .addOnSuccessListener { doc ->
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 val status = doc.getString("statusLeitura") ?: ""
                 atualizarVisualBotoesStatus(status)
             }
@@ -267,6 +289,7 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
             .whereEqualTo("livroId", livroIdAtual)
             .get()
             .addOnSuccessListener { result ->
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 var soma = 0.0
                 var cont = 0
                 for (doc in result) {
@@ -338,10 +361,10 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
         db.collection("biblioteca_usuarios").document("${uid}_${livroIdAtual}")
             .set(campos, SetOptions.merge())
             .addOnSuccessListener {
-                Toast.makeText(this, getString(R.string.fmt_status_salvo, status), Toast.LENGTH_SHORT).show()
+                safeToast(getString(R.string.fmt_status_salvo, status))
             }
             .addOnFailureListener {
-                Toast.makeText(this, getString(R.string.erro_salvar_status), Toast.LENGTH_SHORT).show()
+                safeToast(getString(R.string.erro_salvar_status))
             }
     }
 
@@ -355,12 +378,14 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
             adicionarSuaLivraria()
         }
         findViewById<MaterialButton>(R.id.buttonVerMais)?.setOnClickListener {
-            startActivity(Intent(this, TelaRF13VerMaisLivro::class.java)
-                .putExtra("LIVRO_ID", livroIdAtual))
+            if (livroIdAtual.isNotEmpty()) {
+                startActivity(Intent(this, TelaRF13VerMaisLivro::class.java)
+                    .putExtra("LIVRO_ID", livroIdAtual))
+            }
         }
         findViewById<MaterialButton>(R.id.buttonOpcoesLeitura)?.setOnClickListener {
             if (livroIdAtual.isEmpty()) {
-                Toast.makeText(this, getString(R.string.msg_aguarde_carregamento), Toast.LENGTH_SHORT).show()
+                safeToast(getString(R.string.msg_aguarde_carregamento))
                 return@setOnClickListener
             }
             val intent = Intent(this, com.example.bibliounifornew.features.usuario.biblioteca.TelaRF14LeituraActivity::class.java)
@@ -371,11 +396,11 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
 
     private fun adicionarListaDesejos() {
         if (livroIdAtual.isEmpty()) {
-            Toast.makeText(this, getString(R.string.msg_aguarde_carregamento), Toast.LENGTH_SHORT).show()
+            safeToast(getString(R.string.msg_aguarde_carregamento))
             return
         }
         val uid = authRepository.getUsuarioAtual()?.uid ?: run {
-            Toast.makeText(this, getString(R.string.erro_login_necessario), Toast.LENGTH_SHORT).show()
+            safeToast(getString(R.string.erro_login_necessario))
             return
         }
 
@@ -384,6 +409,7 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
             .whereEqualTo("livroId", livroIdAtual)
             .get()
             .addOnSuccessListener { query ->
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 if (!query.isEmpty) {
                     mostrarSnackbarCinza("Este livro já está na sua Lista de Desejos.")
                     return@addOnSuccessListener
@@ -402,6 +428,7 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
                 db.collection("lista_desejos").document("${uid}_$livroIdAtual")
                     .set(dados)
                     .addOnSuccessListener {
+                        if (isFinishing || isDestroyed) return@addOnSuccessListener
                         mostrarSnackbarCinza("Livro adicionado à sua Lista de Desejos.")
                     }
             }
@@ -409,16 +436,17 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
 
     private fun adicionarSuaLivraria() {
         if (livroIdAtual.isEmpty()) {
-            Toast.makeText(this, getString(R.string.erro_livro_sem_id), Toast.LENGTH_SHORT).show()
+            safeToast(getString(R.string.erro_livro_sem_id))
             return
         }
         val uid = authRepository.getUsuarioAtual()?.uid ?: run {
-            Toast.makeText(this, getString(R.string.erro_login_necessario), Toast.LENGTH_SHORT).show()
+            safeToast(getString(R.string.erro_login_necessario))
             return
         }
 
         db.collection("biblioteca_usuarios").document("${uid}_${livroIdAtual}").get()
             .addOnSuccessListener { doc ->
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 if (doc.exists()) {
                     mostrarSnackbarCinza("Este livro já está na sua Livraria.")
                     return@addOnSuccessListener
@@ -436,20 +464,10 @@ class TelaRF12TelaDoLivro : AppCompatActivity() {
                 db.collection("biblioteca_usuarios").document("${uid}_${livroIdAtual}")
                     .set(dados, SetOptions.merge())
                     .addOnSuccessListener {
+                        if (isFinishing || isDestroyed) return@addOnSuccessListener
                         usuarioRepository.registrarNoHistorico(uid, livroIdAtual, tituloAtual, autorAtual, "Adicionado")
                         mostrarSnackbarCinza("Livro adicionado à sua Livraria.")
                     }
             }
-    }
-
-    private fun mostrarSnackbarCinza(mensagem: String) {
-        val snackbar = com.google.android.material.snackbar.Snackbar.make(
-            findViewById(android.R.id.content),
-            mensagem,
-            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
-        )
-        snackbar.setBackgroundTint(Color.parseColor("#444444"))
-        snackbar.setTextColor(Color.WHITE)
-        snackbar.show()
     }
 }

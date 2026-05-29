@@ -39,6 +39,7 @@ class TelaRF16ListaDesejosActivity : AppCompatActivity() {
     private lateinit var adapter  : ListaDesejosAdapter
     private val listaDesejos      = mutableListOf<ItemListaDesejos>()
     private var usuarioId         : String = ""
+    private var activeDialog      : Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -178,26 +179,36 @@ class TelaRF16ListaDesejosActivity : AppCompatActivity() {
         db.collection("biblioteca_usuarios").document("${usuarioId}_${item.livroId}")
             .set(dados, SetOptions.merge())
             .addOnSuccessListener {
-                Toast.makeText(this, "\"${item.titulo}\" adicionado à sua Livraria!", Toast.LENGTH_SHORT).show()
+                if (!isFinishing && !isDestroyed) {
+                    Toast.makeText(this, "\"${item.titulo}\" adicionado à sua Livraria!", Toast.LENGTH_SHORT).show()
+                }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Erro ao adicionar à Livraria.", Toast.LENGTH_SHORT).show()
+                if (!isFinishing && !isDestroyed) {
+                    Toast.makeText(this, "Erro ao adicionar à Livraria.", Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
     private fun excluirDaLista(item: ItemListaDesejos, position: Int) {
         usuarioRepository.removerDaListaDesejos(usuarioId, item.livroId) { sucesso ->
-            adapter.removerItem(position)
-            val msg = if (sucesso) "\"${item.titulo}\" removido da lista de desejos."
-                      else "Removido localmente (falha no servidor)."
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            if (!isFinishing && !isDestroyed) {
+                adapter.removerItem(position)
+                val msg = if (sucesso) "\"${item.titulo}\" removido da lista de desejos."
+                          else "Removido localmente (falha no servidor)."
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     // ─── POPUPS ───────────────────────────────────────────────────────────────
 
     private fun showPopupAlugar(item: ItemListaDesejos) {
+        if (isFinishing || isDestroyed) return
+        activeDialog?.dismiss()
+
         val dialog = Dialog(this)
+        activeDialog = dialog
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_alugar_livro)
         
@@ -245,12 +256,18 @@ class TelaRF16ListaDesejosActivity : AppCompatActivity() {
                 if (!isFinishing && !isDestroyed) showPopupLivroAdicionado()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Erro ao solicitar: ${e.message}", Toast.LENGTH_SHORT).show()
+                if (!isFinishing && !isDestroyed) {
+                    Toast.makeText(this, "Erro ao solicitar: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
     private fun showPopupLivroAdicionado() {
+        if (isFinishing || isDestroyed) return
+        activeDialog?.dismiss()
+
         val dialog = Dialog(this)
+        activeDialog = dialog
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_livro_adicionado)
         
@@ -271,5 +288,11 @@ class TelaRF16ListaDesejosActivity : AppCompatActivity() {
             finish()
         }
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        activeDialog?.dismiss()
+        activeDialog = null
+        super.onDestroy()
     }
 }

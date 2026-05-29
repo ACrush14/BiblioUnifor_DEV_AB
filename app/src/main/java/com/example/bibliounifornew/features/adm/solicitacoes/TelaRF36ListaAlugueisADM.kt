@@ -1,11 +1,16 @@
 package com.example.bibliounifornew.features.adm.solicitacoes
 
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.TextView
-import android.widget.Toast
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +31,12 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
     private lateinit var adapter: AlugueisAdapter
     private val listaAlugueis = mutableListOf<ItemAluguel>()
     private var filterUsuarioId: String? = null
+    private var activeDialog: Dialog? = null
+
+    // Estados dos filtros
+    private var filtroNomeUsuario: String = ""
+    private var filtroStatus: String      = "Todos"
+    private var termoBuscaBarra: String   = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +64,27 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
 
         carregarAlugueis()
 
+        // ─── FILTRO / BUSCA ───────────────────────────────────────────────────
+        val editPesquisa = findViewById<EditText>(R.id.editPesquisaAlugueis)
+        editPesquisa?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                termoBuscaBarra = s?.toString()?.trim()?.lowercase() ?: ""
+                aplicarFiltros()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        val btnFiltro = findViewById<ImageView>(R.id.buttonFiltroAlugueis)
+        btnFiltro?.setOnClickListener { abrirPopupFiltro() }
+
         NavigationHelperADM.configurarBarraNavegacao(this)
+    }
+
+    override fun onDestroy() {
+        activeDialog?.dismiss()
+        activeDialog = null
+        super.onDestroy()
     }
 
     /**
@@ -98,8 +129,10 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
                 val lista = mapearDocumentos(result.documents)
                 withContext(Dispatchers.Main) {
                     if (isFinishing || isDestroyed) return@withContext
+                    listaAlugueis.clear()
+                    listaAlugueis.addAll(lista)
                     tvVazia?.visibility = if (lista.isEmpty()) View.VISIBLE else View.GONE
-                    adapter.atualizarLista(lista)
+                    aplicarFiltros()
                 }
 
             } catch (e: Exception) {
@@ -176,5 +209,85 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
                 )
             }
             .sortedByDescending { it.dataMs }
+    }
+
+    // ─── FILTRAGEM ──────────────────────────────────────────────────────────
+
+    private fun aplicarFiltros() {
+        val filtrada = listaAlugueis.filter { item ->
+            // 1. Barra de pesquisa (Nome Usuário ou Título Livro)
+            val matchBarra = termoBuscaBarra.isEmpty() ||
+                    item.nomeUsuario.lowercase().contains(termoBuscaBarra) ||
+                    item.tituloLivro.lowercase().contains(termoBuscaBarra)
+
+            // 2. Filtro Nome no Popup
+            val matchNome = filtroNomeUsuario.isEmpty() ||
+                    item.nomeUsuario.lowercase().contains(filtroNomeUsuario.lowercase())
+
+            // 3. Filtro Status no Popup
+            val matchStatus = filtroStatus == "Todos" ||
+                    item.status.equals(filtroStatus, ignoreCase = true)
+
+            matchBarra && matchNome && matchStatus
+        }
+        adapter.atualizarLista(filtrada)
+        
+        val tvVazia = findViewById<TextView>(R.id.tvListaVazia)
+        tvVazia?.visibility = if (filtrada.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    private fun abrirPopupFiltro() {
+        activeDialog?.dismiss()
+        val dialog = Dialog(this)
+        activeDialog = dialog
+
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.popup_filtrar_midia) // Reutilizando layout compatível
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setOnDismissListener { activeDialog = null }
+
+        val spinner   = dialog.findViewById<Spinner>(R.id.spinnerSolicitacao)
+        val editNome  = dialog.findViewById<EditText>(R.id.editNomeUsuario)
+        val btnSalvar = dialog.findViewById<Button>(R.id.btnSalvarFiltro)
+        val btnLimpar = dialog.findViewById<Button>(R.id.btnLimparFiltro)
+        val txtTitulo = dialog.findViewById<TextView>(R.id.textTituloPopup)
+
+        txtTitulo?.text = getString(R.string.titulo_lista_alugueis)
+        editNome?.hint  = "Nome do Usuário"
+
+        val opcoes = arrayOf("Todos", "pendente", "ativo", "atrasado")
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, opcoes)
+        spinner?.adapter = spinnerAdapter
+
+        // Restaurar valores
+        editNome?.setText(filtroNomeUsuario)
+        val pos = opcoes.indexOf(filtroStatus)
+        if (pos >= 0) spinner?.setSelection(pos)
+
+        btnSalvar?.setOnClickListener {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+
+            filtroNomeUsuario = editNome?.text.toString().trim()
+            filtroStatus      = spinner?.selectedItem.toString()
+
+            aplicarFiltros()
+            dialog.dismiss()
+        }
+
+        btnLimpar?.setOnClickListener {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+
+            filtroNomeUsuario = ""
+            filtroStatus      = "Todos"
+            editNome?.setText("")
+            spinner?.setSelection(0)
+            aplicarFiltros()
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

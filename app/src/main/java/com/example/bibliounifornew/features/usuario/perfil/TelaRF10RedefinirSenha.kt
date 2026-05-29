@@ -29,6 +29,7 @@ class TelaRF10RedefinirSenha : AppCompatActivity() {
     private var novaSenhaVisivel = false
     private var confirmaSenhaVisivel = false
     private val auth = FirebaseAuth.getInstance()
+    private var activeDialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -171,10 +172,12 @@ class TelaRF10RedefinirSenha : AppCompatActivity() {
                         val credential = EmailAuthProvider.getCredential(firebaseUser.email!!, senhaAtual)
                         firebaseUser.reauthenticate(credential)
                             .addOnCompleteListener { reauthTask ->
+                                if (isFinishing || isDestroyed) return@addOnCompleteListener
                                 if (reauthTask.isSuccessful) {
                                     // 2. ATUALIZAR SENHA
                                     firebaseUser.updatePassword(novaSenha)
                                         .addOnCompleteListener { updateTask ->
+                                            if (isFinishing || isDestroyed) return@addOnCompleteListener
                                             btnSalvar.isEnabled = true
                                             btnSalvar.text = "Salvar Alterações"
 
@@ -207,6 +210,7 @@ class TelaRF10RedefinirSenha : AppCompatActivity() {
 
     private fun exibirPopupSucesso() {
         val dialog = Dialog(this)
+        activeDialog = dialog
         dialog.setContentView(R.layout.popup_sucesso_redefinir_senha)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setCancelable(false)
@@ -218,6 +222,13 @@ class TelaRF10RedefinirSenha : AppCompatActivity() {
             finish() // Fecha TelaRF10 e volta para RF09
         }
 
+        dialog.setOnDismissListener { activeDialog = null }
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        activeDialog?.dismiss()
+        activeDialog = null
+        super.onDestroy()
     }
 }

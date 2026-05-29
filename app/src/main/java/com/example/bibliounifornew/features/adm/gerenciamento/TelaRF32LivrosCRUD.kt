@@ -30,6 +30,7 @@ class TelaRF32LivrosCRUD : AppCompatActivity() {
     private val listaCompleta  = mutableListOf<ItemLivroAdm>()
     private var txtVazio: TextView? = null
     private var firestoreListener: ListenerRegistration? = null
+    private var dialogFiltro: Dialog? = null
 
     // Estados dos filtros para persistência durante atualizações do banco
     private var termoBuscaBarra: String = ""
@@ -91,6 +92,23 @@ class TelaRF32LivrosCRUD : AppCompatActivity() {
         super.onPause()
         firestoreListener?.remove()
         firestoreListener = null
+        // Fechar o diálogo se a Activity for pausada para evitar vazamentos e inconsistências
+        dialogFiltro?.let {
+            if (it.isShowing) {
+                it.dismiss()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        // Garante que o diálogo seja fechado antes de destruir a Activity
+        dialogFiltro?.let {
+            if (it.isShowing) {
+                it.dismiss()
+            }
+        }
+        dialogFiltro = null
+        super.onDestroy()
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -158,7 +176,11 @@ class TelaRF32LivrosCRUD : AppCompatActivity() {
     // POPUP FILTRO AVANÇADO (Melhorado)
     // ─────────────────────────────────────────────────────────────────────────
     private fun abrirPopupFiltro() {
-        val dialog = Dialog(this)
+        // Se já houver um diálogo aberto, fechamos antes de criar um novo para evitar vazamento de referência
+        dialogFiltro?.dismiss()
+
+        dialogFiltro = Dialog(this)
+        val dialog = dialogFiltro!!
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.popup_filtro_verificar_midia)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

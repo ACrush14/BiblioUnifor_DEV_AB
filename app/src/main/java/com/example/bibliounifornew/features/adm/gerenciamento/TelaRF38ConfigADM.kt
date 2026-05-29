@@ -8,9 +8,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.text.InputType
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
 import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
@@ -26,14 +23,12 @@ import kotlinx.coroutines.withContext
 import coil.load
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.UsuarioRepository
-import com.example.bibliounifornew.login.TelaRF01BemVindo
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import java.io.ByteArrayOutputStream
 
 class TelaRF38ConfigADM : AppCompatActivity() {
 
@@ -41,7 +36,7 @@ class TelaRF38ConfigADM : AppCompatActivity() {
     private val db   = FirebaseFirestore.getInstance()
     private val usuarioRepository = UsuarioRepository()
 
-    // Launcher de galeria — registrado antes de onCreate
+    // Launcher de galeria
     private val galeria = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let { processarESubirFoto(it) }
     }
@@ -58,24 +53,6 @@ class TelaRF38ConfigADM : AppCompatActivity() {
         val btnRedefinirSenha = findViewById<MaterialButton>(R.id.btnRedefinirSenha)
         val btnApagarConta   = findViewById<MaterialButton>(R.id.btnApagarConta)
 
-        // ── Olho para campo senha (decorativo, desabilitado) ──────────────────
-        val editSenhaAtual = findViewById<EditText>(R.id.editSenhaAtual)
-        val iconOlhoSenha  = findViewById<ImageView>(R.id.iconOlhoSenhaAtual)
-        editSenhaAtual.isEnabled = false
-
-        var senhaVisivel = false
-        iconOlhoSenha.setOnClickListener {
-            senhaVisivel = !senhaVisivel
-            if (senhaVisivel) {
-                editSenhaAtual.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                iconOlhoSenha.setImageResource(R.drawable.ic_eye_open)
-            } else {
-                editSenhaAtual.transformationMethod = PasswordTransformationMethod.getInstance()
-                iconOlhoSenha.setImageResource(R.drawable.ic_eye_closed)
-            }
-            editSenhaAtual.setSelection(editSenhaAtual.text.length)
-        }
-
         // ── Carrega dados do perfil ───────────────────────────────────────────
         val uid = auth.currentUser?.uid
         if (uid != null) {
@@ -83,7 +60,6 @@ class TelaRF38ConfigADM : AppCompatActivity() {
                 .addOnSuccessListener { doc ->
                     editNome.setText(doc.getString("nome")    ?: "")
                     editUsuario.setText(doc.getString("usuario") ?: "")
-                    // Carrega foto de perfil se disponível
                     val fotoUrl = doc.getString("fotoUrl") ?: ""
                     if (fotoUrl.isNotEmpty()) {
                         imageFoto?.load(fotoUrl) {
@@ -94,7 +70,6 @@ class TelaRF38ConfigADM : AppCompatActivity() {
                 }
         }
 
-        // ── Clique na foto de perfil ──────────────────────────────────────────
         imageFoto?.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle(getString(R.string.alert_foto_titulo))
@@ -106,7 +81,6 @@ class TelaRF38ConfigADM : AppCompatActivity() {
                 .show()
         }
 
-        // ── Salvar alterações de perfil ───────────────────────────────────────
         btnSalvar?.setOnClickListener {
             val novoNome    = editNome.text.toString().trim()
             val novoUsuario = editUsuario.text.toString().trim()
@@ -133,29 +107,20 @@ class TelaRF38ConfigADM : AppCompatActivity() {
                 }
         }
 
-        // ── Redefinir senha: abre tela interna ───────────────────────────────
         btnRedefinirSenha?.setOnClickListener {
             startActivity(Intent(this, TelaRF39RedefinirADMInterno::class.java))
         }
 
-        // ── Apagar conta ──────────────────────────────────────────────────────
         btnApagarConta?.setOnClickListener {
             exibirPopupApagarConta(uid)
         }
     }
 
-    // ─── UPLOAD DE FOTO ───────────────────────────────────────────────────────
-
     private fun processarESubirFoto(uri: Uri) {
         val uid       = auth.currentUser?.uid ?: return
         val imageFoto = findViewById<ImageView>(R.id.imageFotoAdm)
-
-        // Feedback imediato: escurece a foto enquanto processa
         imageFoto?.alpha = 0.5f
 
-        // Todo o I/O (leitura do arquivo + compressão) em Dispatchers.IO.
-        // API moderna: contentResolver.openInputStream() substitui o
-        // MediaStore.Images.Media.getBitmap() deprecado desde API 29.
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val inputStream = contentResolver.openInputStream(uri)
@@ -165,24 +130,20 @@ class TelaRF38ConfigADM : AppCompatActivity() {
                 if (original == null) {
                     withContext(Dispatchers.Main) {
                         imageFoto?.alpha = 1.0f
-                        Toast.makeText(this@TelaRF38ConfigADM,
-                            getString(R.string.erro_processar_imagem), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@TelaRF38ConfigADM, getString(R.string.erro_processar_imagem), Toast.LENGTH_SHORT).show()
                     }
                     return@launch
                 }
 
-                // Redimensionamento e compressão — CPU intensivo, permanece em IO
                 val redimensionado = Bitmap.createScaledBitmap(original, 400, 400, true)
-                original.recycle()          // libera memória do bitmap original imediatamente
+                original.recycle()
                 val baos = java.io.ByteArrayOutputStream()
                 redimensionado.compress(Bitmap.CompressFormat.JPEG, 80, baos)
-                redimensionado.recycle()    // libera após compressão
+                redimensionado.recycle()
                 val bytes = baos.toByteArray()
 
-                // Volta à Main Thread apenas para atualizar a UI e disparar o upload
                 withContext(Dispatchers.Main) {
                     if (isFinishing || isDestroyed) return@withContext
-
                     usuarioRepository.uploadFotoPerfil(uid, bytes, "administradores") { sucesso, url, _ ->
                         if (isFinishing || isDestroyed) return@uploadFotoPerfil
                         imageFoto?.alpha = 1.0f
@@ -191,25 +152,20 @@ class TelaRF38ConfigADM : AppCompatActivity() {
                                 placeholder(R.drawable.user_placeholder)
                                 error(R.drawable.user_placeholder)
                             }
-                            Toast.makeText(this@TelaRF38ConfigADM,
-                                getString(R.string.msg_foto_atualizada), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@TelaRF38ConfigADM, getString(R.string.msg_foto_atualizada), Toast.LENGTH_SHORT).show()
                         } else {
-                            Toast.makeText(this@TelaRF38ConfigADM,
-                                getString(R.string.erro_salvar_perfil), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@TelaRF38ConfigADM, getString(R.string.erro_salvar_perfil), Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     imageFoto?.alpha = 1.0f
-                    Toast.makeText(this@TelaRF38ConfigADM,
-                        getString(R.string.erro_processar_imagem), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@TelaRF38ConfigADM, getString(R.string.erro_processar_imagem), Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
-
-    // ─── POPUP APAGAR CONTA — re-autentica antes de deletar ──────────────────
 
     private fun exibirPopupApagarConta(uid: String?) {
         val dialog = Dialog(this)
@@ -250,7 +206,7 @@ class TelaRF38ConfigADM : AppCompatActivity() {
 
                     currentUser.delete()
                         .addOnSuccessListener {
-                            firestoreDelete?.addOnFailureListener { /* silencia erro de limpeza */ }
+                            firestoreDelete?.addOnFailureListener { }
                             dialog.dismiss()
                             Toast.makeText(this, getString(R.string.msg_conta_apagada_sucesso), Toast.LENGTH_SHORT).show()
                             val intent = Intent(this, com.example.bibliounifornew.login.TelaRF01BemVindo::class.java)

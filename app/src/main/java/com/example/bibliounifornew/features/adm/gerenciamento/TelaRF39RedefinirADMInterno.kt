@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -21,7 +20,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.login.TelaRF23LoginADM
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 
 class TelaRF39RedefinirADMInterno : AppCompatActivity() {
@@ -32,30 +33,41 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf39_redefinir_adm_interno)
 
+        val etSenhaAtual       = findViewById<EditText>(R.id.editTextSenhaAtual)
         val etSenha            = findViewById<EditText>(R.id.editTextTextPassword)
         val etSenhaConfirmacao = findViewById<EditText>(R.id.editTextTextPasswordConfirmacao)
-        // BUG-D1 FIX: XML declara <ImageView>, não <TextView> — cast corrigido
         val btnX               = findViewById<ImageView>(R.id.buttonX)
         val btnSalvar          = findViewById<MaterialButton>(R.id.buttonSalvar)
 
+        val iconOlhoSenhaAtual       = findViewById<ImageView>(R.id.iconOlhoSenhaAtual)
         val iconOlhoSenha            = findViewById<ImageView>(R.id.iconOlhoSenha)
         val iconOlhoSenhaConfirmacao = findViewById<ImageView>(R.id.iconOlhoSenhaConfirmacao)
 
-        // BUG-D2 FIX: email real do admin — nunca hardcoded
         val textViewUserEmail = findViewById<TextView>(R.id.textViewUserEmail)
         textViewUserEmail?.text = auth.currentUser?.email ?: ""
 
         // TextViews de validação dinâmica
+        val tvErroSenhaAtual = findViewById<TextView>(R.id.tvErroSenhaAtual)
         val tvErroMin       = findViewById<TextView>(R.id.tvErroMinCaracteres)
         val tvErroNum       = findViewById<TextView>(R.id.tvErroNumero)
         val tvErroMaiusc    = findViewById<TextView>(R.id.tvErroMaiuscula)
         val tvErroIgual     = findViewById<TextView>(R.id.tvErroIgualAntiga)
         val tvErroDiferente = findViewById<TextView>(R.id.textErroDiferente)
 
-        // Esconde erro "igual à antiga" — não temos senha atual para comparar aqui
-        tvErroIgual?.visibility = View.GONE
-
         // ── Olhos ─────────────────────────────────────────────────────────────
+        var senhaAtualVisivel = false
+        iconOlhoSenhaAtual?.setOnClickListener {
+            senhaAtualVisivel = !senhaAtualVisivel
+            if (senhaAtualVisivel) {
+                etSenhaAtual.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                iconOlhoSenhaAtual.setImageResource(R.drawable.ic_eye_open)
+            } else {
+                etSenhaAtual.transformationMethod = PasswordTransformationMethod.getInstance()
+                iconOlhoSenhaAtual.setImageResource(R.drawable.ic_eye_closed)
+            }
+            etSenhaAtual.setSelection(etSenhaAtual.text.length)
+        }
+
         var senhaVisivel = false
         iconOlhoSenha?.setOnClickListener {
             senhaVisivel = !senhaVisivel
@@ -86,6 +98,7 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
         val watcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val current = etSenhaAtual.text.toString()
                 val pass    = etSenha.text.toString()
                 val confirm = etSenhaConfirmacao.text.toString()
 
@@ -93,62 +106,91 @@ class TelaRF39RedefinirADMInterno : AppCompatActivity() {
                 val temNumero    = pass.any { it.isDigit() }
                 val temMaiuscula = pass.any { it.isUpperCase() }
                 val coincidem    = pass == confirm && pass.isNotEmpty()
+                val diferenteDaAtual = pass != current || pass.isEmpty()
 
+                tvErroSenhaAtual?.visibility = View.GONE
                 tvErroMin?.visibility    = if (!temMinimo    && pass.isNotEmpty()) View.VISIBLE else View.GONE
                 tvErroNum?.visibility    = if (!temNumero    && pass.isNotEmpty()) View.VISIBLE else View.GONE
                 tvErroMaiusc?.visibility = if (!temMaiuscula && pass.isNotEmpty()) View.VISIBLE else View.GONE
+                tvErroIgual?.visibility  = if (!diferenteDaAtual && pass.isNotEmpty()) View.VISIBLE else View.GONE
                 tvErroDiferente?.visibility = if (!coincidem && confirm.isNotEmpty()) View.VISIBLE else View.GONE
 
-                val isValid = temMinimo && temNumero && temMaiuscula && coincidem
+                val isValid = current.isNotEmpty() && temMinimo && temNumero && temMaiuscula && coincidem && diferenteDaAtual
                 btnSalvar.isEnabled = isValid
                 btnSalvar.alpha     = if (isValid) 1.0f else 0.5f
             }
             override fun afterTextChanged(s: Editable?) {}
         }
 
+        etSenhaAtual.addTextChangedListener(watcher)
         etSenha.addTextChangedListener(watcher)
         etSenhaConfirmacao.addTextChangedListener(watcher)
 
         // ── Botão X (fechar) ──────────────────────────────────────────────────
         btnX?.setOnClickListener { finish() }
 
-        // ── Salvar — chama updatePassword() real ──────────────────────────────
+        // ── Salvar ───────────────────────────────────────────────────────────
         btnSalvar.setOnClickListener {
+            val senhaAtual  = etSenhaAtual.text.toString()
             val novaSenha   = etSenha.text.toString()
             val currentUser = auth.currentUser
 
-            if (currentUser == null) {
+            if (currentUser == null || currentUser.email == null) {
                 Toast.makeText(this, getString(R.string.erro_sessao_expirada), Toast.LENGTH_SHORT).show()
                 finish()
                 return@setOnClickListener
             }
 
             btnSalvar.isEnabled = false
+            btnSalvar.text = getString(R.string.msg_salvando)
 
-            currentUser.updatePassword(novaSenha)
-                .addOnSuccessListener {
-                    btnSalvar.isEnabled = true
-                    exibirPopupSucesso()
-                }
-                .addOnFailureListener { e ->
-                    btnSalvar.isEnabled = true
-                    if (e is FirebaseAuthRecentLoginRequiredException) {
-                        Toast.makeText(this, getString(R.string.msg_sessao_expirada_senha), Toast.LENGTH_LONG).show()
-                        auth.signOut()
-                        val intent = Intent(this, TelaRF23LoginADM::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
+            // 1. Reautenticar
+            val credential = EmailAuthProvider.getCredential(currentUser.email!!, senhaAtual)
+            currentUser.reauthenticate(credential)
+                .addOnCompleteListener { reauthTask ->
+                    if (isFinishing || isDestroyed) return@addOnCompleteListener
+
+                    if (reauthTask.isSuccessful) {
+                        // 2. Atualizar senha
+                        currentUser.updatePassword(novaSenha)
+                            .addOnCompleteListener { updateTask ->
+                                if (isFinishing || isDestroyed) return@addOnCompleteListener
+                                
+                                btnSalvar.isEnabled = true
+                                btnSalvar.text = getString(R.string.btn_salvar_alteracoes)
+
+                                if (updateTask.isSuccessful) {
+                                    exibirPopupSucesso()
+                                } else {
+                                    val e = updateTask.exception
+                                    if (e is FirebaseAuthRecentLoginRequiredException) {
+                                        Toast.makeText(this, getString(R.string.msg_sessao_expirada_senha), Toast.LENGTH_LONG).show()
+                                        auth.signOut()
+                                        val intent = Intent(this, TelaRF23LoginADM::class.java)
+                                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                        startActivity(intent)
+                                        finish()
+                                    } else {
+                                        Toast.makeText(this, getString(R.string.erro_alterar_senha), Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            }
                     } else {
-                        Toast.makeText(this, getString(R.string.erro_alterar_senha), Toast.LENGTH_LONG).show()
+                        btnSalvar.isEnabled = true
+                        btnSalvar.text = getString(R.string.btn_salvar_alteracoes)
+                        
+                        val exception = reauthTask.exception
+                        if (exception is FirebaseAuthInvalidCredentialsException) {
+                            tvErroSenhaAtual?.text = getString(R.string.erro_senha_incorreta)
+                            tvErroSenhaAtual?.visibility = View.VISIBLE
+                        } else {
+                            Toast.makeText(this, getString(R.string.erro_generico), Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Popup de sucesso
-    // ─────────────────────────────────────────────────────────────────────────
     private fun exibirPopupSucesso() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
