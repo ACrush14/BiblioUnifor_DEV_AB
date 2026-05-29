@@ -1,9 +1,13 @@
 package com.example.bibliounifornew.features.usuario.livro
 
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.BibliotecaOnlineRepository
 import com.example.bibliounifornew.data.EntidadeLivro
+import com.example.bibliounifornew.features.usuario.solicitacao.TelaRF18StatusAluguel
 import com.example.bibliounifornew.features.usuario.solicitacao.TelaRF19SolicitacoesTermosCondicoes
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -113,19 +118,12 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
             .document("${uid}_${livro.id}")
             .set(dados, SetOptions.merge())
             .addOnSuccessListener {
-<<<<<<< HEAD
                 if (!isFinishing && !isDestroyed) {
-                    val snackbar = Snackbar.make(recyclerView, "Livro adicionado à sua livraria.", Snackbar.LENGTH_LONG)
-                    snackbar.setBackgroundTint(Color.parseColor("#444444"))
-                    snackbar.setTextColor(Color.WHITE)
-                    snackbar.show()
+                    Snackbar.make(recyclerView, "Livro adicionado à sua livraria.", Snackbar.LENGTH_LONG)
+                        .setBackgroundTint(Color.parseColor("#444444"))
+                        .setTextColor(Color.WHITE)
+                        .show()
                 }
-=======
-                Snackbar.make(recyclerView, "Livro adicionado à sua livraria.", Snackbar.LENGTH_LONG)
-                    .setBackgroundTint(Color.parseColor("#444444"))
-                    .setTextColor(Color.WHITE)
-                    .show()
->>>>>>> 98bdadb (Evolução do sistema de gestão de acervo, fluxo de aluguel e integração de mídias acessíveis)
             }
             .addOnFailureListener {
                 if (!isFinishing && !isDestroyed) {
@@ -134,7 +132,6 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
             }
     }
 
-<<<<<<< HEAD
     private fun exibirPopupAlugar(livro: EntidadeLivro) {
         if (isFinishing || isDestroyed) return
         activeDialog?.dismiss()
@@ -197,7 +194,7 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
 
             findViewById<Button>(R.id.buttonVerMeusLivros)?.setOnClickListener {
                 dismiss()
-                val intent = android.content.Intent(this@TelaRF11_1_ResultadoPesquisa, TelaRF18StatusAluguel::class.java)
+                val intent = Intent(this@TelaRF11_1_ResultadoPesquisa, TelaRF18StatusAluguel::class.java)
                 startActivity(intent)
                 finish()
             }
@@ -209,7 +206,8 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
         activeDialog?.dismiss()
         activeDialog = null
         super.onDestroy()
-=======
+    }
+
     // ─── BUSCA COM ISBN-AWARENESS ──────────────────────────────────────────────
 
     /**
@@ -235,7 +233,6 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
     private fun isIsbn13(s: String): Boolean {
         val n = normalizarIsbn(s)
         return n.length == 13 && n.all { it.isDigit() }
->>>>>>> 98bdadb (Evolução do sistema de gestão de acervo, fluxo de aluguel e integração de mídias acessíveis)
     }
 
     private fun realizarBusca(
@@ -413,20 +410,11 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
                     termoDeBusca = termoParaApi,
                     onSuccess = {
                         lifecycleScope.launch(Dispatchers.Main) {
-<<<<<<< HEAD
                             if (isFinishing || isDestroyed) return@launch
                             Toast.makeText(this@TelaRF11_1_ResultadoPesquisa, getString(R.string.msg_buscando_novidades), Toast.LENGTH_SHORT).show()
                             delay(1000)
                             
                             if (isFinishing || isDestroyed) return@launch
-=======
-                            Toast.makeText(
-                                this@TelaRF11_1_ResultadoPesquisa,
-                                getString(R.string.msg_buscando_novidades),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            delay(1000)
->>>>>>> 98bdadb (Evolução do sistema de gestão de acervo, fluxo de aluguel e integração de mídias acessíveis)
                             val originalTermo = intent.getStringExtra("TERMO_PESQUISA") ?: ""
                             val fTitulo = intent.getStringExtra("FILTRO_TITULO") ?: ""
                             val fAutor  = intent.getStringExtra("FILTRO_AUTOR")  ?: ""
