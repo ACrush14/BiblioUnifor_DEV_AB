@@ -55,14 +55,11 @@ class LivroAdapter(
             holder.btnAlugar.alpha = 0.5f
         }
 
-        if (livro.coverUrl.isNotEmpty()) {
-            holder.imgLivro.load(livro.coverUrl) {
-                crossfade(true)
-                placeholder(R.drawable.osda)
-                error(R.drawable.osda)
-            }
-        } else {
-            holder.imgLivro.setImageResource(R.drawable.osda)
+        holder.imgLivro.load(livro.coverUrl.ifEmpty { null }) {
+            crossfade(true)
+            placeholder(R.drawable.ic_sem_capa)
+            error(R.drawable.ic_sem_capa)
+            fallback(R.drawable.ic_sem_capa)
         }
 
         // Todos os pontos de entrada para os detalhes do livro

@@ -208,9 +208,11 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
 
         val catTodos = try { getString(R.string.categoria_todos) } catch (_: Exception) { "Todas as Categorias" }
         val filtroCatTratado = if (fCat.isEmpty()) catTodos else fCat
-        val ignorarCat = filtroCatTratado.equals(catTodos, ignoreCase = true)
+        val ignorarCat = fCat.isEmpty()
+            || filtroCatTratado.equals(catTodos, ignoreCase = true)
             || filtroCatTratado.equals("Todas as Categorias", ignoreCase = true)
             || filtroCatTratado.equals("Todas", ignoreCase = true)
+            || filtroCatTratado.equals("Todos", ignoreCase = true)
 
         // Issue #7 FIX: move o Firestore get() + todo o loop de filtragem para IO.
         // O addOnSuccessListener rodava na Main thread — com 150+ docs e comparações
@@ -219,6 +221,7 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
             try {
                 val result = FirebaseFirestore.getInstance()
                     .collection("livros")
+                    .limit(150)
                     .get()
                     .await()
 
@@ -250,22 +253,22 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
                         // ── Cadeia AND cumulativa (Issue #7) ──────────────────────
                         // 1. Termo principal (título, autor ou ISBN)
                         val matchTermo = termoLower.isEmpty()
-                            || title.lowercase().contains(termoLower)
-                            || author.lowercase().contains(termoLower)
-                            || isbn10.lowercase().contains(termoLower)
-                            || isbn13.lowercase().contains(termoLower)
+                            || title.contains(termoLower, ignoreCase = true)
+                            || author.contains(termoLower, ignoreCase = true)
+                            || isbn10.contains(termoLower, ignoreCase = true)
+                            || isbn13.contains(termoLower, ignoreCase = true)
 
                         // 2. Filtro de título avançado
-                        val matchTitulo = titLower.isEmpty() || title.lowercase().contains(titLower)
+                        val matchTitulo = titLower.isEmpty() || title.contains(titLower, ignoreCase = true)
 
                         // 3. Filtro de autor avançado
-                        val matchAutor  = autLower.isEmpty() || author.lowercase().contains(autLower)
+                        val matchAutor  = autLower.isEmpty() || author.contains(autLower, ignoreCase = true)
 
                         // 4. Filtro de categoria (direto + sinônimos)
                         val catLower  = category.lowercase()
                         val fCatLower = filtroCatTratado.lowercase()
 
-                        val matchCatDirect  = catLower.contains(fCatLower)
+                        val matchCatDirect  = category.contains(filtroCatTratado, ignoreCase = true)
                         val matchCatSynonym = when (fCatLower) {
                             "tecnologia" -> {
                                 val s = listOf(
@@ -363,10 +366,7 @@ class TelaRF11_1_ResultadoPesquisa : AppCompatActivity() {
                 }
 
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    if (isFinishing || isDestroyed) return@withContext
-                    Log.e("BUSCA", "Erro Firestore", e)
-                }
+                Log.e("BuscaLivros", "Erro: ", e)
             }
         }
     }

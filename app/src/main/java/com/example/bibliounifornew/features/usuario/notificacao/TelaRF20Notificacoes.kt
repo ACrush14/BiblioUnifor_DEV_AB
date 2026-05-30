@@ -102,30 +102,32 @@ class TelaRF20Notificacoes : AppCompatActivity() {
         adapter = NotificacaoAdapter(
             lista        = mutableListOf(),
             onNotifClick = { notif ->
-                // Routing por conteúdo/tipo — garante FLAG_ACTIVITY_SINGLE_TOP
-                // em todos os caminhos para evitar duplicação de instâncias.
-                val texto = "${notif.titulo} ${notif.descricao}".lowercase()
-                val isAluguel = texto.contains("aluguel")
-                    || texto.contains("aprovado")
-                    || texto.contains("empréstimo")
-                    || texto.contains("emprestimo")
-                    || texto.contains("solicitação")
-                    || texto.contains("solicitacao")
-                    || texto.contains("recebido")
-                    || texto.contains("devolução")
-                    || texto.contains("devolucao")
-
+                // livroId tem prioridade máxima: sempre abre os detalhes do livro
+                // quando disponível, independente do conteúdo textual da notificação.
                 when {
-                    isAluguel -> startActivity(
-                        Intent(this, TelaRF18StatusAluguel::class.java)
-                            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    )
                     notif.livroId.isNotEmpty() -> startActivity(
                         Intent(this, TelaRF12TelaDoLivro::class.java)
                             .putExtra("LIVRO_ID", notif.livroId)
                             .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     )
-                    // Notificação genérica sem destino concreto — nenhuma navegação
+                    else -> {
+                        // Sem livroId: tenta inferir destino pelo texto (aluguel/status)
+                        val texto = "${notif.titulo} ${notif.descricao}".lowercase()
+                        val isAluguel = texto.contains("aluguel")
+                            || texto.contains("aprovado")
+                            || texto.contains("empréstimo")
+                            || texto.contains("emprestimo")
+                            || texto.contains("solicitação")
+                            || texto.contains("solicitacao")
+                            || texto.contains("recebido")
+                            || texto.contains("devolução")
+                            || texto.contains("devolucao")
+                        if (isAluguel) startActivity(
+                            Intent(this, TelaRF18StatusAluguel::class.java)
+                                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        )
+                        // Notificação genérica sem destino concreto — nenhuma navegação
+                    }
                 }
             }
         )
