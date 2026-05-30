@@ -19,6 +19,9 @@ class TelaRF29GerenciamentoDeUsuarios : AppCompatActivity() {
     private val listaUsuarios  = mutableListOf<ItemUsuarioAdm>()
     private val listaCompleta  = mutableListOf<ItemUsuarioAdm>()
 
+    // Mantém o filtro ativo entre onPause/onResume (navegar para detalhe e voltar)
+    private var termoBuscaAtivo: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.telarf29_gerenciamentousuarios)
@@ -40,7 +43,8 @@ class TelaRF29GerenciamentoDeUsuarios : AppCompatActivity() {
         editBusca?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                filtrarLista(s?.toString() ?: "")
+                termoBuscaAtivo = s?.toString() ?: ""
+                filtrarLista(termoBuscaAtivo)
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -53,6 +57,7 @@ class TelaRF29GerenciamentoDeUsuarios : AppCompatActivity() {
      * Garante que usuários removidos/alterados desapareçam sem precisar
      * de startActivityForResult — o onResume é chamado automaticamente
      * ao empilhar de volta após finish().
+     * FIX #7: preserva termoBuscaAtivo em vez de resetar o filtro para "".
      */
     override fun onResume() {
         super.onResume()
@@ -82,7 +87,7 @@ class TelaRF29GerenciamentoDeUsuarios : AppCompatActivity() {
                     // Fallback: carrega todos (caso o campo role não esteja preenchido)
                     carregarTodosUsuarios()
                 } else {
-                    filtrarLista("")
+                    filtrarLista(termoBuscaAtivo)
                 }
             }
             .addOnFailureListener { e ->
@@ -106,7 +111,7 @@ class TelaRF29GerenciamentoDeUsuarios : AppCompatActivity() {
                         )
                     )
                 }
-                filtrarLista("")
+                filtrarLista(termoBuscaAtivo)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Erro ao carregar usuários: ${e.message}", Toast.LENGTH_SHORT).show()

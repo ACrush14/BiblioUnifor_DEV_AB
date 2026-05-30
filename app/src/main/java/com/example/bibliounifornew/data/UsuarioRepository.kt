@@ -17,14 +17,20 @@ class UsuarioRepository {
         email: String,
         onComplete: (Boolean, String?) -> Unit
     ) {
-        // Mapeando os dados para o padrão NoSQL do Firestore
+        // RF33 FIX: campo "cadastroConfirmado" era omitido, então a query
+        // whereEqualTo("cadastroConfirmado", false) em TelaRF35ConfirmarCadastroADM
+        // nunca encontrava novos usuários. Agora o campo existe desde o cadastro.
+        // "role" unifica a consulta de papel (usado em RBAC e dashboards).
         val userMap = hashMapOf(
-            "uid" to uid,
-            "nome" to nome,
-            "usuario" to usuario,
-            "email" to email,
-            "tipoPerfil" to "estudante", // Define como estudante por padrão
-            "statusCadastro" to "pendente"
+            "uid"                to uid,
+            "nome"               to nome,
+            "usuario"            to usuario,
+            "email"              to email,
+            "tipoPerfil"         to "estudante",
+            "role"               to "aluno",
+            "statusCadastro"     to "pendente",
+            "cadastroConfirmado" to false,
+            "contaAtiva"         to true
         )
 
         // Salva na coleção "usuarios" usando o UID como nome do documento

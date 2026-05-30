@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Apagar conta?"
+                android:text="Desativar conta?"
                 android:textColor="@color/biblio_blue"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:gravity="center"
-                android:text="Essa ação não poderá ser desfeita.\nDigite sua senha atual para confirmar."
+                android:text="O acesso do usuário será bloqueado.\nDigite sua senha de administrador para confirmar."
                 android:textColor="#555555"
                 android:textSize="14sp" />
 

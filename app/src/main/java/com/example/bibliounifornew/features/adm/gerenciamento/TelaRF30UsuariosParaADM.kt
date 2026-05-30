@@ -643,6 +643,11 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
 
         btnCancelar?.setOnClickListener { dialog.dismiss() }
         dialog.show()
+        // RF27 FIX: sem setLayout() o dialog fica "achatado" (altura 0 no tema default).
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.90).toInt(),
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     private fun reativarBotaoExcluir(btn: Button?, txtErro: TextView?, msg: String) {

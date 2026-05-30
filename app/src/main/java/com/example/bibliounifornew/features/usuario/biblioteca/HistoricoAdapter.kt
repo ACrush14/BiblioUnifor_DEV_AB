@@ -11,6 +11,7 @@ import coil.load
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.features.usuario.livro.TelaRF12TelaDoLivro
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -30,11 +31,12 @@ class HistoricoAdapter(
 ) : RecyclerView.Adapter<HistoricoAdapter.HistoricoViewHolder>() {
 
     inner class HistoricoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val txtTitulo : TextView       = itemView.findViewById(R.id.txtTituloHistorico)
-        val txtAutor  : TextView       = itemView.findViewById(R.id.txtAutorHistorico)
-        val txtAcao   : TextView       = itemView.findViewById(R.id.txtAcaoHistorico)
-        val imgCapa   : ImageView      = itemView.findViewById(R.id.imgCapaHistorico)
-        val btnRemover: MaterialButton = itemView.findViewById(R.id.btnRemoverHistorico)
+        val cardView  : MaterialCardView = itemView.findViewById(R.id.cardItemHistorico)
+        val txtTitulo : TextView         = itemView.findViewById(R.id.txtTituloHistorico)
+        val txtAutor  : TextView         = itemView.findViewById(R.id.txtAutorHistorico)
+        val txtAcao   : TextView         = itemView.findViewById(R.id.txtAcaoHistorico)
+        val imgCapa   : ImageView        = itemView.findViewById(R.id.imgCapaHistorico)
+        val btnRemover: MaterialButton   = itemView.findViewById(R.id.btnRemoverHistorico)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoricoViewHolder {
@@ -79,11 +81,14 @@ class HistoricoAdapter(
             onRemover(item, holder.adapterPosition)
         }
 
-        // RF21.05: clique no card abre os detalhes do livro
-        holder.itemView.setOnClickListener {
+        // RF21.05: clique no card abre os detalhes do livro.
+        // O click listener fica no cardView (não no itemView) pois MaterialCardView
+        // tem android:clickable=true por padrão no Material theme e consumiria o evento
+        // antes de ele chegar ao itemView pai.
+        holder.cardView.setOnClickListener {
             if (item.livroId.isNotEmpty()) {
-                holder.itemView.context.startActivity(
-                    Intent(holder.itemView.context, TelaRF12TelaDoLivro::class.java)
+                it.context.startActivity(
+                    Intent(it.context, TelaRF12TelaDoLivro::class.java)
                         .putExtra("LIVRO_ID", item.livroId)
                 )
             }

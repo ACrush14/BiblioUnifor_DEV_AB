@@ -28,12 +28,13 @@ class LivrosCrudAdapter(
 ) : RecyclerView.Adapter<LivrosCrudAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imgCapa  : ImageView      = itemView.findViewById(R.id.imgCapaLivroCrud)
-        val txtTitulo: TextView       = itemView.findViewById(R.id.txtTituloLivroCrud)
-        val txtAutor : TextView       = itemView.findViewById(R.id.txtAutorLivroCrud)
-        val txtIsbn  : TextView       = itemView.findViewById(R.id.txtIsbnLivroCrud)
-        val txtQtd   : TextView       = itemView.findViewById(R.id.txtQuantidadeLivroCrud)
-        val btnEditar: MaterialButton = itemView.findViewById(R.id.btnEditarLivroCrud)
+        val imgCapa   : ImageView      = itemView.findViewById(R.id.imgCapaLivroCrud)
+        val txtTitulo : TextView       = itemView.findViewById(R.id.txtTituloLivroCrud)
+        val txtAutor  : TextView       = itemView.findViewById(R.id.txtAutorLivroCrud)
+        val txtIsbn   : TextView       = itemView.findViewById(R.id.txtIsbnLivroCrud)
+        val txtQtd    : TextView       = itemView.findViewById(R.id.txtQuantidadeLivroCrud)
+        val txtAlugado: TextView       = itemView.findViewById(R.id.txtAlugadosLivroCrud)
+        val btnEditar : MaterialButton = itemView.findViewById(R.id.btnEditarLivroCrud)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -54,12 +55,22 @@ class LivrosCrudAdapter(
         else
             ctx.getString(R.string.fmt_isbn_vazio)
 
-        // Exibe "disp/total disponíveis" seguindo a regra de negócio unificada
-        val disp  = item.quantidadeDisponivel
-        val total = item.totalExemplares
-        holder.txtQtd.text = when {
-            total > 0 -> ctx.getString(R.string.fmt_exemplares_ratio, disp.toInt(), total.toInt())
-            else      -> ctx.getString(R.string.fmt_exemplares_vazio)
+        // RF30.8: exibe disponíveis e alugados separadamente para clareza do ADM
+        val disp     = item.quantidadeDisponivel
+        val total    = item.totalExemplares
+        val alugados = (total - disp).coerceAtLeast(0)
+
+        if (total > 0) {
+            holder.txtQtd.text    = "Disponíveis: ${disp.toInt()}"
+            holder.txtAlugado.text = "Alugados: ${alugados.toInt()} · Total: ${total.toInt()}"
+            holder.txtQtd.setTextColor(
+                if (disp > 0) android.graphics.Color.parseColor("#2E7D32")
+                else android.graphics.Color.parseColor("#C62828")
+            )
+        } else {
+            holder.txtQtd.text    = ctx.getString(R.string.fmt_exemplares_vazio)
+            holder.txtAlugado.text = ""
+            holder.txtQtd.setTextColor(android.graphics.Color.parseColor("#777777"))
         }
 
         // Fallback neutro (ic_sem_capa) — evita exibir capa de outro livro

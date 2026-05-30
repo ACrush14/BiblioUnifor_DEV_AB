@@ -118,7 +118,16 @@ class TelaRF23LoginADM : AppCompatActivity() {
                                 erro.visibility = View.VISIBLE
                             }
                             role == "adm" -> {
-                                // Entra independente de cadastroConfirmado
+                                // RF22.9: verifica contaAtiva também para ADMs
+                                val contaAtiva = doc.getBoolean("contaAtiva") ?: true
+                                if (!contaAtiva) {
+                                    FirebaseAuth.getInstance().signOut()
+                                    botaoEntrar.isEnabled = true
+                                    botaoEntrar.text = "Entrar"
+                                    erro.text       = "Esta conta de administrador foi desativada."
+                                    erro.visibility = View.VISIBLE
+                                    return@addOnSuccessListener
+                                }
                                 val intent = Intent(this, TelaRF28DashboardADM::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 startActivity(intent)

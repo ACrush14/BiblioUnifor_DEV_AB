@@ -84,12 +84,21 @@ class TelaRF03LoginAluno : AppCompatActivity() {
                         botaoEntrar.isEnabled = true
                         botaoEntrar.text = "Entrar"
 
-                        // Se o campo não existir (contas antigas) assume ativa = true
+                        // GAP-1 GATE: conta desativada pelo ADM
                         val contaAtiva = doc.getBoolean("contaAtiva") ?: true
                         if (!contaAtiva) {
-                            // Desloga imediatamente para não manter sessão inválida
                             FirebaseAuth.getInstance().signOut()
                             erro.text = "Sua conta foi desativada. Entre em contato com a biblioteca."
+                            erro.visibility = View.VISIBLE
+                            return@addOnSuccessListener
+                        }
+
+                        // RF33 GATE: cadastro aguardando aprovação do ADM.
+                        // Contas antigas sem o campo assumem confirmado=true (compatibilidade).
+                        val cadastroConfirmado = doc.getBoolean("cadastroConfirmado") ?: true
+                        if (!cadastroConfirmado) {
+                            FirebaseAuth.getInstance().signOut()
+                            erro.text = "Cadastro aguardando aprovação da biblioteca. Tente novamente em breve."
                             erro.visibility = View.VISIBLE
                             return@addOnSuccessListener
                         }

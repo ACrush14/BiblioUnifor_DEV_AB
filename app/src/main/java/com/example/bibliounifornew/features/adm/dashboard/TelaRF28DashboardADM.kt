@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.features.adm.gerenciamento.NavigationHelperADM
@@ -16,6 +17,7 @@ import com.example.bibliounifornew.features.adm.solicitacoes.TelaRF31Solicitacoe
 import com.example.bibliounifornew.features.adm.solicitacoes.TelaRF36ListaAlugueisADM
 import coil.load
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -30,6 +32,19 @@ class TelaRF28DashboardADM : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // RF22.2 / RF23.2 — Guard de rota: bloqueia acesso sem sessão ADM ativa.
+        // Protege contra abertura direta da Activity por intent externo ou restart.
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            startActivity(
+                Intent(this, com.example.bibliounifornew.login.TelaRF23LoginADM::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            finish()
+            return
+        }
+
         setContentView(R.layout.telarf28_inicial_adm)
 
         // ─── NAVEGAÇÃO ────────────────────────────────────────────────────────
@@ -66,6 +81,8 @@ class TelaRF28DashboardADM : AppCompatActivity() {
         carregarEstatisticas()
         carregarAtrasosCriticos()
         carregarAnaliseAlugueis()
+        // RF32.5 — Verifica e notifica aluguéis vencidos automaticamente a cada resume
+        processarAtrasosENotificar()
     }
 
     private fun carregarDadosPerfil() {
@@ -241,6 +258,82 @@ class TelaRF28DashboardADM : AppCompatActivity() {
                     runOnUiThread { container.addView(row) }
                 }
         }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // RF32.5 — Processamento de atrasos e disparo de notificações in-app
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Varre os aluguéis com status "ativo" e dataDevolucao < agora.
+     * Para cada vencido:
+     *   1. Atualiza status para "atrasado"
+     *   2. Cria notificação na subcoleção do aluno
+     * Operação atômica via WriteBatch — garante que notif só existe se status foi atualizado.
+     * Após a transição para "atrasado" o doc sai do filtro whereEqualTo("status","ativo"),
+     * portanto a notificação é enviada apenas uma vez por aluguel.
+     */
+    private fun processarAtrasosENotificar() {
+        val agora = System.currentTimeMillis()
+
+        db.collection("solicitacoes_emprestimo")
+            .whereEqualTo("status", "ativo")
+            .get()
+            .addOnSuccessListener { result ->
+                if (result.isEmpty) return@addOnSuccessListener
+
+                val batch = db.batch()
+                var alteracoes = 0
+
+                for (doc in result) {
+                    // Aceita tanto dataDevolucao (Long timestamp) quanto dataDevolucaoMs
+                    val dataDev = doc.getLong("dataDevolucao")
+                        ?: doc.getLong("dataDevolucaoMs")
+                        ?: continue
+
+                    if (dataDev >= agora) continue // ainda no prazo
+
+                    val uidAluno = doc.getString("uidAluno") ?: continue
+                    val titulo   = doc.getString("titulo")   ?: "livro"
+
+                    // 1. Marca como atrasado
+                    batch.update(doc.reference, mapOf(
+                        "status"          to "atrasado",
+                        "atrasadoDesdeMs" to agora
+                    ))
+
+                    // 2. Notificação in-app na subcoleção do aluno
+                    val notifRef = db.collection("usuarios")
+                        .document(uidAluno)
+                        .collection("notificacoes")
+                        .document()
+
+                    val diasAtraso = ((agora - dataDev) / 86_400_000L).coerceAtLeast(1)
+                    batch.set(notifRef, mapOf(
+                        "titulo"    to getString(R.string.notif_atraso_titulo),
+                        "mensagem"  to "\"$titulo\" está $diasAtraso dia(s) atrasado. Regularize para evitar bloqueios.",
+                        "tipo"      to "atraso",
+                        "livroId"   to (doc.getString("idLivro") ?: ""),
+                        "lida"      to false,
+                        "criadoEm"  to agora
+                    ))
+
+                    alteracoes++
+                }
+
+                if (alteracoes > 0) {
+                    batch.commit().addOnSuccessListener {
+                        Toast.makeText(
+                            this,
+                            getString(R.string.msg_aviso_atraso_enviado) + " ($alteracoes aluguel(is))",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        // Atualiza os cards para refletir os novos "atrasados"
+                        carregarAtrasosCriticos()
+                        carregarEstatisticas()
+                    }
+                }
+            }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
