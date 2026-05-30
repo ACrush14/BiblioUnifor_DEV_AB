@@ -13,19 +13,23 @@ package com.example.bibliounifornew.data
  *   "data"     → Long (epoch ms) — timestamp de criação
  *
  * Campos opcionais que o ADM pode enriquecer:
- *   "autor"    → autor do livro relacionado
- *   "coverUrl" → URL da capa do livro (carregada via Coil)
- *   "livroId"  → ID do livro para navegação direta
+ *   "autor"       → autor do livro relacionado
+ *   "coverUrl"    → URL da capa do livro (carregada via Coil)
+ *   "livroId"     → ID do livro para navegação direta
+ *   "tipo"        → tipo de mídia ("PDF", "Audiobook", "Reserva", etc.)
+ *   "tituloLivro" → título do livro relacionado (para montar título dinâmico)
  */
 data class Notificacao(
-    val id       : String  = "",
-    val titulo   : String  = "",
-    val autor    : String  = "",
-    val descricao: String  = "",  // mapeado de "mensagem" no Firestore
-    val coverUrl : String  = "",  // substituiu capaResId (drawable estático)
-    val livroId  : String  = "",  // permite navegar para TelaRF12 ao tocar
-    val timestamp: Long    = 0L,  // epoch ms — usado para ordenar e formatar tempo
-    var lida     : Boolean = false
+    val id          : String  = "",
+    val titulo      : String  = "",
+    val autor       : String  = "",
+    val descricao   : String  = "",  // mapeado de "mensagem" no Firestore
+    val coverUrl    : String  = "",  // substituiu capaResId (drawable estático)
+    val livroId     : String  = "",  // permite navegar para TelaRF12 ao tocar
+    val tipo        : String  = "",  // "PDF", "Audiobook", "Reserva", etc.
+    val tituloLivro : String  = "",  // título do livro para exibição dinâmica
+    val timestamp   : Long    = 0L,  // epoch ms — usado para ordenar e formatar tempo
+    var lida        : Boolean = false
 ) {
     companion object {
         /**
@@ -47,15 +51,17 @@ data class Notificacao(
             }
 
             return Notificacao(
-                id        = docId,
-                titulo    = data["titulo"]    as? String  ?: "",
-                autor     = data["autor"]     as? String  ?: "",
-                descricao = data["descricao"] as? String
+                id          = docId,
+                titulo      = data["titulo"]      as? String  ?: "",
+                autor       = data["autor"]       as? String  ?: "",
+                descricao   = data["descricao"]   as? String
                     ?: data["mensagem"]  as? String  ?: "",
-                coverUrl  = data["coverUrl"]  as? String  ?: "",
-                livroId   = data["livroId"]   as? String  ?: "",
-                timestamp = timestampResolvido,
-                lida      = data["lida"]      as? Boolean ?: false
+                coverUrl    = data["coverUrl"]    as? String  ?: "",
+                livroId     = data["livroId"]     as? String  ?: "",
+                tipo        = data["tipo"]        as? String  ?: "",
+                tituloLivro = data["tituloLivro"] as? String  ?: "",
+                timestamp   = timestampResolvido,
+                lida        = data["lida"]        as? Boolean ?: false
             )
         }
     }

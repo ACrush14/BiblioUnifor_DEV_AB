@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -195,6 +196,10 @@ class TelaRF17_3_BuscaAmigos : AppCompatActivity() {
     /**
      * Usa await() no IO Thread para buscar o nome do remetente e gravar
      * a solicitação — nenhuma operação de rede acontece na Main Thread.
+     * Após o sucesso, remove o destinatário diretamente do Adapter (sem recreate
+     * ou reload da tela) para evitar o crash por ConcurrentModificationException
+     * que ocorria quando executarFiltragemLocal relançava uma coroutine IO paralela
+     * enquanto esta ainda modificava listaCompleta.
      */
     private fun enviarSolicitacaoAmizade(destinatario: UsuarioAmigo) {
         lifecycleScope.launch(Dispatchers.IO) {
@@ -213,12 +218,13 @@ class TelaRF17_3_BuscaAmigos : AppCompatActivity() {
 
                 db.collection("solicitacoes_amizade").add(dados).await()
 
-                // Remove da lista local no IO Thread antes de notificar a UI
+                // Remove da lista base no IO Thread (sem acesso concorrente ao adapter)
                 listaCompleta.remove(destinatario)
-                val textoAtual = withContext(Dispatchers.Main) { editBuscar.text.toString().trim() }
 
                 withContext(Dispatchers.Main) {
                     if (isFinishing || isDestroyed) return@withContext
+                    // Atualização pontual: remove só o item clicado, sem recarregar a tela
+                    adapter.removerUsuario(destinatario)
                     Toast.makeText(
                         this@TelaRF17_3_BuscaAmigos,
                         "Solicitação enviada para ${destinatario.nome}!",
@@ -226,10 +232,8 @@ class TelaRF17_3_BuscaAmigos : AppCompatActivity() {
                     ).show()
                 }
 
-                // Atualiza a lista exibida sem o destinatário que acabou de ser adicionado
-                executarFiltragemLocal(textoAtual)
-
             } catch (e: Exception) {
+                Log.e("AddAmigo", "Erro: ", e)
                 withContext(Dispatchers.Main) {
                     if (!isFinishing && !isDestroyed) {
                         Toast.makeText(

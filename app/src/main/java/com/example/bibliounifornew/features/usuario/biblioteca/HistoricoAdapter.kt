@@ -1,5 +1,6 @@
 package com.example.bibliounifornew.features.usuario.biblioteca
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.bibliounifornew.R
+import com.example.bibliounifornew.features.usuario.livro.TelaRF12TelaDoLivro
 import com.google.android.material.button.MaterialButton
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -76,9 +78,25 @@ class HistoricoAdapter(
         holder.btnRemover.setOnClickListener {
             onRemover(item, holder.adapterPosition)
         }
+
+        // RF21.05: clique no card abre os detalhes do livro
+        holder.itemView.setOnClickListener {
+            if (item.livroId.isNotEmpty()) {
+                holder.itemView.context.startActivity(
+                    Intent(holder.itemView.context, TelaRF12TelaDoLivro::class.java)
+                        .putExtra("LIVRO_ID", item.livroId)
+                )
+            }
+        }
     }
 
     override fun getItemCount(): Int = lista.size
+
+    fun atualizarLista(novaLista: List<ItemHistorico>) {
+        lista.clear()
+        lista.addAll(novaLista)
+        notifyDataSetChanged()
+    }
 
     fun removerItem(position: Int) {
         lista.removeAt(position)

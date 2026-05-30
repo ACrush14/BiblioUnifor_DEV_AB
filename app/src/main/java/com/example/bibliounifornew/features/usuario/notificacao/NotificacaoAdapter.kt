@@ -76,7 +76,15 @@ class NotificacaoAdapter(
         }
 
         // ── Textos ────────────────────────────────────────────────────────────
-        holder.textTitulo.text    = notif.titulo
+        // Título dinâmico: constrói "O PDF do livro X está pronto!" quando
+        // os campos tipo/tituloLivro estão preenchidos pelo ADM.
+        holder.textTitulo.text = when {
+            notif.tipo.isNotEmpty() && notif.tituloLivro.isNotEmpty() ->
+                "O ${notif.tipo} do livro \"${notif.tituloLivro}\" está pronto!"
+            notif.tituloLivro.isNotEmpty() ->
+                "\"${notif.tituloLivro}\" está disponível!"
+            else -> notif.titulo
+        }
         holder.textAutor.text     = notif.autor
         holder.textDescricao.text = notif.descricao
         holder.textTempo.text     = formatarTempo(notif.timestamp)

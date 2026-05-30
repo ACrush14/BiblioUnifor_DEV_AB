@@ -23,7 +23,8 @@ data class ItemAluguel(
     val coverUrl        : String = "",
     val status          : String = "pendente",
     val dataDevolucao   : Long   = 0L,
-    val dataSolicitacao : Long   = 0L
+    val dataSolicitacao : Long   = 0L,
+    val renovacoes      : Int    = 0
 )
 
 class StatusAluguelAdapter(
@@ -34,12 +35,13 @@ class StatusAluguelAdapter(
     private val sdf = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
 
     inner class AluguelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imgCapa    : ImageView      = itemView.findViewById(R.id.imgCapaAluguel)
-        val txtTitulo  : TextView       = itemView.findViewById(R.id.txtTituloAluguel)
-        val txtAutor   : TextView       = itemView.findViewById(R.id.txtAutorAluguel)
-        val txtData    : TextView       = itemView.findViewById(R.id.txtDataAluguel)
-        val txtStatus  : TextView       = itemView.findViewById(R.id.txtStatusAluguel)
-        val btnRenovar : MaterialButton = itemView.findViewById(R.id.btnRenovarAluguel)
+        val imgCapa         : ImageView      = itemView.findViewById(R.id.imgCapaAluguel)
+        val txtTitulo       : TextView       = itemView.findViewById(R.id.txtTituloAluguel)
+        val txtAutor        : TextView       = itemView.findViewById(R.id.txtAutorAluguel)
+        val txtData         : TextView       = itemView.findViewById(R.id.txtDataAluguel)
+        val txtStatus       : TextView       = itemView.findViewById(R.id.txtStatusAluguel)
+        val txtDiasRestantes: TextView       = itemView.findViewById(R.id.txtDiasRestantes)
+        val btnRenovar      : MaterialButton = itemView.findViewById(R.id.btnRenovarAluguel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AluguelViewHolder {
@@ -109,6 +111,33 @@ class StatusAluguelAdapter(
                 holder.btnRenovar.backgroundTintList =
                     android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#BDBDBD"))
             }
+        }
+
+        // ── Dias restantes / alertas (RF18.3 / RF18.5) ───────────────────────────
+        // Calcula e exibe apenas para aluguéis ativos com data de devolução definida.
+        if (item.dataDevolucao > 0L && item.status == "ativo") {
+            val diffMs = item.dataDevolucao - agora
+            val dias   = (diffMs / (1000L * 60 * 60 * 24)).toInt()
+            when {
+                diffMs < 0L -> {
+                    val diasAtraso = ((-diffMs) / (1000L * 60 * 60 * 24)).toInt()
+                    holder.txtDiasRestantes.text = "Atrasado há $diasAtraso dias"
+                    holder.txtDiasRestantes.setTextColor(android.graphics.Color.parseColor("#C62828"))
+                    holder.txtStatus.text = "Atrasado"
+                    holder.txtStatus.setTextColor(android.graphics.Color.parseColor("#C62828"))
+                }
+                dias <= 3 -> {
+                    holder.txtDiasRestantes.text = "Vencimento próximo: faltam $dias dias!"
+                    holder.txtDiasRestantes.setTextColor(android.graphics.Color.parseColor("#E65100"))
+                }
+                else -> {
+                    holder.txtDiasRestantes.text = "Faltam $dias dias"
+                    holder.txtDiasRestantes.setTextColor(android.graphics.Color.parseColor("#2E7D32"))
+                }
+            }
+            holder.txtDiasRestantes.visibility = View.VISIBLE
+        } else {
+            holder.txtDiasRestantes.visibility = View.GONE
         }
 
         holder.btnRenovar.setOnClickListener { if (holder.btnRenovar.isEnabled) onRenovar(item) }
