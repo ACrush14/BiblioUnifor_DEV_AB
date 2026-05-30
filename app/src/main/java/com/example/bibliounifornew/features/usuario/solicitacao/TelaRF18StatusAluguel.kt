@@ -2,6 +2,7 @@ package com.example.bibliounifornew.features.usuario.solicitacao
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -41,15 +42,7 @@ class TelaRF18StatusAluguel : AppCompatActivity() {
 
         adapter = StatusAluguelAdapter(
             lista     = mutableListOf(),
-            onRenovar = { item ->
-                // PERF-FIX: passa DOC_ID para que o calendário grave no documento correto
-                startActivity(
-                    Intent(this, TelaRF18CalendarioRenovacao::class.java)
-                        .putExtra("DOC_ID",   item.docId)
-                        .putExtra("LIVRO_ID", item.livroId)
-                        .putExtra("TITULO",   item.titulo)
-                )
-            }
+            onRenovar = { item -> renovarAluguel(item) }
         )
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -117,6 +110,7 @@ class TelaRF18StatusAluguel : AppCompatActivity() {
                     val status          = doc.getString("status")        ?: "pendente"
                     val dataDevolucao   = doc.getLong("dataDevolucao")   ?: 0L
                     val dataSolicitacao = doc.getLong("dataSolicitacao") ?: 0L
+                    val renovacoes      = (doc.getLong("renovacoes")     ?: 0L).toInt()
 
                     // Leitura desnormalizada — sem query adicional à coleção "livros"
                     val titulo     = doc.getString("tituloLivro")
@@ -133,7 +127,8 @@ class TelaRF18StatusAluguel : AppCompatActivity() {
                         coverUrl        = coverUrl,
                         status          = status,
                         dataDevolucao   = dataDevolucao,
-                        dataSolicitacao = dataSolicitacao
+                        dataSolicitacao = dataSolicitacao,
+                        renovacoes      = renovacoes
                     )
                 }.sortedByDescending { it.dataSolicitacao }
 
@@ -152,6 +147,61 @@ class TelaRF18StatusAluguel : AppCompatActivity() {
                         getString(R.string.erro_carregar_alugueis),
                         Toast.LENGTH_SHORT
                     ).show()
+                }
+            }
+        }
+    }
+
+    // ─── RENOVAR ALUGUEL (RF18.5) ─────────────────────────────────────────────
+    //
+    // Travas de negócio verificadas ANTES de tocar o Firestore:
+    //   1. Prazo expirado  → bloqueia imediatamente na Main Thread (sem IO)
+    //   2. Limite atingido → bloqueia imediatamente na Main Thread (sem IO)
+    // Se passar nas travas: atualiza dataDevolucao (+14 dias) e renovacoes (+1) no IO Thread.
+
+    private fun renovarAluguel(item: ItemAluguel) {
+        val agora = System.currentTimeMillis()
+
+        if (agora > item.dataDevolucao) {
+            Toast.makeText(this, "Impossível renovar: Prazo de aluguel expirado.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (item.renovacoes >= 1) {
+            Toast.makeText(this, "Limite de renovações atingido.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val novaDataDevolucao = item.dataDevolucao + 14L * 24 * 60 * 60 * 1000
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                db.collection("solicitacoes_emprestimo")
+                    .document(item.docId)
+                    .update(mapOf(
+                        "dataDevolucao" to novaDataDevolucao,
+                        "renovacoes"    to item.renovacoes + 1
+                    ))
+                    .await()
+
+                withContext(Dispatchers.Main) {
+                    if (isFinishing || isDestroyed) return@withContext
+                    Toast.makeText(
+                        this@TelaRF18StatusAluguel,
+                        "Aluguel renovado com sucesso!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    authRepository.getUsuarioAtual()?.uid?.let { carregarAlugueis(it) }
+                }
+            } catch (e: Exception) {
+                Log.e("Renovar", "Erro ao renovar: ", e)
+                withContext(Dispatchers.Main) {
+                    if (!isFinishing && !isDestroyed) {
+                        Toast.makeText(
+                            this@TelaRF18StatusAluguel,
+                            "Erro ao renovar aluguel.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         }

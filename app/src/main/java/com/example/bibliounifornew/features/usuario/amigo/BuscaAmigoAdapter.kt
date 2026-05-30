@@ -59,4 +59,12 @@ class BuscaAmigoAdapter(
         lista.addAll(novaLista)
         notifyDataSetChanged()
     }
+
+    fun removerUsuario(usuario: UsuarioAmigo) {
+        val pos = lista.indexOfFirst { it.uid == usuario.uid }
+        if (pos != -1) {
+            lista.removeAt(pos)
+            notifyItemRemoved(pos)
+        }
+    }
 }

@@ -371,6 +371,10 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
 
                 batch.commit().await()
 
+                // RF20.6: notifica usuários que tinham este livro na lista de desejos
+                // — roda no mesmo contexto IO, falha silenciosa para não bloquear o fluxo principal
+                dispararNotificacoesDisponibilidade(item.idLivro, item.tituloLivro)
+
                 withContext(Dispatchers.Main) {
                     if (isFinishing || isDestroyed) return@withContext
                     Toast.makeText(
@@ -395,6 +399,60 @@ class TelaRF36ListaAlugueisADM : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    // ─── RF20.6: GATILHO DE DISPONIBILIDADE ──────────────────────────────────
+    //
+    // Chamado no IO Thread logo após batch.commit() da devolução.
+    // Busca todos os docs em lista_desejos com idLivro == livro devolvido
+    // e cria uma notificação na subcoleção usuarios/{uid}/notificacoes de cada um.
+    // Falha silenciosa: erros são logados mas não interrompem o fluxo de devolução.
+
+    private suspend fun dispararNotificacoesDisponibilidade(idLivro: String, tituloLivro: String) {
+        if (idLivro.isEmpty()) return
+        try {
+            val desejos = db.collection("lista_desejos")
+                .whereEqualTo("idLivro", idLivro)
+                .get()
+                .await()
+
+            if (desejos.isEmpty) return
+
+            val agora      = System.currentTimeMillis()
+            val notifBatch = db.batch()
+
+            for (doc in desejos.documents) {
+                val uid = doc.getString("uidUsuario")
+                    ?: doc.getString("userId")
+                    ?: doc.getString("uid")
+                    ?: continue
+                if (uid.isEmpty()) continue
+
+                val notifRef = db.collection("usuarios")
+                    .document(uid)
+                    .collection("notificacoes")
+                    .document()
+
+                notifBatch.set(
+                    notifRef,
+                    mapOf(
+                        "titulo"      to "Livro disponível!",
+                        "descricao"   to "O livro \"$tituloLivro\" que você deseja acabou de ficar disponível no estoque!",
+                        "tituloLivro" to tituloLivro,
+                        "livroId"     to idLivro,
+                        "tipo"        to "Disponibilidade",
+                        "lida"        to false,
+                        "data"        to agora
+                    )
+                )
+            }
+
+            notifBatch.commit().await()
+            Log.d("RF20_6", "Notificações disparadas para ${desejos.size()} usuário(s) → '$tituloLivro'")
+
+        } catch (e: Exception) {
+            Log.e("RF20_6", "Erro ao disparar notificações de disponibilidade: ", e)
         }
     }
 

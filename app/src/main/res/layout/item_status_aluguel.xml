@@ -102,10 +102,20 @@
                 android:id="@+id/txtStatusAluguel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="4dp"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 tools:text="Disponível para renovação" />
+
+            <TextView
+                android:id="@+id/txtDiasRestantes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="Faltam 5 dias" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRenovarAluguel"

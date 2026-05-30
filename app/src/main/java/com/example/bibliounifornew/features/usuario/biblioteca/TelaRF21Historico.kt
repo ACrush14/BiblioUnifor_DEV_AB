@@ -5,9 +5,12 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.View
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -61,12 +64,14 @@ class TelaRF21Historico : AppCompatActivity() {
 
         // ─── RECYCLERVIEW DINÂMICO ─────────────────────────────────────────────
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewHistorico)
-        adapter = HistoricoAdapter(listaHistorico) { item, position ->
+        // Adapter usa lista própria — listaHistorico é a fonte de verdade para o filtro
+        adapter = HistoricoAdapter(mutableListOf()) { item, position ->
             showPopupRemover(item.titulo) {
-                // Remove fisicamente do Firestore usando o repositório integrado
                 usuarioRepository.removerDoHistorico(usuarioId, item.livroId) { sucesso ->
                     if (sucesso) {
                         adapter.removerItem(position)
+                        // Mantém listaHistorico sincronizada para que o filtro não reexiba o item
+                        listaHistorico.removeAll { it.livroId == item.livroId }
                         Toast.makeText(this, "Item removido do seu histórico.", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this, "Falha ao remover. Tente novamente.", Toast.LENGTH_SHORT).show()
@@ -79,6 +84,30 @@ class TelaRF21Historico : AppCompatActivity() {
 
         // ─── CONSULTA FIRESTORE REAL ───────────────────────────────────────────
         carregarHistorico()
+
+        // ─── FILTRO EM MEMÓRIA (RF21.01) ──────────────────────────────────────
+        // listaHistorico é a fonte de verdade; adapter exibe uma cópia filtrada.
+        val tvVazioRef = lazy { findViewById<TextView>(R.id.tvHistoricoVazio) }
+        findViewById<EditText>(R.id.editPesquisaHistorico)
+            ?.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    val termo = s?.toString()?.trim() ?: ""
+                    val filtrados = if (termo.isEmpty()) {
+                        listaHistorico.toList()
+                    } else {
+                        listaHistorico.filter {
+                            it.titulo.contains(termo, ignoreCase = true) ||
+                            it.autor.contains(termo, ignoreCase = true)
+                        }
+                    }
+                    adapter.atualizarLista(filtrados)
+                    tvVazioRef.value?.visibility =
+                        if (filtrados.isEmpty() && listaHistorico.isNotEmpty()) View.VISIBLE
+                        else View.GONE
+                }
+            })
     }
 
     /**
@@ -123,7 +152,7 @@ class TelaRF21Historico : AppCompatActivity() {
                     if (isFinishing || isDestroyed) return@withContext
                     listaHistorico.clear()
                     listaHistorico.addAll(itens)
-                    adapter.notifyDataSetChanged()
+                    adapter.atualizarLista(itens)
                     val vazio = itens.isEmpty()
                     tvVazio?.visibility      = if (vazio) View.VISIBLE else View.GONE
                     recyclerView?.visibility = if (vazio) View.GONE   else View.VISIBLE
