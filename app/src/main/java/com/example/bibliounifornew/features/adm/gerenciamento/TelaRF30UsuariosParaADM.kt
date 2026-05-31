@@ -18,6 +18,7 @@ import coil.load
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.SolicitacaoRepository
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.EmailAuthProvider
@@ -47,6 +48,11 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
     private var usuarioEmail : String = ""
 
     private var activeDialog: Dialog? = null
+
+    // Estado do status da conta — espelha o campo contaAtiva do Firestore
+    private var contaAtiva = true
+    private lateinit var btnAtivarConta: MaterialButton
+    private lateinit var btnDesativarConta: MaterialButton
 
     // ─────────────────────────────────────────────────────────────────────────
     // CICLO DE VIDA
@@ -84,9 +90,10 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.buttonPermissao)?.setOnClickListener {
             exibirPopupPermissao(textTipo)
         }
-        findViewById<MaterialButton>(R.id.buttonExcluirConta)?.setOnClickListener {
-            exibirPopupExcluirConta()
-        }
+        btnAtivarConta    = findViewById(R.id.buttonAtivarConta)
+        btnDesativarConta = findViewById(R.id.buttonDesativarConta)
+        btnAtivarConta.setOnClickListener    { alterarStatusConta(ativar = true) }
+        btnDesativarConta.setOnClickListener { exibirModalDesativar() }
     }
 
     /**
@@ -113,6 +120,8 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
                 if (!doc.exists()) return@addOnSuccessListener
                 val role = doc.getString("role") ?: doc.getString("tipoPerfil") ?: "aluno"
                 textTipo?.text = role.uppercase()
+                contaAtiva = doc.getBoolean("contaAtiva") ?: true
+                atualizarBotoesStatus()
                 if (usuarioNome == "Usuário") {
                     usuarioNome = doc.getString("nome") ?: "Usuário"
                     findViewById<TextView>(R.id.textNomeUsuario)?.text = usuarioNome
@@ -323,17 +332,27 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setOnDismissListener { activeDialog = null }
 
-        val txtMensagem = dialog.findViewById<TextView>(R.id.textNomeLivroAtrasado)
-        val txtMulta    = dialog.findViewById<TextView>(R.id.textValorMulta)
+        val txtMensagem  = dialog.findViewById<TextView>(R.id.textNomeLivroAtrasado)
+        val txtMulta     = dialog.findViewById<TextView>(R.id.textValorMulta)
+        val btnQuitar    = dialog.findViewById<com.google.android.material.button.MaterialButton>(R.id.buttonQuitarMulta)
 
         txtMensagem?.text = getString(R.string.msg_verificando_atrasos)
         txtMulta?.text    = "--"
 
         if (usuarioId.isNotEmpty()) {
-            buscarAtrasosNaColecao("alugueis", txtMensagem, txtMulta) {
-                // Fallback para a coleção alternativa
-                buscarAtrasosNaColecao("solicitacoes_emprestimo", txtMensagem, txtMulta, null)
-            }
+            // RF29.9: onAtrasados recebe (colecao, docIds) quando há atrasos reais
+            buscarAtrasosNaColecao("alugueis", txtMensagem, txtMulta,
+                onVazio = {
+                    buscarAtrasosNaColecao("solicitacoes_emprestimo", txtMensagem, txtMulta, null) { col, ids ->
+                        btnQuitar?.visibility = View.VISIBLE
+                        btnQuitar?.setOnClickListener { quitarMultaComSenha(col, ids, dialog) }
+                    }
+                },
+                onAtrasados = { col, ids ->
+                    btnQuitar?.visibility = View.VISIBLE
+                    btnQuitar?.setOnClickListener { quitarMultaComSenha(col, ids, dialog) }
+                }
+            )
         }
 
         dialog.findViewById<Button>(R.id.buttonFecharAtraso)?.setOnClickListener {
@@ -355,10 +374,11 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
      * Multa calculada a R$ 1,00 por dia de atraso (mínimo R$ 1,00).
      */
     private fun buscarAtrasosNaColecao(
-        colecao   : String,
-        txtMsg    : TextView?,
-        txtMulta  : TextView?,
-        onVazio   : (() -> Unit)?
+        colecao     : String,
+        txtMsg      : TextView?,
+        txtMulta    : TextView?,
+        onVazio     : (() -> Unit)? = null,
+        onAtrasados : ((colecao: String, docIds: List<String>) -> Unit)? = null
     ) {
         val agora = System.currentTimeMillis()
 
@@ -405,6 +425,9 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
 
                 val brl = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
                 txtMulta?.text = brl.format(totalMultaReais)
+
+                // RF29.9: notifica o caller com a coleção e IDs para o botão "Quitar Multa"
+                onAtrasados?.invoke(colecao, atrasados.map { it.id })
 
                 // Busca o título do livro mais atrasado para exibir na mensagem
                 val maisAtrasado = atrasados.maxByOrNull { doc ->
@@ -541,119 +564,182 @@ class TelaRF30UsuariosParaADM : AppCompatActivity() {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // RF28.11 / RF28.12 — EXCLUIR CONTA (com reauthenticate + guard)
+    // STATUS DA CONTA — Ativar / Desativar com log de auditoria
     // ─────────────────────────────────────────────────────────────────────────
 
-    private fun exibirPopupExcluirConta() {
-        // Guard RF28.11: impede que o admin exclua a própria conta por aqui,
-        // prevenindo o bug "volta ao Login ADM" — que ocorria porque o admin
-        // selecionava seu próprio UID na lista e deletava o próprio documento,
-        // disparando o check RBAC "!doc.exists() → signOut()" no próximo login.
-        if (usuarioId == auth.currentUser?.uid) {
-            Toast.makeText(
-                this,
-                getString(R.string.erro_nao_pode_excluir_proprio),
-                Toast.LENGTH_LONG
-            ).show()
-            return
+    /**
+     * Sincroniza a visibilidade dos botões com o estado local [contaAtiva].
+     * Sempre chamada após qualquer leitura ou escrita que altere o status.
+     */
+    private fun atualizarBotoesStatus() {
+        if (contaAtiva) {
+            btnAtivarConta.visibility    = View.GONE
+            btnDesativarConta.visibility = View.VISIBLE
+        } else {
+            btnAtivarConta.visibility    = View.VISIBLE
+            btnDesativarConta.visibility = View.GONE
         }
-
-        val dialog = Dialog(this)
-        activeDialog = dialog
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.popup_apagar_conta_adm)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setOnDismissListener { activeDialog = null }
-
-        val editSenha    = dialog.findViewById<TextInputEditText>(R.id.editSenhaApagarContaADM)
-        val txtErro      = dialog.findViewById<TextView>(R.id.textErroApagarContaADM)
-        val btnConfirmar = dialog.findViewById<Button>(R.id.buttonConfirmarApagarContaADM)
-        val btnCancelar  = dialog.findViewById<Button>(R.id.buttonCancelarApagarContaADM)
-
-        btnConfirmar?.setOnClickListener {
-            val senha = editSenha?.text?.toString()?.trim() ?: ""
-
-            if (senha.isEmpty()) {
-                txtErro?.text = getString(R.string.erro_campo)
-                txtErro?.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
-
-            val currentUser = auth.currentUser
-            val adminEmail  = currentUser?.email
-            if (currentUser == null || adminEmail.isNullOrEmpty()) {
-                txtErro?.text = getString(R.string.erro_sessao_expirada)
-                txtErro?.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
-
-            btnConfirmar.isEnabled = false
-            btnConfirmar.text      = getString(R.string.msg_verificando)
-            txtErro?.visibility    = View.GONE
-
-            // RF28.12 FIX: valida a senha do admin via reauthenticate antes de excluir
-            val credential = EmailAuthProvider.getCredential(adminEmail, senha)
-            currentUser.reauthenticate(credential)
-                .addOnSuccessListener {
-                    // GAP-1 FIX: Desativação lógica (soft-delete) em vez de delete().
-                    //
-                    // Motivo: delete() apaga todos os dados do usuário permanentemente
-                    // (histórico, perfil, aluguéis passados). Com update() o documento
-                    // permanece, preservando rastreabilidade. O campo "contaAtiva = false"
-                    // é verificado em TelaRF03LoginAluno após autenticação bem-sucedida
-                    // para bloquear o acesso sem apagar o Auth record.
-                    //
-                    // O registro no Firebase Authentication permanece — deleção de Auth
-                    // de terceiros exige Cloud Function com Admin SDK (fora do escopo cliente).
-                    val admUid = currentUser.uid
-                    db.collection("usuarios").document(usuarioId)
-                        .update(
-                            mapOf(
-                                "contaAtiva"      to false,
-                                "desativadoPorAdm" to admUid,
-                                "desativadoEm"    to System.currentTimeMillis()
-                            )
-                        )
-                        .addOnSuccessListener {
-                            Toast.makeText(
-                                this,
-                                getString(R.string.msg_conta_removida),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            dialog.dismiss()
-                            // finish() retorna para TelaRF29GerenciamentoDeUsuarios,
-                            // que recarrega a lista em onResume().
-                            finish()
-                        }
-                        .addOnFailureListener { e ->
-                            reativarBotaoExcluir(
-                                btnConfirmar, txtErro,
-                                e.message ?: getString(R.string.erro_generico)
-                            )
-                        }
-                }
-                .addOnFailureListener {
-                    reativarBotaoExcluir(
-                        btnConfirmar, txtErro,
-                        getString(R.string.erro_senha_incorreta)
-                    )
-                }
-        }
-
-        btnCancelar?.setOnClickListener { dialog.dismiss() }
-        dialog.show()
-        // RF27 FIX: sem setLayout() o dialog fica "achatado" (altura 0 no tema default).
-        dialog.window?.setLayout(
-            (resources.displayMetrics.widthPixels * 0.90).toInt(),
-            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-        )
     }
 
-    private fun reativarBotaoExcluir(btn: Button?, txtErro: TextView?, msg: String) {
-        btn?.isEnabled = true
-        btn?.text      = getString(R.string.btn_apagar)
-        txtErro?.text  = msg
-        txtErro?.visibility = View.VISIBLE
+    /**
+     * Modal de confirmação Material antes de desativar.
+     * Só o botão "Desativar" exige confirmação — ativar é ação
+     * de baixo risco e dispensa confirmação.
+     */
+    private fun exibirModalDesativar() {
+        if (usuarioId == auth.currentUser?.uid) {
+            Toast.makeText(this, getString(R.string.erro_nao_pode_excluir_proprio), Toast.LENGTH_LONG).show()
+            return
+        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Desativar conta")
+            .setMessage("Tem certeza que deseja desativar a conta de $usuarioNome?\n\nO usuário perderá o acesso ao aplicativo imediatamente.")
+            .setPositiveButton("Desativar") { dialog, _ ->
+                dialog.dismiss()
+                alterarStatusConta(ativar = false)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    /**
+     * Altera [contaAtiva] no Firestore com:
+     *  - loading state (botão desabilitado durante a requisição)
+     *  - revert automático em caso de falha
+     *  - gravação de log de auditoria em subcoleção dedicada
+     */
+    private fun alterarStatusConta(ativar: Boolean) {
+        if (usuarioId.isEmpty()) return
+
+        val estadoAnterior = contaAtiva
+        val btnAtivo       = if (ativar) btnAtivarConta else btnDesativarConta
+        val textoOriginal  = btnAtivo.text.toString()
+
+        // Loading state — bloqueia cliques duplos
+        btnAtivo.isEnabled = false
+        btnAtivo.text      = getString(R.string.msg_verificando)
+
+        val admUid = auth.currentUser?.uid ?: ""
+        val agora  = System.currentTimeMillis()
+        val campos = mutableMapOf<String, Any>("contaAtiva" to ativar)
+        if (ativar) {
+            campos["reativadoPorAdm"] = admUid
+            campos["reativadoEm"]     = agora
+        } else {
+            campos["desativadoPorAdm"] = admUid
+            campos["desativadoEm"]     = agora
+        }
+
+        db.collection("usuarios").document(usuarioId)
+            .update(campos)
+            .addOnSuccessListener {
+                contaAtiva = ativar
+                atualizarBotoesStatus()
+                gravarLogAuditoria(if (ativar) "ativado" else "desativado", admUid, agora)
+                val msg = if (ativar) "Conta ativada com sucesso." else "Conta desativada com sucesso."
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                // Revert: UI volta exatamente ao estado anterior à tentativa
+                contaAtiva         = estadoAnterior
+                btnAtivo.isEnabled = true
+                btnAtivo.text      = textoOriginal
+                Toast.makeText(this, getString(R.string.erro_generico), Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    /**
+     * Grava uma entrada imutável no log de auditoria do usuário.
+     *
+     * Estrutura do documento em usuarios/{uid}/log_auditoria/{autoId}:
+     *   - acao        : "ativado" | "desativado"
+     *   - realizadoPor: UID do administrador
+     *   - timestamp   : epoch em ms (Long)
+     *
+     * Fire-and-forget: falha silenciosa — o dado principal já foi salvo com
+     * sucesso antes desta chamada, então um erro aqui não deve reverter o estado.
+     */
+    // ─────────────────────────────────────────────────────────────────────────
+    // RF29.9 — QUITAR MULTA (requer re-autenticação do ADM)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Exibe um diálogo de confirmação com campo de senha.
+     * Após re-autenticação bem-sucedida do ADM, marca todos os documentos
+     * de atraso como [multaQuitada = true] via WriteBatch atômico.
+     * Falha de senha → mensagem de erro sem fechar o popup pai.
+     */
+    private fun quitarMultaComSenha(colecao: String, docIds: List<String>, parentDialog: Dialog) {
+        if (docIds.isEmpty()) return
+
+        val passwordInput = android.widget.EditText(this).apply {
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or
+                        android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+            hint = "Senha do administrador"
+        }
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Confirmar Quitação de Multa")
+            .setMessage("Informe sua senha para quitar a multa de ${docIds.size} aluguel(is) de \"$usuarioNome\".")
+            .setView(passwordInput)
+            .setPositiveButton("Confirmar") { _, _ ->
+                val senha = passwordInput.text.toString().trim()
+                if (senha.isEmpty()) {
+                    Toast.makeText(this, "Senha obrigatória.", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+                val currentUser = auth.currentUser
+                val adminEmail  = currentUser?.email
+                if (currentUser == null || adminEmail.isNullOrEmpty()) {
+                    Toast.makeText(this, getString(R.string.erro_sessao_expirada), Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                val credential = EmailAuthProvider.getCredential(adminEmail, senha)
+                currentUser.reauthenticate(credential)
+                    .addOnSuccessListener {
+                        val agora     = System.currentTimeMillis()
+                        val admUid    = auth.currentUser?.uid ?: ""
+                        val batch     = db.batch()
+
+                        docIds.forEach { docId ->
+                            batch.update(
+                                db.collection(colecao).document(docId),
+                                mapOf(
+                                    "multaQuitada"  to true,
+                                    "quitadoPorAdm" to admUid,
+                                    "quitadoEm"     to agora
+                                )
+                            )
+                        }
+
+                        batch.commit()
+                            .addOnSuccessListener {
+                                gravarLogAuditoria("multa_quitada", admUid, agora)
+                                Toast.makeText(this, "Multa quitada com sucesso.", Toast.LENGTH_SHORT).show()
+                                parentDialog.dismiss()
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Erro ao quitar multa: ${e.message}", Toast.LENGTH_LONG).show()
+                            }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, getString(R.string.erro_senha_incorreta), Toast.LENGTH_SHORT).show()
+                    }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun gravarLogAuditoria(acao: String, admUid: String, timestamp: Long) {
+        if (usuarioId.isEmpty() || admUid.isEmpty()) return
+        val entrada = mapOf(
+            "acao"         to acao,
+            "realizadoPor" to admUid,
+            "timestamp"    to timestamp
+        )
+        db.collection("usuarios").document(usuarioId)
+            .collection("log_auditoria")
+            .add(entrada)
     }
 }

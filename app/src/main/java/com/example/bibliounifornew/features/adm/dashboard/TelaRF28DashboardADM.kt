@@ -2,6 +2,7 @@ package com.example.bibliounifornew.features.adm.dashboard
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -17,9 +18,11 @@ import com.example.bibliounifornew.features.adm.solicitacoes.TelaRF31Solicitacoe
 import com.example.bibliounifornew.features.adm.solicitacoes.TelaRF36ListaAlugueisADM
 import coil.load
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -193,8 +196,40 @@ class TelaRF28DashboardADM : AppCompatActivity() {
                         }
                 }
             }
-            .addOnFailureListener {
-                // Fallback: busca por status atrasado
+            .addOnFailureListener { e ->
+                val firestoreEx = e as? FirebaseFirestoreException
+
+                if (firestoreEx?.code == FirebaseFirestoreException.Code.FAILED_PRECONDITION) {
+                    // ── Índice composto ausente ───────────────────────────────
+                    // Esta query combina whereLessThan("dataDevolucao") +
+                    // whereEqualTo("status") + orderBy("dataDevolucao"), o que
+                    // exige um índice composto no Firestore.
+                    //
+                    // AÇÃO NECESSÁRIA: acesse o Firebase Console →
+                    //   Firestore Database → Índices → Composto → Criar índice:
+                    //   Coleção : solicitacoes_emprestimo
+                    //   Campo 1 : status          (Crescente)
+                    //   Campo 2 : dataDevolucao   (Crescente)
+                    //   Escopo  : Coleção
+                    Log.e(
+                        "DashboardADM",
+                        "⚠ FAILED_PRECONDITION — índice composto ausente para a query " +
+                        "de atrasos críticos (status ASC + dataDevolucao ASC). " +
+                        "Crie o índice no Firebase Console para corrigir. " +
+                        "Detalhes: ${e.message}"
+                    )
+                    container.removeAllViews()
+                    container.addView(criarLinhaTexto("Falha ao carregar dados.", "#D9534F", false))
+                    Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "Índice do banco ausente. Verifique o Firebase Console.",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    return@addOnFailureListener
+                }
+
+                // ── Outro erro (rede, permissão) → fallback sem composite index ──
+                Log.w("DashboardADM", "Erro na query de atrasos, tentando fallback simples: ${e.message}")
                 db.collection("solicitacoes_emprestimo")
                     .whereEqualTo("status", "atrasado")
                     .limit(3)
@@ -213,6 +248,11 @@ class TelaRF28DashboardADM : AppCompatActivity() {
                                     runOnUiThread { container.addView(criarLinhaAtrasoCritico(nome, "atrasado")) }
                                 }
                         }
+                    }
+                    .addOnFailureListener { fallbackErr ->
+                        Log.e("DashboardADM", "Fallback também falhou: ${fallbackErr.message}")
+                        container.removeAllViews()
+                        container.addView(criarLinhaTexto("Erro ao carregar dados.", "#D9534F", false))
                     }
             }
     }

@@ -47,20 +47,24 @@
 
                 <TextView
                     android:id="@+id/txtTituloHistorico"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Vida Secas"
                     android:textColor="@color/biblio_blue"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
 
                 <TextView
                     android:id="@+id/txtAutorHistorico"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Graciliano Ramos"
                     android:textColor="#666666"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
 
                 <View
                     android:layout_width="0dp"

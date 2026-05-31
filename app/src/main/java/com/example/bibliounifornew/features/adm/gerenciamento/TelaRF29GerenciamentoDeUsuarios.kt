@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -65,11 +66,25 @@ class TelaRF29GerenciamentoDeUsuarios : AppCompatActivity() {
     }
 
     /**
-     * Carrega todos os usuários com role != "adm" (alunos).
+     * RF30.9 — Carrega exclusivamente os cadastros com aprovação pendente.
+     *
+     * Fonte de verdade: Firestore filtra no servidor por:
+     *   • role == "aluno"
+     *   • cadastroConfirmado == false
+     *
+     * Zero lógica de filtragem no cliente — lista vazia significa
+     * que não há pendentes, não que o fallback deve ser acionado.
+     *
+     * ⚠️  ÍNDICE COMPOSTO NECESSÁRIO:
+     *   Coleção : usuarios
+     *   Campos  : role (Ascending) + cadastroConfirmado (Ascending)
+     *   Se a query falhar com FAILED_PRECONDITION, o Logcat mostrará o
+     *   link direto para criar o índice no Firebase Console.
      */
     private fun carregarUsuarios() {
         db.collection("usuarios")
             .whereEqualTo("role", "aluno")
+            .whereEqualTo("cadastroConfirmado", false)
             .get()
             .addOnSuccessListener { result ->
                 listaCompleta.clear()
@@ -83,38 +98,25 @@ class TelaRF29GerenciamentoDeUsuarios : AppCompatActivity() {
                         )
                     )
                 }
-                if (listaCompleta.isEmpty()) {
-                    // Fallback: carrega todos (caso o campo role não esteja preenchido)
-                    carregarTodosUsuarios()
-                } else {
-                    filtrarLista(termoBuscaAtivo)
-                }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Erro ao carregar usuários: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun carregarTodosUsuarios() {
-        db.collection("usuarios").get()
-            .addOnSuccessListener { result ->
-                listaCompleta.clear()
-                for (doc in result) {
-                    val role = doc.getString("role") ?: ""
-                    if (role == "adm") continue // exclui administradores
-                    listaCompleta.add(
-                        ItemUsuarioAdm(
-                            uid     = doc.id,
-                            nome    = doc.getString("nome")    ?: "Usuário",
-                            email   = doc.getString("email")   ?: "",
-                            usuario = doc.getString("usuario") ?: ""
-                        )
-                    )
-                }
+                // Lista vazia = nenhum cadastro pendente — comportamento correto,
+                // sem fallback que traria usuários já aprovados.
                 filtrarLista(termoBuscaAtivo)
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Erro ao carregar usuários: ${e.message}", Toast.LENGTH_SHORT).show()
+                val msg = e.message ?: ""
+                if (msg.contains("FAILED_PRECONDITION", ignoreCase = true)) {
+                    Log.e(
+                        "RF30_INDEX",
+                        "Índice composto ausente para a query de cadastros pendentes.\n" +
+                        "Crie em: Firebase Console → Firestore → Indexes → Add index\n" +
+                        "  Coleção : usuarios\n" +
+                        "  Campos  : role (Ascending), cadastroConfirmado (Ascending)\n" +
+                        "O próprio Firebase costuma incluir o link direto neste erro:\n$msg"
+                    )
+                } else {
+                    Log.e("RF30", "Erro ao carregar cadastros pendentes: $msg")
+                }
+                Toast.makeText(this, "Erro ao carregar usuários: $msg", Toast.LENGTH_SHORT).show()
             }
     }
 

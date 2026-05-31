@@ -11,7 +11,9 @@ import androidx.lifecycle.lifecycleScope
 import com.example.bibliounifornew.R
 import com.example.bibliounifornew.data.AuthRepository
 import com.example.bibliounifornew.features.usuario.biblioteca.TelaRF08DashboardUsuario
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,10 +69,11 @@ class TelaRF03LoginAluno : AppCompatActivity() {
                     return@loginUsuario
                 }
 
-                // GAP-1 GATE: verifica "contaAtiva" antes de liberar o Dashboard.
-                // Usuários desativados pelo ADM têm contaAtiva == false no Firestore,
-                // mas o Auth record permanece. Este check impede o acesso sem delete().
-                val uid = FirebaseAuth.getInstance().currentUser?.uid ?: run {
+                // RACE CONDITION FIX: usa o UID capturado no exato momento do
+                // addOnCompleteListener do Auth, em vez de re-consultar currentUser.
+                // Se currentUser fosse lido aqui (num frame posterior), poderia
+                // retornar null caso o estado Auth ainda não tivesse propagado.
+                val uid = mensagemOuUid ?: run {
                     botaoEntrar.isEnabled = true
                     botaoEntrar.text = "Entrar"
                     erro.text = "Erro ao obter sessão. Tente novamente."
@@ -84,9 +87,20 @@ class TelaRF03LoginAluno : AppCompatActivity() {
                         botaoEntrar.isEnabled = true
                         botaoEntrar.text = "Entrar"
 
-                        // GAP-1 GATE: conta desativada pelo ADM
-                        val contaAtiva = doc.getBoolean("contaAtiva") ?: true
-                        if (!contaAtiva) {
+                        // Guard: documento inexistente no Firestore (ex: Auth criado mas
+                        // Firestore falhou no cadastro). Permite acesso e loga diagnóstico.
+                        if (!doc.exists()) {
+                            Log.w("LoginAluno", "Documento do usuário não encontrado no " +
+                                "Firestore (uid=$uid). Liberando acesso sem checagem de status.")
+                            navegarParaDashboard()
+                            return@addOnSuccessListener
+                        }
+
+                        // GAP-1 GATE: conta desativada pelo ADM.
+                        // lerCampoBooleano() tolera Boolean nativo E String legada
+                        // ("false", "inativo"), eliminando bugs de case sensitivity.
+                        if (!lerCampoBooleano(doc, "contaAtiva")) {
+                            Log.w("LoginAluno", "Bloqueio GAP-1: contaAtiva=false (uid=$uid)")
                             FirebaseAuth.getInstance().signOut()
                             erro.text = "Sua conta foi desativada. Entre em contato com a biblioteca."
                             erro.visibility = View.VISIBLE
@@ -94,23 +108,21 @@ class TelaRF03LoginAluno : AppCompatActivity() {
                         }
 
                         // RF33 GATE: cadastro aguardando aprovação do ADM.
-                        // Contas antigas sem o campo assumem confirmado=true (compatibilidade).
-                        val cadastroConfirmado = doc.getBoolean("cadastroConfirmado") ?: true
-                        if (!cadastroConfirmado) {
+                        // Documentos sem o campo assumem confirmado=true (retrocompatibilidade).
+                        if (!lerCampoBooleano(doc, "cadastroConfirmado")) {
+                            Log.w("LoginAluno", "Bloqueio RF33: cadastroConfirmado=false (uid=$uid)")
                             FirebaseAuth.getInstance().signOut()
                             erro.text = "Cadastro aguardando aprovação da biblioteca. Tente novamente em breve."
                             erro.visibility = View.VISIBLE
                             return@addOnSuccessListener
                         }
 
-                        Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, TelaRF08DashboardUsuario::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
+                        navegarParaDashboard()
                     }
-                    .addOnFailureListener {
-                        // Falha ao ler Firestore → bloqueia por segurança
+                    .addOnFailureListener { e ->
+                        // Falha na leitura do Firestore → bloqueia por segurança.
+                        // Sem confirmar o status da conta, não libera o dashboard.
+                        Log.e("LoginAluno", "Falha ao ler documento do usuário (uid=$uid): ${e.message}")
                         FirebaseAuth.getInstance().signOut()
                         botaoEntrar.isEnabled = true
                         botaoEntrar.text = "Entrar"
@@ -146,6 +158,51 @@ class TelaRF03LoginAluno : AppCompatActivity() {
             }
             senhaVisivel = !senhaVisivel
             senha.setSelection(senha.text.length)
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // HELPERS DE LOGIN
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Navega para o Dashboard do aluno limpando a back-stack de login.
+     * Extraído para evitar duplicação entre os dois caminhos de sucesso
+     * (doc existe vs. doc ausente).
+     */
+    private fun navegarParaDashboard() {
+        Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, TelaRF08DashboardUsuario::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
+
+    /**
+     * Lê um campo booleano do Firestore de forma tolerante a tipos.
+     *
+     * Problema resolvido: `getBoolean()` retorna null para campos armazenados
+     * como String (ex: documentos criados por versões antigas do app ou por
+     * scripts externos), fazendo o `?: true` padrão ignorar um "false" legítimo.
+     *
+     * Prioridade de leitura:
+     *   1. Boolean nativo → retorna diretamente.
+     *   2. String → converte case-insensitive:
+     *        "false" | "inativo" | "desativado" | "pendente" | "0"  → false
+     *        "true"  | "ativo"   | "confirmado"               | "1"  → true
+     *   3. Campo ausente → retorna [defaultSeAusente] (padrão: true),
+     *      mantendo retrocompatibilidade com documentos sem o campo.
+     */
+    private fun lerCampoBooleano(
+        doc: DocumentSnapshot,
+        campo: String,
+        defaultSeAusente: Boolean = true
+    ): Boolean {
+        doc.getBoolean(campo)?.let { return it }
+        return when (doc.getString(campo)?.trim()?.lowercase()) {
+            "false", "inativo", "desativado", "pendente", "0" -> false
+            "true",  "ativo",   "confirmado",             "1" -> true
+            else -> defaultSeAusente
         }
     }
 
