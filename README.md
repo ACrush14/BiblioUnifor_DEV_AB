@@ -60,21 +60,17 @@ O app possui **dois perfis de acesso distintos**: o aluno, que pesquisa, solicit
 
 ## 🖼️ Interface & Design
 
-> As capturas de tela abaixo ilustram as principais telas do aplicativo.
-
 <div align="center">
 
-| Boas-vindas | Dashboard Aluno | Detalhe do Livro |
-|:-----------:|:---------------:|:----------------:|
-| `[screenshot]` | `[screenshot]` | `[screenshot]` |
+| Boas-vindas | Dashboard Aluno | Pesquisa de Livros |
+|:-----------:|:---------------:|:-----------------:|
+| <img src="docs/screenshots/primeira-tela.png" width="200"/> | <img src="docs/screenshots/dashboard-usuario.png" width="200"/> | <img src="docs/screenshots/tela-pesquisa.png" width="200"/> |
 
-| Pesquisa | Solicitação | Dashboard ADM |
-|:--------:|:-----------:|:-------------:|
-| `[screenshot]` | `[screenshot]` | `[screenshot]` |
+| Detalhe do Livro | Solicitação / Empréstimo | Dashboard ADM |
+|:----------------:|:------------------------:|:-------------:|
+| <img src="docs/screenshots/tela-livro.png" width="200"/> | <img src="docs/screenshots/tela-solicitacao.png" width="200"/> | <img src="docs/screenshots/dashboard-adm.png" width="200"/> |
 
 </div>
-
-> **Nota para a banca:** substitua os campos `[screenshot]` pelos prints das telas do app. Recomenda-se salvar as imagens em `docs/screenshots/` e referenciar com `<img src="docs/screenshots/nome.png" width="200"/>`.
 
 ---
 
